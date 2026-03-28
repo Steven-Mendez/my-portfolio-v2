@@ -18,7 +18,7 @@ export default function SectionWrapper({
     <section 
       id={id} 
       className={cn(
-        "relative py-24 md:py-32 px-6 md:px-12 flex flex-col items-center justify-center min-h-screen w-full snap-start",
+        "relative py-20 md:py-32 px-6 md:px-12 flex flex-col items-center justify-center min-h-svh lg:min-h-screen w-full snap-start overflow-hidden",
         className
       )}
     >
