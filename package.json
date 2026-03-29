@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "type": "module",
   "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": ["msw", "sharp", "unrs-resolver"]
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
