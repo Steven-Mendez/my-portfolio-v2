@@ -119,13 +119,17 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
+    border-color: var(--border);
+    outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
   }
   html {
-    @apply font-sans;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    color-scheme: dark;
+    background-color: oklch(0.141 0.005 285.823);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
   }
 }
 

@@ -3,4 +3,6 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  /* Until WebGL’s first frame, the layer is transparent; match page bg to avoid a flash. */
+  background-color: oklch(0.141 0.005 285.823);
 }

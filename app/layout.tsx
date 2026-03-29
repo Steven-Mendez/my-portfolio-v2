@@ -8,6 +8,9 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 
+/** Same as `.dark` `--background` in globals.css; paints before CSS/WebGL load. */
+const rootBackground = "oklch(0.141 0.005 285.823)";
+
 const geist = Geist({subsets:['latin'],variable:'--font-sans'})
 
 const fontMono = Geist_Mono({
@@ -103,6 +106,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn("dark", "antialiased", "scroll-smooth", fontMono.variable, fontDisplay.variable, "font-sans", geist.variable)}
+      style={{ backgroundColor: rootBackground }}
     >
       <body>
         <div className="bg-grain" />
