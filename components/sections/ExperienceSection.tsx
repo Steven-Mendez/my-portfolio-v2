@@ -11,12 +11,12 @@ const experienceData = [
   {
     company: "Dupely",
     logoPath: "/logos/dupely_logo.jpeg",
-    title: "Software Engineer",
+    title: "Backend Engineer",
     contractType: "Contract",
     period: "Dec 2025 - Present",
     duration: "4 mos",
     location: "Remote",
-    description: "Contracted through WERN as a Software Engineer for a real-time shopping assistant (browser extension and mobile app) that detects price inflation and surfaces better-value product alternatives.\n\n• Programmed high-performance RESTful APIs using Python and FastAPI, focusing on the efficient injection and extraction of product data to serve real-time requests from the browser extension and mobile app.\n• Built and maintained robust data pipelines to continuously ingest product information, pricing history, and features from major marketplaces (Amazon, Walmart, eBay).\n• Executed end-to-end development based on technical requirements, including database management, query optimization, and ensuring fast data retrieval for end-users.",
+    description: "Contracted through WERN as a Backend Engineer for a real-time shopping assistant (browser extension and mobile app) that detects price inflation and surfaces better-value product alternatives.\n\n• Programmed high-performance RESTful APIs using Python and FastAPI, focusing on the efficient injection and extraction of product data to serve real-time requests from the browser extension and mobile app.\n• Built and maintained robust data pipelines to continuously ingest product information, pricing history, and features from major marketplaces (Amazon, Walmart, eBay).\n• Executed end-to-end development based on technical requirements, including database management, query optimization, and ensuring fast data retrieval for end-users.",
     skillsSummary: "Python • FastAPI • AWS • React • Data Integration"
   },
   {
@@ -27,7 +27,7 @@ const experienceData = [
     period: "Dec 2024 - Present",
     duration: "1 yr 4 mos",
     location: "Remote",
-    description: "As an agency Software Engineer, I am deployed to high-impact technology projects, specializing in full-stack development, cloud infrastructure, and Generative AI integrations.\n\n• Current Assignment (Dec 2025 - Present): Deployed to Dupely as a Software Engineer, building scalable e-commerce data pipelines and AWS services.\n• Previous Assignment (Jan 2025 - Nov 2025): Deployed to a confidential B2B client in the EdTech sector. Built Generative AI features and LMS integrations utilizing Large Language Models (LLMs) and RAG architectures.\n• Developed scalable full-stack applications and REST APIs across multiple client environments using Python, FastAPI, Django, and React.",
+    description: "As an agency Backend Engineer, I am deployed to high-impact technology projects, specializing in full-stack development, cloud infrastructure, and Generative AI integrations.\n\n• Current Assignment (Dec 2025 - Present): Deployed to Dupely as a Backend Engineer, building scalable e-commerce data pipelines and AWS services.\n• Previous Assignment (Jan 2025 - Nov 2025): Deployed to a confidential B2B client in the EdTech sector. Built Generative AI features and LMS integrations utilizing Large Language Models (LLMs) and RAG architectures.\n• Developed scalable full-stack applications and REST APIs across multiple client environments using Python, FastAPI, Django, and React.",
     skillsSummary: "Python • FastAPI • Django • React • LLMs • RAG"
     },
   {
