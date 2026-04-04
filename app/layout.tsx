@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Syne } from "next/font/google"
+import { Geist, Geist_Mono, Syne, Space_Grotesk } from "next/font/google"
 import { Metadata, Viewport } from "next"
 
 import { Analytics } from "@vercel/analytics/next"
@@ -23,6 +23,12 @@ const fontDisplay = Syne({
   variable: "--font-display",
   weight: ["400", "600", "700", "800"],
 })
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space",
+})
+
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -105,7 +111,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("dark", "antialiased", "scroll-smooth", fontMono.variable, fontDisplay.variable, "font-sans", geist.variable)}
+      className={cn("dark", "antialiased", "scroll-smooth", fontMono.variable, fontDisplay.variable, spaceGrotesk.variable, "font-sans", geist.variable)}
       style={{ backgroundColor: rootBackground }}
     >
       <body>

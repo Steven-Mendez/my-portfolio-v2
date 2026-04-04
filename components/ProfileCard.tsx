@@ -57,7 +57,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   name = 'Javi A. Torres',
   title = 'Software Engineer',
   handle = 'javicodes',
-  status = 'Online',
+  status = '',
   contactText = 'Contact',
   showUserInfo = true,
   onContactClick
@@ -366,7 +366,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                     </div>
                     <div className="pc-user-text">
                       <div className="pc-handle">@{handle}</div>
-                      <div className="pc-status">{status}</div>
+                      {status ? <div className="pc-status">{status}</div> : null}
                     </div>
                   </div>
                   <button

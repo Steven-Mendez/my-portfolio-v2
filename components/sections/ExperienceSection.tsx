@@ -129,7 +129,7 @@ export default function ExperienceSection() {
         subtitle="Professional Background & Career Impact" 
       />
       
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full mx-auto">
         <GlassSurface className="rounded-2xl flex flex-col overflow-hidden p-0 border border-white/5">
           {experienceData.map((exp, i) => (
             <ExperienceItem 

@@ -1,16 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import GlassSurface from "@/components/hero/GlassSurface"
-import styles from "./HeroLiquidGlass.module.css"
-
-const navItems = [
-  { href: "#hero", label: "Home" },
-  { href: "#experience", label: "Experience" },
-  { href: "#projects", label: "Projects" },
-  { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
-]
+import { Menu, X } from "lucide-react"
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -38,75 +29,77 @@ export default function Navbar() {
 
   return (
     <>
-      <GlassSurface as="nav" className={styles.navShell} aria-label="Primary navigation">
-        <span className={styles.brand}>SM</span>
+      <nav className="font-space fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-8 h-16 bg-zinc-950/40 backdrop-blur-xl border-b border-white/10 shadow-[0_24px_48px_-12px_rgba(176,198,255,0.05)] transition-all">
+        <div className="font-bold tracking-tighter text-blue-400">STEVEN_MENDEZ</div>
 
-        {/* Desktop links */}
-        <ul className={styles.navList} aria-label="Site navigation">
-          {navItems.map((item) => (
-            <li key={item.href}>
-              <a className={styles.navLink} href={item.href}>
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="hidden md:flex gap-8 items-center">
+          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300" href="#experience">EXPERIENCE</a>
+          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300" href="#projects">PROJECTS</a>
+          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300" href="#about">ABOUT</a>
+        </div>
+        
+        <a 
+          href="mailto:hello@stevenmendez.dev"
+          className="hidden md:block bg-transparent border border-white/20 text-zinc-300 px-6 py-2 text-[10px] tracking-[0.2em] font-bold hover:text-white hover:border-white/50 hover:bg-white/5 transition-all"
+        >
+          CONTACT
+        </a>
 
         {/* Mobile burger */}
         <button
-          className={styles.burger}
+          className="md:hidden flex items-center text-zinc-400 hover:text-white focus:outline-none"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           aria-controls="mobile-sidebar"
           onClick={() => setMenuOpen((v) => !v)}
         >
-          <span className={`${styles.burgerLine} ${menuOpen ? styles.burgerLine1Open : ""}`} />
-          <span className={`${styles.burgerLine} ${menuOpen ? styles.burgerLine2Open : ""}`} />
-          <span className={`${styles.burgerLine} ${menuOpen ? styles.burgerLine3Open : ""}`} />
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </GlassSurface>
+      </nav>
 
       {/* ── Mobile sidebar ── */}
-      {menuOpen ? (
+      {menuOpen && (
         <>
           <div
-            className={styles.sidebarBackdrop}
+            className="fixed inset-0 z-[140] bg-[#04020c]/55 backdrop-blur-sm animate-in fade-in"
             aria-hidden
             onClick={close}
           />
-          <GlassSurface
+          <div
             id="mobile-sidebar"
-            className={styles.sidebar}
+            className="font-space fixed top-0 right-0 z-[150] w-[min(80vw,300px)] h-[100dvh] bg-gradient-to-br from-[#0a0718]/95 to-[#060410]/95 shadow-[-20px_0_60px_rgba(0,0,0,0.5)] border-l border-white/10 p-6 flex flex-col gap-10 animate-in slide-in-from-right-full duration-300"
             role="dialog"
-            aria-label="Mobile navigation"
             aria-modal="true"
           >
-            <div className={styles.sidebarHeader}>
-              <span className={styles.brand}>SM</span>
-              <button className={styles.sidebarClose} onClick={close} aria-label="Close menu">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-                  <path
-                    d="M2 2L16 16M16 2L2 16"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
+            <div className="flex items-center justify-between">
+              <span className="font-bold tracking-tighter text-blue-400">SM</span>
+              <button className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors" onClick={close} aria-label="Close menu">
+                <X size={18} />
               </button>
             </div>
 
-            <ul className={styles.sidebarList}>
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <a className={styles.sidebarLink} href={item.href} onClick={close}>
-                    {item.label}
+            <ul className="flex flex-col gap-2">
+              {['Experience', 'Projects', 'About'].map((item) => (
+                <li key={item}>
+                  <a className="block p-3 rounded-lg text-[#d2dcff]/75 text-lg font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors" href={`#${item.toLowerCase()}`} onClick={close}>
+                    {item.toUpperCase()}
                   </a>
                 </li>
               ))}
             </ul>
-          </GlassSurface>
+
+            <div className="mt-auto">
+               <a 
+                  href="mailto:hello@stevenmendez.dev"
+                  onClick={close}
+                  className="block text-center bg-transparent border border-white/20 text-zinc-300 px-6 py-3 text-xs tracking-[0.2em] font-bold hover:text-white hover:border-white/50 hover:bg-white/5 transition-all rounded-lg"
+                >
+                  CONTACT
+                </a>
+            </div>
+          </div>
         </>
-      ) : null}
+      )}
     </>
   )
 }

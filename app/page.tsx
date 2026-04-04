@@ -15,6 +15,7 @@ const AboutSection = dynamic(() => import("@/components/sections/AboutSection"),
   loading: () => <div className="min-h-[600px] w-full animate-pulse bg-white/5" />
 })
 
+
 // Dynamically import heavy WebGL/Canvas components
 import ColorBendsWrapper from "@/components/ColorBendsWrapper"
 
@@ -96,6 +97,8 @@ export default function Page() {
           <AboutSection />
         </Suspense>
       </div>
+
+
 
       <footer className="py-12 text-center text-[#d2dcff]/20 text-xs font-mono uppercase tracking-[0.2em] bg-transparent">
         © 2026 Steven Mendez — Software Developer

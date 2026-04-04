@@ -69,7 +69,7 @@ export default function ProjectsSection() {
           glowColor="255, 255, 255" // Clean white spotlight glow to match glass
           enableTilt={true}
           enableStars={false}
-          className="max-w-4xl w-full"
+          className="w-full"
         />
       </div>
     </SectionWrapper>
