@@ -16,7 +16,7 @@ const AboutSection = dynamic(() => import("@/components/sections/AboutSection"),
 })
 
 // Dynamically import heavy WebGL/Canvas components
-const ColorBends = dynamic(() => import("@/components/ColorBends"))
+import ColorBendsWrapper from "@/components/ColorBendsWrapper"
 
 export const metadata: Metadata = {
   title: "Steven Mendez | Mid-Level Backend & Gen AI Engineer",
@@ -52,8 +52,8 @@ export default function Page() {
       />
 
       {/* Background Component */}
-      <div className="fixed inset-0 -z-10 pointer-events-none">
-        <ColorBends
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <ColorBendsWrapper
           colors={["#04020c", "#0050FF", "#5a5e40"]}
           rotation={0}
           speed={0.2}
