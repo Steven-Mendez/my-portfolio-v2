@@ -16,7 +16,6 @@ interface ProfileCardProps {
   enableTilt?: boolean;
   enableMobileTilt?: boolean;
   mobileTiltSensitivity?: number;
-  miniAvatarUrl?: string;
   name?: string;
   title?: string;
   handle?: string;
@@ -53,9 +52,8 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   enableTilt = true,
   enableMobileTilt = false,
   mobileTiltSensitivity = 5,
-  miniAvatarUrl,
-  name = 'Javi A. Torres',
-  title = 'Software Engineer',
+  name = '',
+  title = '',
   handle = 'javicodes',
   status = '',
   contactText = 'Contact',
@@ -355,15 +353,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
               {showUserInfo ? (
                 <div className="pc-user-info">
                   <div className="pc-user-details">
-                    <div className="pc-mini-avatar relative overflow-hidden">
-                      <Image
-                        src={miniAvatarUrl || avatarUrl}
-                        alt={`${name || 'User'} mini avatar`}
-                        fill
-                        className="object-cover"
-                        sizes="32px"
-                      />
-                    </div>
                     <div className="pc-user-text">
                       <div className="pc-handle">@{handle}</div>
                       {status ? <div className="pc-status">{status}</div> : null}
@@ -381,12 +370,14 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                 </div>
               ) : null}
             </div>
-            <div className="pc-content">
-              <div className="pc-details">
-                <h3>{name}</h3>
-                <p>{title}</p>
+            {name || title ? (
+              <div className="pc-content">
+                <div className="pc-details">
+                  {name && <h3>{name}</h3>}
+                  {title && <p>{title}</p>}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </section>
       </div>

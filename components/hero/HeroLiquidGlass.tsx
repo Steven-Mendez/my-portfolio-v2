@@ -58,9 +58,6 @@ export default function HeroLiquidGlass() {
       <div className="w-full md:w-1/2 flex justify-center lg:justify-end animate-in slide-in-from-right-8 duration-700 fade-in delay-300 fill-mode-both relative z-20">
           <ProfileCard
             avatarUrl="/linkedin_photo.png"
-            miniAvatarUrl="/linkedin_photo.png"
-            name="Steven Mendez"
-            title="Mid-Level Backend Engineer"
             handle="steven-mendez"
             contactText="Get in Touch"
             onContactClick={() => window.location.href = 'mailto:stevenampaiz@gmail.com'}
