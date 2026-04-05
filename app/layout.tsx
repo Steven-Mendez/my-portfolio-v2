@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
+import { portfolioData } from "@/lib/data";
 
 /** Same as `.dark` `--background` in globals.css; paints before CSS/WebGL load. */
 const rootBackground = "oklch(0.141 0.005 285.823)";
@@ -41,53 +42,41 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://stevenmendez.dev"),
+  metadataBase: new URL(portfolioData.seo.url),
   title: {
-    default: "Steven Mendez | Mid-Level Backend & Gen AI Engineer",
-    template: "%s | Steven Mendez",
+    default: portfolioData.seo.title,
+    template: `%s | ${portfolioData.profile.fullName}`,
   },
-  description: "Mid-Level Backend Engineer specializing in Python, FastAPI, AWS, and Generative AI. Building scalable data pipelines and RAG architectures.",
-  keywords: [
-    "Backend Engineer",
-    "Python Developer",
-    "FastAPI",
-    "AWS",
-    "Gen AI",
-    "LLMs",
-    "RAG",
-    "Data Pipelines",
-    "Nicaragua Software Engineer",
-    "Scalable APIs",
-    "Cloud Infrastructure"
-  ],
-  authors: [{ name: "Steven Mendez", url: "https://stevenmendez.dev" }],
-  creator: "Steven Mendez",
+  description: portfolioData.seo.description,
+  keywords: portfolioData.seo.keywords,
+  authors: [{ name: portfolioData.profile.fullName, url: portfolioData.seo.url }],
+  creator: portfolioData.profile.fullName,
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: "https://stevenmendez.dev",
-    siteName: "Steven Mendez Portfolio",
-    title: "Steven Mendez | Backend & Gen AI Engineer",
-    description: "Explore the portfolio of Steven Mendez, building scalable APIs, cloud infrastructure, and AI-driven solutions.",
+    locale: portfolioData.seo.locale,
+    url: portfolioData.seo.url,
+    siteName: portfolioData.seo.siteName,
+    title: portfolioData.seo.title,
+    description: portfolioData.seo.description,
     images: [
       {
-        url: "/og-image.png",
+        url: portfolioData.seo.image,
         width: 1200,
         height: 630,
-        alt: "Steven Mendez - Backend & Gen AI Engineer Portfolio Preview",
+        alt: `${portfolioData.profile.fullName} - ${portfolioData.profile.role} Portfolio Preview`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Steven Mendez | Backend & Gen AI Engineer",
-    description: "Building scalable APIs and AI-driven solutions.",
-    images: ["/og-image.png"],
-    creator: "@Steven-Mendez",
-    site: "@Steven-Mendez",
+    title: portfolioData.seo.title,
+    description: portfolioData.seo.description,
+    images: [portfolioData.seo.image],
+    creator: portfolioData.seo.twitterHandle,
+    site: portfolioData.seo.twitterHandle,
   },
   robots: {
     index: true,

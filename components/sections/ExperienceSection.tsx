@@ -6,44 +6,9 @@ import SectionWrapper from './SectionWrapper';
 import SectionTitle from './SectionTitle';
 import GlassSurface from '../hero/GlassSurface';
 import { Diamond } from 'lucide-react';
+import { portfolioData } from '@/lib/data';
 
-const experienceData = [
-  {
-    company: "Dupely",
-    logoPath: "/logos/dupely_logo.jpeg",
-    title: "Backend Engineer",
-    contractType: "Contract",
-    period: "Dec 2025 - Present",
-    duration: "4 mos",
-    location: "Remote",
-    description: "Contracted through WERN as a Backend Engineer for a real-time shopping assistant (browser extension and mobile app) that detects price inflation and surfaces better-value product alternatives.\n\n• Programmed high-performance RESTful APIs using Python and FastAPI, focusing on the efficient injection and extraction of product data to serve real-time requests from the browser extension and mobile app.\n• Built and maintained robust data pipelines to continuously ingest product information, pricing history, and features from major marketplaces (Amazon, Walmart, eBay).\n• Executed end-to-end development based on technical requirements, including database management, query optimization, and ensuring fast data retrieval for end-users.",
-    skillsSummary: "Python • FastAPI • AWS • React • Data Integration"
-  },
-  {
-    company: "WERN",
-    logoPath: "/logos/wern_logo.jpeg",
-    title: "Full Stack Engineer",
-    contractType: "Full-time",
-    period: "Dec 2024 - Present",
-    duration: "1 yr 4 mos",
-    location: "Remote",
-    description: "As an agency Fullstack Engineer, I am deployed to high-impact technology projects, specializing in full-stack development, cloud infrastructure, and Generative AI integrations.\n\n• Current Assignment (Dec 2025 - Present): Deployed to Dupely as a Backend Engineer, building scalable e-commerce data pipelines and AWS services.\n• Previous Assignment (Jan 2025 - Nov 2025): Deployed to a confidential B2B client in the EdTech sector. Built Generative AI features and LMS integrations utilizing Large Language Models (LLMs) and RAG architectures.\n• Developed scalable full-stack applications and REST APIs across multiple client environments using Python, FastAPI, Django, and React.",
-    skillsSummary: "Python • FastAPI • Django • React • LLMs • RAG"
-    },
-  {
-    company: "Universidad Nacional de Ingeniería (UNI)",
-    logoPath: "/logos/universidad_nacional_de_ingenieria_nicaragua_logo.jpeg",
-    title: "Full Stack Developer",
-    contractType: "Full-time",
-    period: "Feb 2023 - Dec 2024",
-    duration: "1 yr 11 mos",
-    location: "Managua, Nicaragua · On-site",
-    description: "Played a key role in supporting and modernizing the university's mission-critical internal systems, specifically focusing on the core enterprise application used for budget management and vital administrative operations.\n\nKey responsibilities and achievements:\n- Maintained and enhanced a legacy ASP.NET enterprise system responsible for the university's financial and operational continuity.\n- Acted as a technical mentor within the team, introducing modern development practices and proposing new frontend architectures using React.js to improve maintainability and user experience.\n- Achieved significant system performance improvements by analyzing, refactoring, and optimizing complex Microsoft SQL Server queries.\n- Bridged the gap between legacy infrastructure and modern tech stacks, bringing a fresh perspective and scalable solutions to the engineering team's workflows.",
-    skillsSummary: "C# • SQL Server • React • ASP.NET • Clean Architecture"
-  }
-];
-
-function ExperienceItem({ exp, isLast }: { exp: typeof experienceData[0], isLast: boolean }) {
+function ExperienceItem({ exp, isLast }: { exp: typeof portfolioData.experience[0], isLast: boolean }) {
   const [isExpanded, setIsExpanded] = useState(false);
   
   // Cut description cleanly on a full word around 90 characters for a perfect 1-liner
@@ -113,7 +78,7 @@ function ExperienceItem({ exp, isLast }: { exp: typeof experienceData[0], isLast
       <div className="flex items-start gap-2 mt-2 pt-3 border-t border-white/10">
         <Diamond size={14} className="text-white opacity-70 mt-[3px] flex-shrink-0" strokeWidth={2.5} />
         <strong className="text-[13.5px] text-white font-semibold tracking-tight leading-snug">
-          {exp.skillsSummary}
+          {exp.skillsSummary.join(' • ')}
         </strong>
       </div>
       
@@ -126,16 +91,15 @@ export default function ExperienceSection() {
     <SectionWrapper id="experience">
       <SectionTitle 
         title="Experience" 
-        subtitle="Professional Background & Career Impact" 
       />
       
       <div className="w-full mx-auto">
         <GlassSurface className="rounded-2xl flex flex-col overflow-hidden p-0 border border-white/5">
-          {experienceData.map((exp, i) => (
+          {portfolioData.experience.map((exp, i) => (
             <ExperienceItem 
               key={i} 
               exp={exp} 
-              isLast={i === experienceData.length - 1} 
+              isLast={i === portfolioData.experience.length - 1} 
             />
           ))}
         </GlassSurface>

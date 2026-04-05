@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import Navbar from "@/components/hero/Navbar"
 import HeroLiquidGlass from "@/components/hero/HeroLiquidGlass"
 import { Metadata } from "next"
+import { portfolioData } from "@/lib/data"
 
 // Dynamically import heavy sections
 const ExperienceSection = dynamic(() => import("@/components/sections/ExperienceSection"), {
@@ -18,30 +19,40 @@ const AboutSection = dynamic(() => import("@/components/sections/AboutSection"),
 
 // Dynamically import heavy WebGL/Canvas components
 import ColorBendsWrapper from "@/components/ColorBendsWrapper"
+import Footer from "@/components/sections/Footer"
 
 export const metadata: Metadata = {
-  title: "Steven Mendez | Mid-Level Backend & Gen AI Engineer",
-  description: "Explore the portfolio of Steven Mendez, a Mid-Level Backend Engineer specialized in Python, FastAPI, AWS, and Generative AI. Building scalable data pipelines and AI solutions.",
+  title: portfolioData.seo.title,
+  description: portfolioData.seo.description,
 }
 
 export default function Page() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": "Steven Mendez",
-    "url": "https://stevenmendez.dev",
-    "image": "https://stevenmendez.dev/linkedin_photo.png",
+    "name": portfolioData.profile.fullName,
+    "url": portfolioData.seo.url,
+    "image": `${portfolioData.seo.url}${portfolioData.profile.avatarUrl}`,
     "sameAs": [
-      "https://github.com/Steven-Mendez",
-      "https://linkedin.com/in/steven-mendez-dev"
+      portfolioData.socials.github,
+      portfolioData.socials.linkedin
     ],
-    "jobTitle": "Mid-Level Backend Engineer",
+    "jobTitle": portfolioData.profile.role,
     "worksFor": {
       "@type": "Organization",
-      "name": "Dupely / WERN"
+      "name": "WERN / Dupely"
     },
-    "description": "Mid-Level Backend Engineer specializing in Python, FastAPI, AWS, and Generative AI. Expert in building scalable data pipelines and RAG architectures.",
-    "knowsAbout": ["Python", "FastAPI", "AWS", "Generative AI", "LLMs", "RAG", "Data Pipelines", "React", "SQL Server"]
+    "description": portfolioData.seo.description,
+    "knowsAbout": portfolioData.seo.keywords,
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Universidad Nacional de Ingeniería (UNI)"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Managua",
+      "addressCountry": "Nicaragua"
+    }
   };
 
   return (
@@ -100,9 +111,7 @@ export default function Page() {
 
 
 
-      <footer className="py-12 text-center text-[#d2dcff]/20 text-xs font-mono uppercase tracking-[0.2em] bg-transparent">
-        © 2026 Steven Mendez — Software Developer
-      </footer>
+      <Footer />
     </main>
   )
 }

@@ -1,0 +1,3 @@
+Contact: mailto:hello@stevenmendez.dev
+Preferred-Languages: en, es
+Canonical: https://stevenmendez.dev/.well-known/security.txt

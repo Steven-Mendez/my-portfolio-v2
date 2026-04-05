@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Menu, X } from "lucide-react"
+import { portfolioData } from "@/lib/data"
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -30,7 +31,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="font-space fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-8 h-16 bg-zinc-950/40 backdrop-blur-xl border-b border-white/10 shadow-[0_24px_48px_-12px_rgba(176,198,255,0.05)] transition-all">
-        <div className="font-bold tracking-tighter text-blue-400">STEVEN_MENDEZ</div>
+        <div className="font-bold tracking-tighter text-blue-400">{portfolioData.profile.fullName.toUpperCase().replace(' ', '_')}</div>
 
         <div className="hidden md:flex gap-8 items-center">
           <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300" href="#experience">EXPERIENCE</a>
@@ -39,7 +40,7 @@ export default function Navbar() {
         </div>
         
         <a 
-          href="mailto:hello@stevenmendez.dev"
+          href={`mailto:${portfolioData.profile.contactEmail}`}
           className="hidden md:block bg-transparent border border-white/20 text-zinc-300 px-6 py-2 text-[10px] tracking-[0.2em] font-bold hover:text-white hover:border-white/50 hover:bg-white/5 transition-all"
         >
           CONTACT
@@ -72,7 +73,7 @@ export default function Navbar() {
             aria-modal="true"
           >
             <div className="flex items-center justify-between">
-              <span className="font-bold tracking-tighter text-blue-400">SM</span>
+              <span className="font-bold tracking-tighter text-blue-400">{portfolioData.profile.firstName[0] + portfolioData.profile.lastName[0]}</span>
               <button className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors" onClick={close} aria-label="Close menu">
                 <X size={18} />
               </button>
@@ -90,7 +91,7 @@ export default function Navbar() {
 
             <div className="mt-auto">
                <a 
-                  href="mailto:hello@stevenmendez.dev"
+                  href={`mailto:${portfolioData.profile.contactEmail}`}
                   onClick={close}
                   className="block text-center bg-transparent border border-white/20 text-zinc-300 px-6 py-3 text-xs tracking-[0.2em] font-bold hover:text-white hover:border-white/50 hover:bg-white/5 transition-all rounded-lg"
                 >
