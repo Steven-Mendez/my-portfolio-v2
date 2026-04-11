@@ -7,7 +7,6 @@ import { portfolioData } from "@/lib/data"
 export default function HeroLiquidGlass() {
   return (
     <section 
-      id="about" 
       className="relative z-10 pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto flex flex-col md:flex-row gap-12 lg:gap-24 items-center justify-between min-h-[90vh] font-space"
       aria-labelledby="hero-title"
     >

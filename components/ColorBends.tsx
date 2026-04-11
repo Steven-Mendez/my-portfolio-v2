@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import './ColorBends.css';
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
 
 type ColorBendsProps = {
   className?: string;
@@ -21,6 +22,23 @@ type ColorBendsProps = {
 };
 
 const MAX_COLORS = 8 as const;
+
+function hexToRgb(hex: string): [number, number, number] {
+  const normalized = hex.replace("#", "").trim()
+  const expanded =
+    normalized.length === 3
+      ? normalized
+          .split("")
+          .map((char) => char + char)
+          .join("")
+      : normalized
+
+  const r = parseInt(expanded.slice(0, 2), 16)
+  const g = parseInt(expanded.slice(2, 4), 16)
+  const b = parseInt(expanded.slice(4, 6), 16)
+
+  return [r || 0, g || 0, b || 0]
+}
 
 const frag = `
 #define MAX_COLORS ${MAX_COLORS}
@@ -129,6 +147,7 @@ export default function ColorBends({
   parallax = 0.5,
   noise = 0.1
 }: ColorBendsProps) {
+  const prefersReducedMotion = usePrefersReducedMotion();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -142,6 +161,8 @@ export default function ColorBends({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const container = containerRef.current;
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
@@ -170,18 +191,18 @@ export default function ColorBends({
       uniforms: {
         uCanvas: { value: new THREE.Vector2(1, 1) },
         uTime: { value: 0 },
-        uSpeed: { value: speed },
+        uSpeed: { value: 0.2 },
         uRot: { value: new THREE.Vector2(1, 0) },
         uColorCount: { value: 0 },
         uColors: { value: uColorsArray },
-        uTransparent: { value: transparent ? 1 : 0 },
-        uScale: { value: scale },
-        uFrequency: { value: frequency },
-        uWarpStrength: { value: warpStrength },
+        uTransparent: { value: 1 },
+        uScale: { value: 1 },
+        uFrequency: { value: 1 },
+        uWarpStrength: { value: 1 },
         uPointer: { value: new THREE.Vector2(0, 0) },
-        uMouseInfluence: { value: mouseInfluence },
-        uParallax: { value: parallax },
-        uNoise: { value: noise }
+        uMouseInfluence: { value: 1 },
+        uParallax: { value: 0.5 },
+        uNoise: { value: 0.1 }
       },
       premultipliedAlpha: true,
       transparent: true
@@ -193,7 +214,7 @@ export default function ColorBends({
 
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setClearColor(0x000000, transparent ? 0 : 1);
+    renderer.setClearColor(0x000000, 0);
 
     const clock = new THREE.Clock();
 
@@ -241,8 +262,7 @@ export default function ColorBends({
       if (ro) ro.disconnect();
       else window.removeEventListener('resize', handleResize);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     const material = materialRef.current;
@@ -293,6 +313,8 @@ export default function ColorBends({
   ]);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const material = materialRef.current;
     const container = containerRef.current;
     if (!material || !container) return;
@@ -308,7 +330,33 @@ export default function ColorBends({
     return () => {
       container.removeEventListener('pointermove', handlePointerMove);
     };
-  }, []);
+  }, [prefersReducedMotion]);
+
+  if (prefersReducedMotion) {
+    const [start = "#04020c", middle = "#5a5e40", end = "#0050FF"] = colors
+    const [startR, startG, startB] = hexToRgb(start)
+    const [middleR, middleG, middleB] = hexToRgb(middle)
+    const [endR, endG, endB] = hexToRgb(end)
+    const reducedBackground = `
+      radial-gradient(56% 74% at 78% 12%, rgba(${endR}, ${endG}, ${endB}, 0.38) 0%, rgba(${endR}, ${endG}, ${endB}, 0.18) 34%, rgba(${startR}, ${startG}, ${startB}, 0) 70%),
+      radial-gradient(62% 78% at 20% 80%, rgba(${middleR}, ${middleG}, ${middleB}, 0.20) 0%, rgba(${middleR}, ${middleG}, ${middleB}, 0.08) 30%, rgba(${startR}, ${startG}, ${startB}, 0) 66%),
+      radial-gradient(88% 108% at 34% 22%, rgba(${endR}, ${endG}, ${endB}, 0.12) 0%, rgba(${endR}, ${endG}, ${endB}, 0) 56%),
+      linear-gradient(140deg, rgba(${startR}, ${startG}, ${startB}, 0.98) 0%, rgba(${startR}, ${startG}, ${startB}, 0.94) 58%, rgba(${startR}, ${startG}, ${startB}, 1) 100%)
+    `
+
+    return (
+      <div
+        className={`color-bends-container color-bends-reduced ${className || ""}`}
+        style={{
+          ...style,
+          background: reducedBackground,
+        }}
+      >
+        <div className="color-bends-reduced__grain" />
+        <div className="color-bends-reduced__vignette" />
+      </div>
+    )
+  }
 
   return (
     <div ref={containerRef} className={`color-bends-container ${className}`} style={style}>

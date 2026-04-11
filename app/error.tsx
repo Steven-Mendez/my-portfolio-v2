@@ -18,7 +18,7 @@ export default function Error({
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#04020c] p-4 text-center">
       <h2 className="mb-4 text-2xl font-bold text-white">Something went wrong!</h2>
       <p className="mb-8 max-w-md text-[#d2dcff]/60">
-        An unexpected error occurred. We&apos;ve been notified and are working on a fix.
+        An unexpected error occurred. Please try again in a moment.
       </p>
       <button
         onClick={() => reset()}

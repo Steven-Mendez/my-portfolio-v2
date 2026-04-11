@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next"
+import { portfolioData } from "@/lib/data"
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = "https://stevenmendez.dev"
+  const baseUrl = portfolioData.seo.url
   
   return {
     rules: [

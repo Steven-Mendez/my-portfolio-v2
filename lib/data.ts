@@ -1,3 +1,6 @@
+export const SITE_URL = "https://stevenmendez.dev";
+export const OG_IMAGE_PATH = "/opengraph-image";
+
 export const portfolioData = {
   profile: {
     firstName: "STEVEN",
@@ -90,8 +93,8 @@ export const portfolioData = {
   seo: {
     title: "Steven Mendez | Mid-Level Backend & Gen AI Engineer",
     description: "Explore the portfolio of Steven Mendez, a Mid-Level Backend Engineer specialized in Python, FastAPI, AWS, and Generative AI. Building scalable data pipelines and AI solutions.",
-    url: "https://stevenmendez.dev",
-    image: "/linkedin_photo.png", // Usamos tu foto de perfil como imagen principal de SEO si no tenés un og-image.png
+    url: SITE_URL,
+    image: OG_IMAGE_PATH,
     keywords: [
       "Backend Engineer",
       "Python Developer",

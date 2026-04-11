@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useCallback, useState } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import './MagicBento.css';
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
 
 export interface BentoCardProps {
   color?: string;
@@ -536,7 +537,8 @@ const MagicBento: React.FC<BentoProps> = ({
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileDetection();
-  const shouldDisableAnimations = disableAnimations || isMobile;
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const shouldDisableAnimations = disableAnimations || isMobile || prefersReducedMotion;
 
   return (
     <>

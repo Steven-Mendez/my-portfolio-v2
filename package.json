@@ -5,7 +5,6 @@
   "private": true,
   "pnpm": {
     "onlyBuiltDependencies": [
-      "msw",
       "sharp",
       "unrs-resolver"
     ]
@@ -16,7 +15,10 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "smoke:routes": "node ./scripts/smoke-routes.mjs",
+    "check:security-headers": "node ./scripts/check-security-headers.mjs",
+    "check:anchors": "node ./scripts/check-home-anchors.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

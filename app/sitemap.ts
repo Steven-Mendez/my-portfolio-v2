@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next"
+import { portfolioData } from "@/lib/data"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://stevenmendez.dev"
+  const baseUrl = portfolioData.seo.url
   
   return [
     {
@@ -9,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
-      images: [`${baseUrl}/linkedin_photo.png`], // Image sitemap feature for better discoverability
+      images: [`${baseUrl}${portfolioData.seo.image}`],
     },
     {
       url: `${baseUrl}/resume`,

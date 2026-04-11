@@ -67,6 +67,7 @@ function ExperienceItem({ exp, isLast }: { exp: typeof portfolioData.experience[
         {isTruncatable && !isExpanded ? (
           <button 
             onClick={() => setIsExpanded(true)}
+            aria-expanded={isExpanded}
             className="inline-block text-white font-semibold hover:underline transition-colors focus:outline-none"
           >
             ...show more

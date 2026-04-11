@@ -1,10 +1,14 @@
 import React from 'react';
 import { Metadata } from 'next';
 import PrintButton from './PrintButton';
+import { portfolioData } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'Resume',
   description: 'Full Stack Engineer resume of Steven Mendez. Specializing in Python, FastAPI, AWS, and React.',
+  alternates: {
+    canonical: '/resume',
+  },
 };
 
 export default function ResumePage() {
@@ -37,7 +41,7 @@ export default function ResumePage() {
             <div className="text-[11px] mt-1 flex flex-wrap justify-center items-center gap-x-2 text-black">
               <span>Managua, Nicaragua</span>
               <span className="hidden sm:inline">•</span>
-              <a href="mailto:stevenampaiz@gmail.com" className="hover:underline text-black">stevenampaiz@gmail.com</a>
+              <a href={`mailto:${portfolioData.profile.contactEmail}`} className="hover:underline text-black">{portfolioData.profile.contactEmail}</a>
               <span className="hidden sm:inline">•</span>
               <a href="https://linkedin.com/in/steven-mendez-dev" target="_blank" rel="noopener noreferrer" className="hover:underline text-black">linkedin.com/in/steven-mendez-dev</a>
               <span className="hidden sm:inline">•</span>
