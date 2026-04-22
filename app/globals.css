@@ -59,29 +59,29 @@
 }
 
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.141 0.005 285.823);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.141 0.005 285.823);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.141 0.005 285.823);
-    --primary: oklch(0.496 0.265 301.924);
-    --primary-foreground: oklch(0.977 0.014 308.299);
-    --secondary: oklch(0.967 0.001 286.375);
-    --secondary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.967 0.001 286.375);
-    --muted-foreground: oklch(0.552 0.016 285.938);
-    --accent: oklch(0.967 0.001 286.375);
-    --accent-foreground: oklch(0.21 0.006 285.885);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.92 0.004 286.32);
-    --input: oklch(0.92 0.004 286.32);
-    --ring: oklch(0.705 0.015 286.067);
-    --chart-1: oklch(0.879 0.169 91.605);
-    --chart-2: oklch(0.769 0.188 70.08);
-    --chart-3: oklch(0.666 0.179 58.318);
-    --chart-4: oklch(0.555 0.163 48.998);
-    --chart-5: oklch(0.473 0.137 46.201);
+    --background: #ffffff;
+    --foreground: #111019;
+    --card: #ffffff;
+    --card-foreground: #111019;
+    --popover: #ffffff;
+    --popover-foreground: #111019;
+    --primary: #6a1cf2;
+    --primary-foreground: #f8f5ff;
+    --secondary: #f4f4f6;
+    --secondary-foreground: #2d2d31;
+    --muted: #f4f4f6;
+    --muted-foreground: #6f7280;
+    --accent: #f4f4f6;
+    --accent-foreground: #2d2d31;
+    --destructive: #dc2626;
+    --border: #e5e5ea;
+    --input: #e5e5ea;
+    --ring: #8f909e;
+    --chart-1: #ffd98d;
+    --chart-2: #ffae63;
+    --chart-3: #ff8f4c;
+    --chart-4: #dc6d41;
+    --chart-5: #b6573a;
     --radius: 0.45rem;
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.141 0.005 285.823);
@@ -119,11 +119,11 @@
     --input: #454652;
     --ring: #8f909e;
     
-    --chart-1: oklch(0.879 0.169 91.605);
-    --chart-2: oklch(0.769 0.188 70.08);
-    --chart-3: oklch(0.666 0.179 58.318);
-    --chart-4: oklch(0.555 0.163 48.998);
-    --chart-5: oklch(0.473 0.137 46.201);
+    --chart-1: #ffd98d;
+    --chart-2: #ffae63;
+    --chart-3: #ff8f4c;
+    --chart-4: #dc6d41;
+    --chart-5: #b6573a;
     
     --sidebar: #131315;
     --sidebar-foreground: #e5e1e4;
@@ -150,12 +150,13 @@
 @layer base {
   * {
     border-color: var(--border);
+    outline-color: rgba(143, 144, 158, 0.5);
     outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
   }
   html {
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     color-scheme: dark;
-    background-color: oklch(0.141 0.005 285.823);
+    background-color: #0e0e10;
   }
   body {
     background-color: var(--background);

@@ -6,8 +6,8 @@ function isAllowedOrigin(origin: string): boolean {
   try {
     const { hostname } = new URL(origin)
     return (
-      hostname === "stevenmendez.dev" ||
-      hostname === "www.stevenmendez.dev" ||
+      hostname === "stevenampaiz.com" ||
+      hostname === "www.stevenampaiz.com" ||
       hostname.endsWith(".vercel.app")
     )
   } catch {

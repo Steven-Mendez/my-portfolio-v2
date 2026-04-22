@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { portfolioData } from "@/lib/data";
 
 /** Same as `.dark` `--background` in globals.css; paints before CSS/WebGL load. */
-const rootBackground = "oklch(0.141 0.005 285.823)";
+const rootBackground = "#0e0e10";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'})
 

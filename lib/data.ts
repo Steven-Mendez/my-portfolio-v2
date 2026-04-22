@@ -1,4 +1,4 @@
-export const SITE_URL = "https://stevenmendez.dev";
+export const SITE_URL = "https://stevenampaiz.com";
 export const OG_IMAGE_PATH = "/opengraph-image";
 
 export const portfolioData = {
@@ -6,10 +6,10 @@ export const portfolioData = {
     firstName: "STEVEN",
     lastName: "MENDEZ",
     fullName: "Steven Mendez",
-    role: "Mid-Level Backend Engineer",
+    role: "Backend Engineer",
     handle: "steven-mendez",
     avatarUrl: "/linkedin_photo.png",
-    contactEmail: "hello@stevenmendez.dev",
+    contactEmail: "stevenampaiz@gmail.com",
   },
   socials: {
     github: "https://github.com/Steven-Mendez",
@@ -17,8 +17,8 @@ export const portfolioData = {
   },
   about: {
     title: "About Me",
-    description1: "I am a Backend Engineer specializing in building scalable APIs, cloud infrastructure, and AI-driven applications.",
-    description2: "Currently, I focus on developing the backend services that power complex multi-vendor data pipelines and AI integrations. Whether I am building external integrations or optimizing internal database interactions, I thrive on translating technical requirements into clean, high-performance, and resilient code.",
+    description1: "I am a Backend Engineer focused on building scalable APIs, cloud services, and data-intensive integrations.",
+    description2: "My work centers on backend systems for multi-vendor data pipelines and AI-powered features. I build APIs with Python/FastAPI, integrate external platforms, and optimize database operations so data flows reliably into production systems.",
   },
   experience: [
     {
@@ -26,7 +26,7 @@ export const portfolioData = {
       logoPath: "/logos/dupely_logo.jpeg",
       title: "Backend Engineer",
       contractType: "Contract",
-      period: "Dec 2025 - Present",
+      period: "Dec 2025 - Apr 2026",
       location: "Remote",
       description: "Contracted through WERN as a Backend Engineer for a real-time shopping assistant (browser extension and mobile app) that detects price inflation and surfaces better-value product alternatives.\n\n• Programmed high-performance RESTful APIs using Python and FastAPI, focusing on the efficient injection and extraction of product data to serve real-time requests from the browser extension and mobile app.\n• Built and maintained robust data pipelines to continuously ingest product information, pricing history, and features from major marketplaces (Amazon, Walmart, eBay).\n• Executed end-to-end development based on technical requirements, including database management, query optimization, and ensuring fast data retrieval for end-users.",
       skillsSummary: ["Python", "FastAPI", "AWS", "React", "Data Integration"]
@@ -34,17 +34,17 @@ export const portfolioData = {
     {
       company: "WERN",
       logoPath: "/logos/wern_logo.jpeg",
-      title: "Full Stack Engineer",
+      title: "Backend & AI Engineer",
       contractType: "Full-time",
       period: "Dec 2024 - Present",
       location: "Remote",
-      description: "As an agency Fullstack Engineer, I am deployed to high-impact technology projects, specializing in full-stack development, cloud infrastructure, and Generative AI integrations.\n\n• Current Assignment (Dec 2025 - Present): Deployed to Dupely as a Backend Engineer, building scalable e-commerce data pipelines and AWS services.\n• Previous Assignment (Jan 2025 - Nov 2025): Deployed to a confidential B2B client in the EdTech sector. Built Generative AI features and LMS integrations utilizing Large Language Models (LLMs) and RAG architectures.\n• Developed scalable full-stack applications and REST APIs across multiple client environments using Python, FastAPI, Django, and React.",
+      description: "At WERN, I contribute to high-impact client projects focused on backend development, cloud infrastructure, and Generative AI integrations.\n\n• Assignment (Dec 2025 - Apr 2026): Deployed to Dupely as a Backend Engineer, building e-commerce data pipelines and AWS services.\n• Previous Assignment (Jan 2025 - Nov 2025): Deployed to a confidential B2B client in the EdTech sector, where I built GenAI features and LMS integrations using LLMs and RAG architectures.\n• Built and maintained scalable backend services and REST APIs across client environments using Python, FastAPI, Django, and React.",
       skillsSummary: ["Python", "FastAPI", "Django", "React", "LLMs", "RAG"]
       },
     {
       company: "Universidad Nacional de Ingeniería (UNI)",
       logoPath: "/logos/universidad_nacional_de_ingenieria_nicaragua_logo.jpeg",
-      title: "Full Stack Developer",
+      title: "Systems Analyst",
       contractType: "Full-time",
       period: "Feb 2023 - Dec 2024",
       location: "Managua, Nicaragua · On-site",
@@ -91,8 +91,8 @@ export const portfolioData = {
     },
   ],
   seo: {
-    title: "Steven Mendez | Mid-Level Backend & Gen AI Engineer",
-    description: "Explore the portfolio of Steven Mendez, a Mid-Level Backend Engineer specialized in Python, FastAPI, AWS, and Generative AI. Building scalable data pipelines and AI solutions.",
+    title: "Steven Mendez | Backend & AI Engineer",
+    description: "Explore the portfolio of Steven Mendez, a Backend Engineer specialized in Python, FastAPI, AWS, and AI-enabled backend systems.",
     url: SITE_URL,
     image: OG_IMAGE_PATH,
     keywords: [

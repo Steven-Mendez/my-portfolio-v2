@@ -2,7 +2,7 @@
 
 Portfolio website for Steven Mendez, focused on backend engineering, cloud architecture, and AI-driven product development.
 
-Live site: [stevenmendez.dev](https://stevenmendez.dev)
+Live site: [stevenampaiz.com](https://stevenampaiz.com)
 
 ## Overview
 

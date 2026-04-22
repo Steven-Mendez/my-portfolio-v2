@@ -40,7 +40,7 @@ export default function Page() {
     "jobTitle": portfolioData.profile.role,
     "worksFor": {
       "@type": "Organization",
-      "name": "WERN / Dupely"
+      "name": "WERN"
     },
     "description": portfolioData.seo.description,
     "knowsAbout": portfolioData.seo.keywords,

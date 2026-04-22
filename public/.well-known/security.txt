@@ -1,3 +1,3 @@
-Contact: mailto:hello@stevenmendez.dev
+Contact: mailto:stevenampaiz@gmail.com
 Preferred-Languages: en, es
-Canonical: https://stevenmendez.dev/.well-known/security.txt
+Canonical: https://stevenampaiz.com/.well-known/security.txt
