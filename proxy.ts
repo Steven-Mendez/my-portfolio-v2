@@ -1,14 +1,20 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 
-/** Hostnames that may send credentialed / cross-origin requests to this app. */
+/**
+ * Hostnames that may send credentialed / cross-origin requests to this app.
+ * Scoped to known production hosts plus this deployment's own Vercel URL —
+ * we deliberately do NOT reflect the whole `*.vercel.app` namespace, which
+ * would trust any attacker-controlled preview origin.
+ */
 function isAllowedOrigin(origin: string): boolean {
   try {
     const { hostname } = new URL(origin)
+    const ownVercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL
     return (
       hostname === "stevenampaiz.com" ||
       hostname === "www.stevenampaiz.com" ||
-      hostname.endsWith(".vercel.app")
+      (!!ownVercelHost && hostname === ownVercelHost)
     )
   } catch {
     return false

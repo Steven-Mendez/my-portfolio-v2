@@ -34,6 +34,13 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Verify content consistency
+        run: pnpm check:consistency
+
+      - name: Dependency audit
+        run: pnpm audit --prod
+        continue-on-error: true
+
       - name: Build
         run: pnpm build
 

@@ -193,3 +193,9 @@
   80% { transform: translate(3%, 35%); }
   90% { transform: translate(-10%, 10%); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-grain {
+    animation: none;
+  }
+}

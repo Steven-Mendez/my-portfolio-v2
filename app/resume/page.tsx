@@ -5,7 +5,7 @@ import { portfolioData } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'Resume',
-  description: 'Backend Engineer resume of Steven Mendez. Specializing in Python, FastAPI, AWS, and AI-enabled backend systems.',
+  description: `${portfolioData.profile.role} resume of ${portfolioData.profile.fullName}. Building React/Next.js front ends and Python (FastAPI/Django) back ends, with data-pipeline and LLM/RAG experience on AWS.`,
   alternates: {
     canonical: '/resume',
   },
@@ -74,10 +74,10 @@ export default function ResumePage() {
                 <span className="italic text-[12px] whitespace-nowrap">Remote</span>
               </div>
               <ul className="ml-4 list-disc list-outside space-y-0.5 text-[11px] leading-[1.28]">
-                <li>Contracted through WERN as a Software Engineer for a real-time shopping assistant that detects price inflation and surfaces better-value product alternatives.</li>
+                <li>Contracted through WERN as a Backend Engineer for a real-time shopping assistant that detects price inflation and surfaces better-value product alternatives.</li>
                 <li>Programmed high-performance RESTful APIs using Python and FastAPI, focusing on the efficient injection and extraction of product data to serve real-time requests.</li>
-                <li>Built and maintained robust data pipelines to continuously ingest product information, pricing history, and features from major marketplaces.</li>
-                <li>Executed end-to-end development based on technical requirements, including database management and query optimization for fast retrieval.</li>
+                <li>Built and maintained robust multi-vendor data pipelines to continuously ingest product information, pricing history, and features from major marketplaces, with caching and fallback handling.</li>
+                <li>Executed end-to-end development including database management, real-time events, and query optimization for fast retrieval.</li>
               </ul>
             </article>
 
@@ -87,14 +87,14 @@ export default function ResumePage() {
                 <span className="font-bold whitespace-nowrap text-[12px]">Dec 2024 – Present</span>
               </div>
               <div className={`${rowClass} mb-0.5`}>
-                <p className="italic text-[12px]">Backend & AI Engineer</p>
+                <p className="italic text-[12px]">Full Stack & AI Engineer</p>
                 <span className="italic text-[12px] whitespace-nowrap">Remote</span>
               </div>
               <ul className="ml-4 list-disc list-outside space-y-0.5 text-[11px] leading-[1.28]">
-                <li>At WERN, I contribute to high-impact client projects focused on backend development, cloud infrastructure, and Generative AI integrations.</li>
+                <li>At WERN, I deliver high-impact client engagements spanning full-stack development, cloud infrastructure, and Generative AI integrations.</li>
                 <li><strong>Assignment (Dec 2025 - Apr 2026):</strong> Deployed to Dupely, building scalable e-commerce data pipelines and AWS services.</li>
-                <li><strong>Previous Assignment (Jan 2025 - Nov 2025):</strong> Deployed to a confidential B2B client. Built GenAI features and LMS integrations using LLMs and RAG architectures.</li>
-                <li>Developed scalable backend applications and REST APIs across multiple client environments using Python, FastAPI, and Django.</li>
+                <li><strong>Previous assignment (2025):</strong> For a confidential B2B client, built LLM/RAG-powered features and shipped front-end tooling in Next.js/React and an embedded IDE assistant in VS Code (Webview API).</li>
+                <li>Built scalable services and REST APIs with Python, FastAPI, and Django, and React/Next.js front ends across multiple client environments.</li>
               </ul>
             </article>
 
@@ -123,7 +123,7 @@ export default function ResumePage() {
               <div><strong className="font-semibold">Languages:</strong> Python, C#, JavaScript/TypeScript, SQL, HTML/CSS, Bash</div>
               <div><strong className="font-semibold">Tools:</strong> AWS (Lambda, S3, EC2), Git, Docker, PostgreSQL, SQL Server, Redis</div>
               <div><strong className="font-semibold">Frameworks/Libraries:</strong> FastAPI, Django, .NET, React, Next.js, Tailwind CSS</div>
-              <div><strong className="font-semibold">Concepts:</strong> Backend Architecture, REST APIs, Data Pipelines, GenAI Integrations, RAG, CI/CD</div>
+              <div><strong className="font-semibold">Concepts:</strong> Full-Stack Development, REST APIs, Data Pipelines, GenAI/RAG, CI/CD</div>
             </div>
           </section>
 

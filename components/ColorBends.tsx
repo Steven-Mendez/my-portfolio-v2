@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import './ColorBends.css';
-import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 type ColorBendsProps = {
   className?: string;
@@ -255,12 +255,41 @@ export default function ColorBends({
       renderer.render(scene, camera);
       rafRef.current = requestAnimationFrame(loop);
     };
-    rafRef.current = requestAnimationFrame(loop);
+
+    const start = () => {
+      if (rafRef.current === null) {
+        clock.getDelta(); // discard the gap accumulated while paused
+        rafRef.current = requestAnimationFrame(loop);
+      }
+    };
+    const stop = () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+
+    // Pause the shader loop when the tab is backgrounded (the canvas is a
+    // fixed full-viewport layer, so it is always on-screen while visible).
+    const onVisibility = () => {
+      if (document.hidden) stop();
+      else start();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    if (!document.hidden) start();
 
     return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      stop();
+      document.removeEventListener('visibilitychange', onVisibility);
       if (ro) ro.disconnect();
       else window.removeEventListener('resize', handleResize);
+      // Release GPU resources so remounts don't leak WebGL contexts.
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+      renderer.forceContextLoss();
+      materialRef.current = null;
+      rendererRef.current = null;
     };
   }, [prefersReducedMotion]);
 

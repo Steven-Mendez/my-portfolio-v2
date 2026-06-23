@@ -1,11 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Menu, X } from "lucide-react"
 import { portfolioData } from "@/lib/data"
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const burgerRef = useRef<HTMLButtonElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const wasOpen = useRef(false)
 
   useEffect(() => {
     if (menuOpen) {
@@ -15,6 +18,17 @@ export default function Navbar() {
     }
     return () => {
       document.body.style.overflow = ""
+    }
+  }, [menuOpen])
+
+  // Move focus into the dialog on open; restore it to the burger on close.
+  useEffect(() => {
+    if (menuOpen) {
+      closeRef.current?.focus()
+      wasOpen.current = true
+    } else if (wasOpen.current) {
+      burgerRef.current?.focus()
+      wasOpen.current = false
     }
   }, [menuOpen])
 
@@ -34,21 +48,23 @@ export default function Navbar() {
         <div className="font-bold tracking-tighter text-blue-400">{portfolioData.profile.fullName.toUpperCase().replace(' ', '_')}</div>
 
         <div className="hidden md:flex gap-8 items-center">
-          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300" href="#experience">EXPERIENCE</a>
-          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300" href="#projects">PROJECTS</a>
-          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300" href="#about">ABOUT</a>
+          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300 rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary" href="#experience">EXPERIENCE</a>
+          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300 rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary" href="#projects">PROJECTS</a>
+          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300 rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary" href="#about">ABOUT</a>
+          <a className="uppercase tracking-widest text-xs text-zinc-400 hover:text-white transition-colors duration-300 rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary" href="/resume">RESUME</a>
         </div>
-        
-        <a 
+
+        <a
           href={`mailto:${portfolioData.profile.contactEmail}`}
-          className="hidden md:block bg-transparent border border-white/20 text-zinc-300 px-6 py-2 text-[10px] tracking-[0.2em] font-bold hover:text-white hover:border-white/50 hover:bg-white/5 transition-all"
+          className="hidden md:block bg-transparent border border-white/20 text-zinc-300 px-6 py-2 text-[10px] tracking-[0.2em] font-bold hover:text-white hover:border-white/50 hover:bg-white/5 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           CONTACT
         </a>
 
         {/* Mobile burger */}
         <button
-          className="md:hidden flex items-center text-zinc-400 hover:text-white focus:outline-none"
+          ref={burgerRef}
+          className="md:hidden flex items-center text-zinc-400 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           aria-controls="mobile-sidebar"
@@ -74,7 +90,7 @@ export default function Navbar() {
           >
             <div className="flex items-center justify-between">
               <span className="font-bold tracking-tighter text-blue-400">{portfolioData.profile.firstName[0] + portfolioData.profile.lastName[0]}</span>
-              <button className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors" onClick={close} aria-label="Close menu">
+              <button ref={closeRef} className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" onClick={close} aria-label="Close menu">
                 <X size={18} />
               </button>
             </div>
@@ -82,18 +98,23 @@ export default function Navbar() {
             <ul className="flex flex-col gap-2">
               {['Experience', 'Projects', 'About'].map((item) => (
                 <li key={item}>
-                  <a className="block p-3 rounded-lg text-[#d2dcff]/75 text-lg font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors" href={`#${item.toLowerCase()}`} onClick={close}>
+                  <a className="block p-3 rounded-lg text-[#d2dcff]/75 text-lg font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" href={`#${item.toLowerCase()}`} onClick={close}>
                     {item.toUpperCase()}
                   </a>
                 </li>
               ))}
+              <li>
+                <a className="block p-3 rounded-lg text-[#d2dcff]/75 text-lg font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" href="/resume" onClick={close}>
+                  RESUME
+                </a>
+              </li>
             </ul>
 
             <div className="mt-auto">
-               <a 
+               <a
                   href={`mailto:${portfolioData.profile.contactEmail}`}
                   onClick={close}
-                  className="block text-center bg-transparent border border-white/20 text-zinc-300 px-6 py-3 text-xs tracking-[0.2em] font-bold hover:text-white hover:border-white/50 hover:bg-white/5 transition-all rounded-lg"
+                  className="block text-center bg-transparent border border-white/20 text-zinc-300 px-6 py-3 text-xs tracking-[0.2em] font-bold hover:text-white hover:border-white/50 hover:bg-white/5 transition-all rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
                   CONTACT
                 </a>

@@ -3,8 +3,9 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
+import { Code2, ExternalLink, Lock } from 'lucide-react';
 import './MagicBento.css';
-import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 export interface BentoCardProps {
   color?: string;
@@ -12,6 +13,9 @@ export interface BentoCardProps {
   description?: string;
   label?: string;
   image?: string;
+  liveUrl?: string;
+  repoUrl?: string;
+  confidential?: boolean;
   textAutoHide?: boolean;
   disableAnimations?: boolean;
 }
@@ -707,12 +711,43 @@ const MagicBento: React.FC<BentoProps> = ({
                 </div>
               ) : null}
               
-              <div className="magic-bento-card__header relative z-10">
+              <div className="magic-bento-card__header relative z-10 flex items-center justify-between gap-2">
                 <div className="magic-bento-card__label">{card.label}</div>
+                {card.confidential ? (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/85">
+                    <Lock size={10} aria-hidden /> Confidential
+                  </span>
+                ) : null}
               </div>
               <div className="magic-bento-card__content relative z-10 flex flex-col justify-end flex-1">
                 <h2 className="magic-bento-card__title">{card.title}</h2>
                 <p className="magic-bento-card__description">{card.description}</p>
+                {card.liveUrl || card.repoUrl ? (
+                  <div className="mt-3 flex flex-wrap gap-4">
+                    {card.liveUrl ? (
+                      <a
+                        href={card.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-white/90 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                      >
+                        <ExternalLink size={13} aria-hidden /> Live Demo
+                      </a>
+                    ) : null}
+                    {card.repoUrl ? (
+                      <a
+                        href={card.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-white/90 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                      >
+                        <Code2 size={13} aria-hidden /> View Code
+                      </a>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             </div>
           );

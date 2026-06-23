@@ -12,22 +12,25 @@ import { portfolioData } from "@/lib/data";
 /** Same as `.dark` `--background` in globals.css; paints before CSS/WebGL load. */
 const rootBackground = "#0e0e10";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans', display: 'swap' })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
 })
 
 const fontDisplay = Syne({
   subsets: ["latin"],
   variable: "--font-display",
   weight: ["400", "600", "700", "800"],
+  display: "swap",
 })
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space",
+  display: "swap",
 })
 
 
@@ -75,8 +78,6 @@ export const metadata: Metadata = {
     title: portfolioData.seo.title,
     description: portfolioData.seo.description,
     images: [portfolioData.seo.image],
-    creator: portfolioData.seo.twitterHandle,
-    site: portfolioData.seo.twitterHandle,
   },
   robots: {
     index: true,
@@ -104,6 +105,12 @@ export default function RootLayout({
       style={{ backgroundColor: rootBackground }}
     >
       <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black focus:shadow-lg"
+        >
+          Skip to content
+        </a>
         <div className="bg-grain" />
         <ThemeProvider
           attribute="class"

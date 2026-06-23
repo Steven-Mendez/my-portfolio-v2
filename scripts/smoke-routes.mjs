@@ -2,7 +2,7 @@ const baseUrl = process.env.SMOKE_BASE_URL || "http://127.0.0.1:3000"
 const startupTimeoutMs = Number(process.env.SMOKE_STARTUP_TIMEOUT_MS || 45_000)
 const retryIntervalMs = Number(process.env.SMOKE_RETRY_INTERVAL_MS || 1_000)
 
-const routes = ["/", "/resume"]
+const routes = ["/", "/resume", "/opengraph-image", "/robots.txt", "/sitemap.xml", "/manifest.webmanifest"]
 
 async function waitForServer() {
   const startedAt = Date.now()

@@ -6,9 +6,9 @@ import SectionWrapper from './SectionWrapper';
 import SectionTitle from './SectionTitle';
 import GlassSurface from '../hero/GlassSurface';
 import { Diamond } from 'lucide-react';
-import { portfolioData } from '@/lib/data';
+import { portfolioData, type ExperienceItem as ExperienceItemType } from '@/lib/data';
 
-function ExperienceItem({ exp, isLast }: { exp: typeof portfolioData.experience[0], isLast: boolean }) {
+function ExperienceItem({ exp, isLast }: { exp: ExperienceItemType, isLast: boolean }) {
   const [isExpanded, setIsExpanded] = useState(false);
   
   // Cut description cleanly on a full word around 90 characters for a perfect 1-liner

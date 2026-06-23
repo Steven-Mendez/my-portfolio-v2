@@ -18,7 +18,8 @@
     "typecheck": "tsc --noEmit",
     "smoke:routes": "node ./scripts/smoke-routes.mjs",
     "check:security-headers": "node ./scripts/check-security-headers.mjs",
-    "check:anchors": "node ./scripts/check-home-anchors.mjs"
+    "check:anchors": "node ./scripts/check-home-anchors.mjs",
+    "check:consistency": "node ./scripts/check-content-consistency.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

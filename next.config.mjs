@@ -51,12 +51,20 @@ const permissionsPolicy = [
 const nextConfig = {
   cacheComponents: true,
   poweredByHeader: false,
+  images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 31536000,
+  },
   async headers() {
     return [
       {
         source: "/:path*",
         headers: [
           { key: "Content-Security-Policy", value: contentSecurityPolicy },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-XSS-Protection", value: "0" },

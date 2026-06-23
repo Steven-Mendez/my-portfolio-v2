@@ -347,7 +347,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                   alt={`${name || 'User'} avatar`}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority
+                  loading="lazy"
                 />
               </div>
               {showUserInfo ? (

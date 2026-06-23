@@ -1,23 +1,14 @@
-import dynamic from "next/dynamic"
-import { Suspense } from "react"
 import Navbar from "@/components/hero/Navbar"
 import HeroLiquidGlass from "@/components/hero/HeroLiquidGlass"
 import { Metadata } from "next"
 import { portfolioData } from "@/lib/data"
 
-// Dynamically import heavy sections
-const ExperienceSection = dynamic(() => import("@/components/sections/ExperienceSection"), {
-  loading: () => <div className="min-h-[600px] w-full animate-pulse bg-white/5" />
-})
-const ProjectsSection = dynamic(() => import("@/components/sections/ProjectsSection"), {
-  loading: () => <div className="min-h-[600px] w-full animate-pulse bg-white/5" />
-})
-const AboutSection = dynamic(() => import("@/components/sections/AboutSection"), {
-  loading: () => <div className="min-h-[600px] w-full animate-pulse bg-white/5" />
-})
-
-
-// Dynamically import heavy WebGL/Canvas components
+// Sections SSR for SEO/LCP; the heavy WebGL/Canvas work is deferred inside
+// ColorBendsWrapper and ProjectsSection (MagicBento) via their own client-only
+// dynamic imports, so a duplicate Suspense boundary here is unnecessary.
+import ExperienceSection from "@/components/sections/ExperienceSection"
+import ProjectsSection from "@/components/sections/ProjectsSection"
+import AboutSection from "@/components/sections/AboutSection"
 import ColorBendsWrapper from "@/components/ColorBendsWrapper"
 import Footer from "@/components/sections/Footer"
 
@@ -56,7 +47,7 @@ export default function Page() {
   };
 
   return (
-    <main className="relative min-h-screen w-full overflow-x-hidden">
+    <main id="main" tabIndex={-1} className="relative min-h-screen w-full overflow-x-hidden">
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
@@ -90,23 +81,17 @@ export default function Page() {
 
       {/* 2. Experience (Profesional) */}
       <div className="relative z-10">
-        <Suspense fallback={<div className="min-h-[600px] w-full animate-pulse bg-white/5" />}>
-          <ExperienceSection />
-        </Suspense>
+        <ExperienceSection />
       </div>
 
       {/* 3. Projects (Personal) */}
       <div className="relative z-10">
-        <Suspense fallback={<div className="min-h-[600px] w-full animate-pulse bg-white/5" />}>
-          <ProjectsSection />
-        </Suspense>
+        <ProjectsSection />
       </div>
 
       {/* 4. About Me (Human) */}
       <div className="relative z-10">
-        <Suspense fallback={<div className="min-h-[600px] w-full animate-pulse bg-white/5" />}>
-          <AboutSection />
-        </Suspense>
+        <AboutSection />
       </div>
 
 
