@@ -23,6 +23,14 @@ function LinkedinMark() {
   );
 }
 
+function UpworkMark() {
+  return (
+    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+      <path d="M18.561 13.158c-1.102 0-2.135-.467-3.074-1.227l.228-1.076.008-.042c.207-1.143.849-3.06 2.839-3.06 1.492 0 2.703 1.212 2.703 2.703-.001 1.489-1.212 2.702-2.704 2.702zm0-8.14c-2.539 0-4.51 1.649-5.31 4.366-1.22-1.834-2.148-4.036-2.687-5.892H7.828v7.112c-.002 1.406-1.141 2.546-2.547 2.548-1.405-.002-2.543-1.143-2.545-2.548V3.492H0v7.112c0 2.914 2.37 5.303 5.281 5.303 2.913 0 5.283-2.389 5.283-5.303v-1.19c.529 1.107 1.182 2.229 1.974 3.221l-1.673 7.873h2.797l1.213-5.71c1.063.679 2.285 1.109 3.686 1.109 3 0 5.439-2.452 5.439-5.45 0-3-2.439-5.439-5.439-5.439z" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   const year = useMemo(() => new Date().getFullYear(), []);
   const { profile, socials } = portfolioData;
@@ -31,7 +39,7 @@ export default function Footer() {
     <footer id="contact" className="relative z-10 mt-20 border-t border-white/10 bg-transparent px-6 py-14">
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
         <p className="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
-          Open to Full Stack Engineer roles — let&apos;s talk.
+          Open to {profile.role} roles — let&apos;s talk.
         </p>
         <p className="text-sm text-[#cdd7f5]">Remote · Available for new projects</p>
 
@@ -47,6 +55,9 @@ export default function Footer() {
           </a>
           <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className={linkClass}>
             <LinkedinMark /> LinkedIn
+          </a>
+          <a href={socials.upwork} target="_blank" rel="noopener noreferrer" className={linkClass}>
+            <UpworkMark /> Upwork
           </a>
         </div>
 

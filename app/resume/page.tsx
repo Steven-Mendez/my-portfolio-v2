@@ -17,6 +17,8 @@ export default function ResumePage() {
   const rowClass = "flex items-baseline justify-between gap-4";
   const bulletListClass =
     "mt-1 ml-[15px] list-disc list-outside space-y-[3px] text-[10.5px] leading-[1.4] text-zinc-800 marker:text-zinc-400";
+  const featuredProject = portfolioData.projects.find((p) => p.resumeFeatured);
+  const stripUrl = (u: string) => u.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 
   return (
     <>
@@ -55,7 +57,7 @@ export default function ResumePage() {
           {/* ---------- Header ---------- */}
           <header className="mb-4 border-b-2 border-zinc-900 pb-3 text-center">
             <h1 className="text-[34px] leading-none font-bold tracking-[0.02em] text-zinc-900">
-              Steven Mendez
+              {portfolioData.profile.fullName}
             </h1>
             <p className="mt-1.5 text-[12px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
               {portfolioData.profile.role}
@@ -65,11 +67,13 @@ export default function ResumePage() {
               <span className="text-zinc-300">|</span>
               <a href={`mailto:${portfolioData.profile.contactEmail}`} className="text-zinc-700 hover:underline">{portfolioData.profile.contactEmail}</a>
               <span className="text-zinc-300">|</span>
-              <a href={portfolioData.socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">linkedin.com/in/steven-mendez-dev</a>
+              <a href={portfolioData.socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">{stripUrl(portfolioData.socials.linkedin)}</a>
               <span className="text-zinc-300">|</span>
-              <a href={portfolioData.socials.github} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">github.com/Steven-Mendez</a>
+              <a href={portfolioData.socials.github} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">{stripUrl(portfolioData.socials.github)}</a>
               <span className="text-zinc-300">|</span>
-              <a href={portfolioData.seo.url} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">stevenampaiz.com</a>
+              <a href={portfolioData.socials.upwork} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">Upwork</a>
+              <span className="text-zinc-300">|</span>
+              <a href={portfolioData.seo.url} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">{stripUrl(portfolioData.seo.url)}</a>
             </div>
             <p className="mt-1.5 text-[10px] uppercase tracking-[0.1em] text-zinc-500">
               Remote &middot; Available for US time zones, flexible for EU
@@ -80,10 +84,7 @@ export default function ResumePage() {
           <section className="mb-3.5">
             <h2 className={sectionTitleClass}>Professional Summary</h2>
             <p className="text-[11px] leading-[1.45] text-zinc-800">
-              Full Stack Engineer with 3+ years building and shipping production systems &mdash; Python (FastAPI/Django) APIs
-              and data pipelines on the back end, and React/Next.js interfaces on the front end. I work across the full
-              lifecycle: optimizing SQL over large datasets, integrating LLM/RAG features, and deploying services on AWS.
-              I turn complex requirements into clean, scalable solutions and own the work from database to UI.
+              {portfolioData.about.description1} {portfolioData.about.description2}
             </p>
           </section>
 
@@ -91,12 +92,11 @@ export default function ResumePage() {
           <section className="mb-3.5">
             <h2 className={sectionTitleClass}>Technical Skills</h2>
             <div className="space-y-[3px] text-[10.5px] leading-[1.35] text-zinc-800">
-              <div><strong className="font-semibold text-zinc-900">Languages:</strong> TypeScript / JavaScript, Python, C#, SQL</div>
-              <div><strong className="font-semibold text-zinc-900">Frontend:</strong> React, Next.js, TypeScript, Tailwind CSS, HTML5/CSS3</div>
-              <div><strong className="font-semibold text-zinc-900">Backend:</strong> FastAPI, Django, Flask, ASP.NET, REST APIs, Socket.IO, Pydantic, SQLAlchemy</div>
-              <div><strong className="font-semibold text-zinc-900">AI &amp; Data:</strong> LLM/RAG integration, LangChain/LangGraph, vector databases (pgvector, Qdrant), data pipelines, web scraping</div>
-              <div><strong className="font-semibold text-zinc-900">Cloud &amp; DevOps:</strong> AWS, Docker, CI/CD, Git</div>
-              <div><strong className="font-semibold text-zinc-900">Databases:</strong> PostgreSQL, Microsoft SQL Server, Redis</div>
+              {portfolioData.skills.categories.map((cat) => (
+                <div key={cat.label}>
+                  <strong className="font-semibold text-zinc-900">{cat.label}:</strong> {cat.items.join(', ')}
+                </div>
+              ))}
             </div>
           </section>
 
@@ -104,96 +104,104 @@ export default function ResumePage() {
           <section className="mb-3.5">
             <h2 className={sectionTitleClass}>Experience</h2>
 
-            <article className="resume-block mb-3">
-              <div className={rowClass}>
-                <h3 className="text-[12.5px] font-bold text-zinc-900">Dupely</h3>
-                <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">Dec 2025 &ndash; May 2026</span>
-              </div>
-              <div className={`${rowClass} mt-0.5`}>
-                <p className="text-[11px] italic text-zinc-600">Backend Engineer &middot; Contract via WERN</p>
-                <span className="text-[11px] italic whitespace-nowrap text-zinc-600">Remote</span>
-              </div>
-              <ul className={bulletListClass}>
-                <li>Built high-performance REST APIs in Python and FastAPI to serve real-time product data to a shopping-assistant browser extension and mobile app that flag price inflation and surface better-value alternatives.</li>
-                <li>Designed and maintained multi-vendor data pipelines ingesting product details, pricing history, and availability from major marketplaces (Amazon, Walmart, eBay) &mdash; indexing 5K&ndash;10K products during the beta phase &mdash; with caching and fallback handling to reduce reliance on third-party providers.</li>
-                <li>Delivered real-time backend events over Socket.IO and enrichment APIs (reviews, availability, similarity explanations) for a responsive client experience.</li>
-                <li>Worked within a ~10-engineer team, integrating third-party data providers (Bright Data, Keepa) and managing persistence across PostgreSQL, Redis, and Qdrant on AWS.</li>
-              </ul>
-            </article>
-
-            <article className="resume-block mb-3">
-              <div className={rowClass}>
-                <h3 className="text-[12.5px] font-bold text-zinc-900">Confidential B2B Platform</h3>
-                <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">Dec 2024 &ndash; Nov 2025</span>
-              </div>
-              <div className={`${rowClass} mt-0.5`}>
-                <p className="text-[11px] italic text-zinc-600">Full Stack &amp; AI Engineer &middot; via WERN</p>
-                <span className="text-[11px] italic whitespace-nowrap text-zinc-600">Remote</span>
-              </div>
-              <ul className={bulletListClass}>
-                <li>Built full-stack features for an AI-powered B2B platform &mdash; user-facing interfaces in Next.js, React, and TypeScript backed by Python (FastAPI/Django) services.</li>
-                <li>Designed and shipped, end to end, a node-and-connector visual configuration tool (Next.js/React/TypeScript) that lets non-technical users configure conversational-agent behavior across scenarios &mdash; a core part of the platform.</li>
-                <li>Integrated LLM/RAG capabilities: retrieval over domain content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.</li>
-              </ul>
-            </article>
-
-            <article className="resume-block">
-              <div className={rowClass}>
-                <h3 className="text-[12.5px] font-bold text-zinc-900">Universidad Nacional de Ingeniería (UNI)</h3>
-                <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">Feb 2023 &ndash; Dec 2024</span>
-              </div>
-              <div className={`${rowClass} mt-0.5`}>
-                <p className="text-[11px] italic text-zinc-600">Systems Analyst</p>
-                <span className="text-[11px] italic whitespace-nowrap text-zinc-600">Managua, Nicaragua &middot; On-site</span>
-              </div>
-              <ul className={bulletListClass}>
-                <li>Maintained and modernized the university&apos;s mission-critical ASP.NET / SQL Server budget system, used by 400&ndash;700 staff across the institution with peaks of 100&ndash;200 concurrent users.</li>
-                <li>Optimized complex SQL Server queries over a decade of accumulated financial data &mdash; cutting a critical report from ~20 minutes to 15&ndash;30 seconds, and most heavy queries from ~5 minutes to under 10 seconds.</li>
-                <li>Proposed and prototyped a React.js front-end architecture to modernize the legacy UI, improving maintainability and user experience.</li>
-                <li>Mentored 5&ndash;10 interns, introducing modern development practices and clean-code standards to the team.</li>
-              </ul>
-            </article>
+            {portfolioData.experience.map((exp, i) => (
+              <article
+                key={exp.company}
+                className={`resume-block${i < portfolioData.experience.length - 1 ? ' mb-3' : ''}`}
+              >
+                <div className={rowClass}>
+                  <h3 className="text-[12.5px] font-bold text-zinc-900">
+                    {exp.companyUrl ? (
+                      <a href={exp.companyUrl} target="_blank" rel="noopener noreferrer" className="text-zinc-900 hover:underline">{exp.company}</a>
+                    ) : (
+                      exp.company
+                    )}
+                  </h3>
+                  <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">{exp.period}</span>
+                </div>
+                <div className={`${rowClass} mt-0.5`}>
+                  <p className="text-[11px] italic text-zinc-600">
+                    {exp.title}
+                    {exp.employmentType ? ` · ${exp.employmentType}` : ''}
+                    {exp.agency ? (
+                      <>
+                        {' · via '}
+                        {exp.agencyUrl ? (
+                          <a href={exp.agencyUrl} target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:underline">{exp.agency}</a>
+                        ) : (
+                          exp.agency
+                        )}
+                      </>
+                    ) : ''}
+                  </p>
+                  <span className="text-[11px] italic whitespace-nowrap text-zinc-600">{exp.location}</span>
+                </div>
+                <ul className={bulletListClass}>
+                  {exp.bullets.map((bullet, idx) => (
+                    <li key={idx}>{bullet}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
           </section>
 
           {/* ---------- Projects ---------- */}
-          <section className="mb-3.5">
-            <h2 className={sectionTitleClass}>Selected Project</h2>
-            <article className="resume-block">
-              <div className={rowClass}>
-                <h3 className="text-[12px] font-bold text-zinc-900">
-                  Personal Portfolio{' '}
-                  <a href={portfolioData.seo.url} target="_blank" rel="noopener noreferrer" className="text-[11px] font-normal italic text-zinc-600 hover:underline">stevenampaiz.com</a>
-                </h3>
-                <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">Next.js &middot; React &middot; TypeScript &middot; GSAP &middot; WebGL</span>
-              </div>
-              <ul className={bulletListClass}>
-                <li>Designed and built a liquid-glass personal site with WebGL/GSAP motion, full SEO and structured data, and CI-enforced accessibility &amp; SEO budgets (Lighthouse CI gated at &ge;95); optimized the hero image from 19&nbsp;MB to 446&nbsp;KB (~98% smaller).</li>
-              </ul>
-            </article>
-          </section>
+          {featuredProject ? (
+            <section className="mb-3.5">
+              <h2 className={sectionTitleClass}>Selected Project</h2>
+              <article className="resume-block">
+                <div className={rowClass}>
+                  <h3 className="text-[12px] font-bold text-zinc-900">
+                    {featuredProject.resumeTitle ?? featuredProject.title}
+                    {featuredProject.liveUrl ? (
+                      <>
+                        {' '}
+                        <a href={featuredProject.liveUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] font-normal italic text-zinc-600 hover:underline">
+                          {featuredProject.liveUrl.replace(/^https?:\/\/(www\.)?/, '')}
+                        </a>
+                      </>
+                    ) : null}
+                  </h3>
+                  <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">{featuredProject.label}</span>
+                </div>
+                {featuredProject.highlights && featuredProject.highlights.length > 0 ? (
+                  <ul className={bulletListClass}>
+                    {featuredProject.highlights.map((h, idx) => (
+                      <li key={idx}>{h}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </article>
+            </section>
+          ) : null}
 
           {/* ---------- Education ---------- */}
           <section className="mb-3.5">
             <h2 className={sectionTitleClass}>Education</h2>
-            <article className="resume-block">
-              <div className={rowClass}>
-                <h3 className="text-[12px] font-bold text-zinc-900">Universidad Nacional de Ingeniería</h3>
-                <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">Mar 2019 &ndash; Dec 2023</span>
-              </div>
-              <div className={`${rowClass} mt-0.5`}>
-                <p className="text-[11px] italic text-zinc-600">B.S. in Computer Engineering</p>
-                <span className="text-[11px] italic whitespace-nowrap text-zinc-600">Managua, Nicaragua</span>
-              </div>
-            </article>
+            {portfolioData.education.map((edu) => (
+              <article key={edu.institution} className="resume-block">
+                <div className={rowClass}>
+                  <h3 className="text-[12px] font-bold text-zinc-900">{edu.institution}</h3>
+                  <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">{edu.period}</span>
+                </div>
+                <div className={`${rowClass} mt-0.5`}>
+                  <p className="text-[11px] italic text-zinc-600">{edu.degree}</p>
+                  <span className="text-[11px] italic whitespace-nowrap text-zinc-600">{edu.location}</span>
+                </div>
+              </article>
+            ))}
           </section>
 
           {/* ---------- Languages ---------- */}
           <section>
             <h2 className={sectionTitleClass}>Languages</h2>
             <p className="text-[10.5px] leading-[1.4] text-zinc-800">
-              <strong className="font-semibold text-zinc-900">Spanish</strong> &mdash; Native
-              <span className="mx-2 text-zinc-300">|</span>
-              <strong className="font-semibold text-zinc-900">English</strong> &mdash; Professional working proficiency (CEFR&nbsp;B2)
+              {portfolioData.languages.map((lang, i) => (
+                <React.Fragment key={lang.name}>
+                  {i > 0 ? <span className="mx-2 text-zinc-300">|</span> : null}
+                  <strong className="font-semibold text-zinc-900">{lang.name}</strong> — {lang.level}
+                </React.Fragment>
+              ))}
             </p>
           </section>
 

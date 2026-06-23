@@ -26,7 +26,8 @@ export default function Page() {
     "image": `${portfolioData.seo.url}${portfolioData.profile.avatarUrl}`,
     "sameAs": [
       portfolioData.socials.github,
-      portfolioData.socials.linkedin
+      portfolioData.socials.linkedin,
+      portfolioData.socials.upwork
     ],
     "jobTitle": portfolioData.profile.role,
     "worksFor": {
@@ -37,7 +38,7 @@ export default function Page() {
     "knowsAbout": portfolioData.seo.keywords,
     "alumniOf": {
       "@type": "CollegeOrUniversity",
-      "name": "Universidad Nacional de Ingeniería (UNI)"
+      "name": portfolioData.education[0].institution
     },
     "address": {
       "@type": "PostalAddress",

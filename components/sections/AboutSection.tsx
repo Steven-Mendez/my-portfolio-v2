@@ -7,13 +7,8 @@ import { portfolioData } from '@/lib/data';
 import ProfileCard from '../ProfileCard';
 
 export default function AboutSection() {
-  const focusAreas = [
-    "End-to-end feature delivery: React/Next.js UIs over Python APIs",
-    "Multi-vendor integrations and data pipelines",
-    "LLM/RAG-powered product features",
-  ];
-
-  const coreStack = ["Python", "FastAPI", "Django", "React", "Next.js", "TypeScript", "PostgreSQL", "AWS"];
+  const { focusAreas } = portfolioData.about;
+  const { coreStack } = portfolioData.skills;
 
   return (
     <SectionWrapper id="about">
@@ -41,7 +36,7 @@ export default function AboutSection() {
           <div className="relative space-y-6">
             <div className="space-y-3">
               <p className="font-mono text-xs uppercase tracking-[0.22em] text-primary/90">
-                Full Stack Engineer
+                {portfolioData.profile.role}
               </p>
               <p className="text-xl md:text-2xl lg:text-3xl text-[#f4f6ff] font-light leading-snug tracking-tight">
                 {portfolioData.about.description1}
