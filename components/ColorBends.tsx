@@ -158,14 +158,23 @@ export default function ColorBends({
   const pointerCurrentRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
   const pointerSmoothRef = useRef<number>(8);
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
   useEffect(() => {
     if (prefersReducedMotion) return;
 
     const container = containerRef.current;
-    const canvas = canvasRef.current;
-    if (!container || !canvas) return;
+    if (!container) return;
+
+    // Create a fresh canvas on every mount. Reusing a single React-managed
+    // canvas breaks under StrictMode/HMR: the cleanup's forceContextLoss()
+    // permanently bricks that element, and the next mount inherits a dead
+    // context that Chrome composites as an opaque white frame over the page.
+    // A brand-new element each mount sidesteps it (and keeps us to one live
+    // context). The container's CSS background (#0e0e10) shows behind it.
+    const canvas = document.createElement('canvas');
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.display = 'block';
+    container.appendChild(canvas);
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -177,6 +186,7 @@ export default function ColorBends({
       rendererRef.current = renderer;
     } catch (e) {
       console.warn("Failed to create WebGLRenderer:", e);
+      canvas.remove();
       return;
     }
 
@@ -278,16 +288,29 @@ export default function ColorBends({
     document.addEventListener('visibilitychange', onVisibility);
     if (!document.hidden) start();
 
+    // If the GPU drops the context for real (e.g. too many WebGL tabs open at
+    // once), hide the canvas so the container's dark background shows through
+    // instead of a blank white frame.
+    const onContextLost = (e: Event) => {
+      e.preventDefault();
+      stop();
+      canvas.style.display = 'none';
+    };
+    canvas.addEventListener('webglcontextlost', onContextLost);
+
     return () => {
       stop();
       document.removeEventListener('visibilitychange', onVisibility);
+      canvas.removeEventListener('webglcontextlost', onContextLost);
       if (ro) ro.disconnect();
       else window.removeEventListener('resize', handleResize);
-      // Release GPU resources so remounts don't leak WebGL contexts.
+      // Release GPU resources, then drop the canvas entirely. The next mount
+      // builds a brand-new canvas, so forceContextLoss() here can't brick it.
       geometry.dispose();
       material.dispose();
       renderer.dispose();
       renderer.forceContextLoss();
+      canvas.remove();
       materialRef.current = null;
       rendererRef.current = null;
     };
@@ -388,8 +411,6 @@ export default function ColorBends({
   }
 
   return (
-    <div ref={containerRef} className={`color-bends-container ${className}`} style={style}>
-      <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
-    </div>
+    <div ref={containerRef} className={`color-bends-container ${className}`} style={style} />
   );
 }
