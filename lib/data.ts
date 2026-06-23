@@ -160,21 +160,6 @@ export const portfolioData = {
   },
   experience: [
     {
-      company: "WERN",
-      companyUrl: WERN_URL || undefined,
-      logoPath: "/logos/wern_logo.jpeg",
-      title: "Freelance Software Engineer",
-      period: "Dec 2024 - Present",
-      location: "Remote",
-      summary:
-        "The agency I freelance through — they source and manage client engagements, and I embed with each product team to ship features end to end.",
-      bullets: [
-        "Delivered contract software engineering for WERN's clients, owning the work from data and APIs through to the interfaces users see.",
-        "Engagements include Dupely (a real-time shopping assistant) and a confidential AI-powered B2B platform — backend services, data pipelines, AI/LLM features, and web interfaces.",
-      ],
-      skillsSummary: ["Python", "FastAPI", "Next.js", "React", "TypeScript", "LLMs", "AWS"],
-    },
-    {
       company: "Dupely",
       companyUrl: "https://dupely.io",
       logoPath: "/logos/dupely_logo.jpeg",
@@ -212,6 +197,21 @@ export const portfolioData = {
         "Integrated LLM/RAG capabilities: retrieval over domain content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.",
       ],
       skillsSummary: ["Python", "FastAPI", "Django", "Next.js", "React", "TypeScript", "LLMs", "RAG"],
+    },
+    {
+      company: "WERN",
+      companyUrl: WERN_URL || undefined,
+      logoPath: "/logos/wern_logo.jpeg",
+      title: "Freelance Software Engineer",
+      period: "Dec 2024 - Present",
+      location: "Remote",
+      summary:
+        "The agency I freelance through — they source and manage client engagements, and I embed with each product team to ship features end to end.",
+      bullets: [
+        "Delivered contract software engineering for WERN's clients, owning the work from data and APIs through to the interfaces users see.",
+        "Engagements include Dupely (a real-time shopping assistant) and a confidential AI-powered B2B platform — backend services, data pipelines, AI/LLM features, and web interfaces.",
+      ],
+      skillsSummary: ["Python", "FastAPI", "Next.js", "React", "TypeScript", "LLMs", "AWS"],
     },
     {
       company: "Universidad Nacional de Ingeniería (UNI)",

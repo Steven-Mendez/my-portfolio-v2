@@ -71,7 +71,7 @@ export default function ResumePage() {
               <span className="text-zinc-300">|</span>
               <a href={portfolioData.socials.github} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">{stripUrl(portfolioData.socials.github)}</a>
               <span className="text-zinc-300">|</span>
-              <a href={portfolioData.socials.upwork} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">Upwork</a>
+              <a href={portfolioData.socials.upwork} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">{stripUrl(portfolioData.socials.upwork)}</a>
               <span className="text-zinc-300">|</span>
               <a href={portfolioData.seo.url} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">{stripUrl(portfolioData.seo.url)}</a>
             </div>
