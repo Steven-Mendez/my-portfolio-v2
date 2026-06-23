@@ -88,18 +88,18 @@ export const portfolioData = {
       period: "Dec 2025 - May 2026",
       location: "Remote",
       description:
-        "Contracted through WERN as a Backend Engineer for a real-time shopping assistant (browser extension and mobile app) that detects price inflation and surfaces better-value product alternatives.\n\n• Programmed high-performance RESTful APIs using Python and FastAPI for the efficient injection and extraction of product data, serving real-time requests from the browser extension and mobile app.\n• Built and maintained multi-vendor data pipelines that continuously ingest product information, pricing history, and features from major marketplaces (Amazon, Walmart, eBay), with fallback handling and caching to reduce third-party dependency.\n• Implemented real-time backend events (Socket.IO) and enrichment APIs (reviews, availability, similarity explanations); led query optimization and infrastructure clean-up to keep data retrieval fast and the service stable.",
+        "Contracted through WERN as a Backend Engineer for a real-time shopping assistant (browser extension and mobile app) that detects price inflation and surfaces better-value product alternatives.\n\n• Built high-performance RESTful APIs using Python and FastAPI to serve real-time product data to the browser extension and mobile app.\n• Designed and maintained multi-vendor data pipelines that ingest product information, pricing history, and availability from major marketplaces (Amazon, Walmart, eBay) — indexing 5K–10K products during the beta phase — with caching and fallback handling to reduce third-party dependency.\n• Delivered real-time backend events (Socket.IO) and enrichment APIs (reviews, availability, similarity explanations); worked within a ~10-engineer team, integrating third-party data providers and managing persistence across PostgreSQL, Redis, and Qdrant on AWS.",
       skillsSummary: ["Python", "FastAPI", "AWS", "PostgreSQL", "Redis", "Data Pipelines"],
     },
     {
-      company: "WERN",
+      company: "Confidential B2B Platform",
       logoPath: "/logos/wern_logo.jpeg",
       title: "Full Stack & AI Engineer",
-      contractType: "Full-time",
-      period: "Dec 2024 - Present",
+      contractType: "via WERN",
+      period: "Dec 2024 - Nov 2025",
       location: "Remote",
       description:
-        "At WERN, I deliver high-impact client engagements spanning full-stack development, cloud infrastructure, and Generative AI — building scalable REST APIs and React/Next.js front ends across client environments with Python, FastAPI, Django, React, and TypeScript.\n\n• Assignment (Dec 2025 - May 2026): Deployed to Dupely as a Backend Engineer, building e-commerce data pipelines and AWS services.\n• Previous assignment (2025): For a confidential B2B client, built LLM/RAG-powered features (retrieval over domain content with vector search and agent/tool orchestration) and shipped front-end tooling in Next.js/React and an embedded IDE assistant in VS Code (Webview API).\n• Worked across the stack — Python/FastAPI/Django services, PostgreSQL/vector databases, and React/Next.js/TypeScript interfaces.",
+        "Full-stack engineer on an AI-powered B2B platform, delivered through WERN — working end to end across Next.js/React/TypeScript interfaces and Python (FastAPI/Django) services.\n\n• Designed and shipped, end to end, a node-and-connector visual configuration tool (Next.js/React/TypeScript) that lets non-technical users configure conversational-agent behavior across scenarios — a core part of the platform.\n• Integrated LLM/RAG capabilities: retrieval over domain content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.\n• Worked across the stack — Python/FastAPI/Django services, PostgreSQL/vector databases, and React/Next.js/TypeScript interfaces.",
       skillsSummary: ["Python", "FastAPI", "Django", "Next.js", "React", "TypeScript", "LLMs", "RAG"],
     },
     {
@@ -110,7 +110,7 @@ export const portfolioData = {
       period: "Feb 2023 - Dec 2024",
       location: "Managua, Nicaragua · On-site",
       description:
-        "Supported and modernized the university's mission-critical internal systems, focusing on the core enterprise application used for budget management and vital administrative operations.\n\n• Maintained and enhanced a legacy ASP.NET enterprise system responsible for the university's financial and operational continuity.\n• Proposed and prototyped new front-end architectures in React.js to improve maintainability and user experience, introducing modern development practices to the team as a technical mentor.\n• Refactored and optimized complex Microsoft SQL Server queries for measurable performance gains.\n• Bridged legacy infrastructure with modern stacks, bringing scalable solutions to the engineering team's workflows.",
+        "Supported and modernized the university's mission-critical internal systems, focusing on the core enterprise application used for budget management and vital administrative operations.\n\n• Maintained and modernized a legacy ASP.NET / SQL Server budget system used by 400–700 staff across the institution, with peaks of 100–200 concurrent users.\n• Optimized complex Microsoft SQL Server queries over a decade of accumulated financial data — cutting a critical report from ~20 minutes to 15–30 seconds, and most heavy queries from ~5 minutes to under 10 seconds.\n• Proposed and prototyped a React.js front-end architecture to improve maintainability and user experience, and mentored 5–10 interns on modern development practices.",
       skillsSummary: ["C#", "ASP.NET", "SQL Server", "React", "Clean Architecture"],
     },
   ],
