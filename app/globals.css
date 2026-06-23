@@ -199,3 +199,9 @@
     animation: none;
   }
 }
+
+@media print {
+  .bg-grain {
+    display: none !important;
+  }
+}
