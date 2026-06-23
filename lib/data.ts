@@ -180,7 +180,7 @@ export const portfolioData = {
       skillsSummary: ["Python", "FastAPI", "AWS", "PostgreSQL", "Redis", "Data Pipelines"],
     },
     {
-      company: "Confidential B2B Platform",
+      company: "Confidential E-Learning Platform",
       logoPath: "/logos/wern_logo.jpeg",
       confidential: true,
       title: "Full Stack & AI Engineer",
@@ -190,13 +190,13 @@ export const portfolioData = {
       period: "Dec 2024 - Nov 2025",
       location: "Remote",
       summary:
-        "Full-stack engineer on an AI-powered B2B platform, delivered through WERN — working end to end across the product.",
+        "Brought on through WERN primarily to integrate AI into a private e-learning platform, while also contributing full-stack to building the product.",
       bullets: [
-        "Built full-stack features for an AI-powered B2B platform — user-facing interfaces in Next.js, React, and TypeScript backed by Python (FastAPI/Django) services.",
-        "Designed and shipped, end to end, a node-and-connector visual configuration tool (Next.js/React/TypeScript) that lets non-technical users configure conversational-agent behavior across scenarios — a core part of the platform.",
-        "Integrated LLM/RAG capabilities: retrieval over domain content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.",
+        "Integrated AI into the platform: LLM/RAG retrieval over learning content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.",
+        "Designed and shipped, end to end, a node-and-connector visual configuration tool (Next.js/React/TypeScript) that lets non-technical users configure conversational-agent behavior across scenarios.",
+        "Contributed full-stack to building the platform — Django/Python (FastAPI) services and React/Next.js/TypeScript interfaces.",
       ],
-      skillsSummary: ["Python", "FastAPI", "Django", "Next.js", "React", "TypeScript", "LLMs", "RAG"],
+      skillsSummary: ["LLMs", "RAG", "LangChain", "Python", "Django", "FastAPI", "Next.js", "React"],
     },
     {
       company: "WERN",
@@ -209,7 +209,7 @@ export const portfolioData = {
         "The agency I freelance through — they source and manage client engagements, and I embed with each product team to ship features end to end.",
       bullets: [
         "Delivered contract software engineering for WERN's clients, owning the work from data and APIs through to the interfaces users see.",
-        "Engagements include Dupely (a real-time shopping assistant) and a confidential AI-powered B2B platform — backend services, data pipelines, AI/LLM features, and web interfaces.",
+        "Engagements include Dupely (a real-time shopping assistant) and a confidential AI-powered e-learning platform — backend services, data pipelines, AI/LLM features, and web interfaces.",
       ],
       skillsSummary: ["Python", "FastAPI", "Next.js", "React", "TypeScript", "LLMs", "AWS"],
     },
