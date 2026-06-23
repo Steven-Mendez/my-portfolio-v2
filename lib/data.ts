@@ -85,7 +85,7 @@ export const portfolioData = {
       logoPath: "/logos/dupely_logo.jpeg",
       title: "Backend Engineer",
       contractType: "Contract",
-      period: "Dec 2025 - Apr 2026",
+      period: "Dec 2025 - May 2026",
       location: "Remote",
       description:
         "Contracted through WERN as a Backend Engineer for a real-time shopping assistant (browser extension and mobile app) that detects price inflation and surfaces better-value product alternatives.\n\n• Programmed high-performance RESTful APIs using Python and FastAPI for the efficient injection and extraction of product data, serving real-time requests from the browser extension and mobile app.\n• Built and maintained multi-vendor data pipelines that continuously ingest product information, pricing history, and features from major marketplaces (Amazon, Walmart, eBay), with fallback handling and caching to reduce third-party dependency.\n• Implemented real-time backend events (Socket.IO) and enrichment APIs (reviews, availability, similarity explanations); led query optimization and infrastructure clean-up to keep data retrieval fast and the service stable.",
@@ -99,7 +99,7 @@ export const portfolioData = {
       period: "Dec 2024 - Present",
       location: "Remote",
       description:
-        "At WERN, I deliver high-impact client engagements spanning full-stack development, cloud infrastructure, and Generative AI — building scalable REST APIs and React/Next.js front ends across client environments with Python, FastAPI, Django, React, and TypeScript.\n\n• Assignment (Dec 2025 - Apr 2026): Deployed to Dupely as a Backend Engineer, building e-commerce data pipelines and AWS services.\n• Previous assignment (2025): For a confidential B2B client, built LLM/RAG-powered features (retrieval over domain content with vector search and agent/tool orchestration) and shipped front-end tooling in Next.js/React and an embedded IDE assistant in VS Code (Webview API).\n• Worked across the stack — Python/FastAPI/Django services, PostgreSQL/vector databases, and React/Next.js/TypeScript interfaces.",
+        "At WERN, I deliver high-impact client engagements spanning full-stack development, cloud infrastructure, and Generative AI — building scalable REST APIs and React/Next.js front ends across client environments with Python, FastAPI, Django, React, and TypeScript.\n\n• Assignment (Dec 2025 - May 2026): Deployed to Dupely as a Backend Engineer, building e-commerce data pipelines and AWS services.\n• Previous assignment (2025): For a confidential B2B client, built LLM/RAG-powered features (retrieval over domain content with vector search and agent/tool orchestration) and shipped front-end tooling in Next.js/React and an embedded IDE assistant in VS Code (Webview API).\n• Worked across the stack — Python/FastAPI/Django services, PostgreSQL/vector databases, and React/Next.js/TypeScript interfaces.",
       skillsSummary: ["Python", "FastAPI", "Django", "Next.js", "React", "TypeScript", "LLMs", "RAG"],
     },
     {

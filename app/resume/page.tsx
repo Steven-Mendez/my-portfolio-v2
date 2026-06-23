@@ -87,7 +87,7 @@ export default function ResumePage() {
             <article className="mb-2.5 text-[11.5px] text-black leading-[1.28]">
               <div className={rowClass}>
                 <h3 className="font-bold text-[13px]">Dupely</h3>
-                <span className="font-bold whitespace-nowrap text-[12px]">Dec 2025 – Apr 2026</span>
+                <span className="font-bold whitespace-nowrap text-[12px]">Dec 2025 – May 2026</span>
               </div>
               <div className={`${rowClass} mb-0.5`}>
                 <p className="italic text-[12px]">Backend Engineer (Contract)</p>
@@ -112,7 +112,7 @@ export default function ResumePage() {
               </div>
               <ul className="ml-4 list-disc list-outside space-y-0.5 text-[11px] leading-[1.28]">
                 <li>As an agency engineer, deployed to high-impact technology projects spanning full-stack development, cloud infrastructure, and Generative AI integrations.</li>
-                <li><strong>Assignment (Dec 2025 – Apr 2026):</strong> Deployed to Dupely, building scalable e-commerce data pipelines and AWS services.</li>
+                <li><strong>Assignment (Dec 2025 – May 2026):</strong> Deployed to Dupely, building scalable e-commerce data pipelines and AWS services.</li>
                 <li><strong>Assignment (2025):</strong> For a confidential B2B client, built Generative AI features using LLMs and RAG architectures, and shipped front-end tooling in Next.js/React plus an embedded IDE assistant in VS Code (Webview API).</li>
                 <li>Developed scalable full-stack applications and REST APIs across multiple client environments using Python, FastAPI, Django, React, and Next.js.</li>
               </ul>
