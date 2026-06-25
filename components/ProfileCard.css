@@ -107,7 +107,6 @@
 }
 
 .pc-avatar-content {
-  mix-blend-mode: luminosity;
   overflow: visible;
   transform: translateZ(2);
   backface-visibility: hidden;
@@ -124,10 +123,7 @@
   transition: transform 120ms ease-out, filter 400ms ease-out;
 }
 
-/* Reveal true colors when the card is hovered/tilted */
-.pc-card:hover .pc-avatar-content .avatar,
-.pc-card.active .pc-avatar-content .avatar {
-}
+/* Avatar renders in full color by default (no blend mode). */
 
 .pc-avatar-content::before {
   content: '';

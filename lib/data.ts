@@ -62,6 +62,13 @@ export interface ExperienceItem {
   /** Achievement bullets — the single canonical source for home + resume. */
   bullets: string[];
   skillsSummary: string[];
+  /** Engagements delivered under this entry (e.g. agency → client contracts),
+   *  rendered as indented sub-roles beneath the umbrella entry. */
+  children?: ExperienceItem[];
+  /** 1–3 letters for the home experience monogram tile (e.g. "W", "EL"). */
+  monogram?: string;
+  /** CSS background (gradient/color) for the home experience monogram tile. */
+  accent?: string;
 }
 
 export interface Project {
@@ -140,7 +147,7 @@ export const portfolioData = {
     description1:
       "I'm a full-stack engineer who builds and ships products end to end — and owns the outcome, not just the ticket.",
     description2:
-      "I move across the stack and pick the tool that fits the problem in front of me, whether that's a real-time backend, an AI-powered feature, or the interface people actually use. I like ambiguous problems and seeing them through from first idea to production.",
+      "I move across the stack and pick the tool that fits the problem in front of me, whether that's a real-time backend indexing 5K–10K products, an AI-powered feature (LLM/RAG), or the interface people actually use — on systems serving hundreds of users. I like ambiguous problems and seeing them through from first idea to production.",
     focusAreas: [
       "End-to-end delivery — from data and APIs to the UI",
       "Real-time systems and multi-vendor data pipelines",
@@ -160,48 +167,11 @@ export const portfolioData = {
   },
   experience: [
     {
-      company: "Dupely",
-      companyUrl: "https://dupely.io",
-      logoPath: "/logos/dupely_logo.jpeg",
-      title: "Backend Engineer",
-      employmentType: "Contract",
-      agency: "WERN",
-      agencyUrl: WERN_URL || undefined,
-      period: "Dec 2025 - May 2026",
-      location: "Remote",
-      summary:
-        "Backend engineer for a real-time shopping assistant (browser extension and mobile app) that flags price inflation and surfaces better-value product alternatives.",
-      bullets: [
-        "Built high-performance REST APIs in Python and FastAPI to serve real-time product data to the browser extension and mobile app.",
-        "Designed and maintained multi-vendor data pipelines ingesting product details, pricing history, and availability from major marketplaces (Amazon, Walmart, eBay) — indexing 5K–10K products during the beta phase — with caching and fallback handling to reduce reliance on third-party providers.",
-        "Delivered real-time backend events over Socket.IO and enrichment APIs (reviews, availability, similarity explanations) for a responsive client experience.",
-        "Worked within a ~10-engineer team, integrating third-party data providers (Bright Data, Oxylabs, Keepa, BlueCart) and managing persistence across PostgreSQL, Redis, and Qdrant on AWS.",
-      ],
-      skillsSummary: ["Python", "FastAPI", "AWS", "PostgreSQL", "Redis", "Data Pipelines"],
-    },
-    {
-      company: "Confidential E-Learning Platform",
-      logoPath: "/logos/wern_logo.jpeg",
-      confidential: true,
-      title: "Full Stack & AI Engineer",
-      employmentType: "Contract",
-      agency: "WERN",
-      agencyUrl: WERN_URL || undefined,
-      period: "Dec 2024 - Nov 2025",
-      location: "Remote",
-      summary:
-        "Brought on through WERN primarily to integrate AI into a private e-learning platform, while also contributing full-stack to building the product.",
-      bullets: [
-        "Integrated AI into the platform: LLM/RAG retrieval over learning content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.",
-        "Designed and shipped, end to end, a node-and-connector visual configuration tool (Next.js/React/TypeScript) that lets non-technical users configure conversational-agent behavior across scenarios.",
-        "Contributed full-stack to building the platform — Django/Python (FastAPI) services and React/Next.js/TypeScript interfaces.",
-      ],
-      skillsSummary: ["LLMs", "RAG", "LangChain", "Python", "Django", "FastAPI", "Next.js", "React"],
-    },
-    {
       company: "WERN",
       companyUrl: WERN_URL || undefined,
       logoPath: "/logos/wern_logo.jpeg",
+      monogram: "W",
+      accent: "linear-gradient(135deg,#3b5bff,#1e2a78)",
       title: "Freelance Software Engineer",
       period: "Dec 2024 - Present",
       location: "Remote",
@@ -209,13 +179,55 @@ export const portfolioData = {
         "The agency I freelance through — they source and manage client engagements, and I embed with each product team to ship features end to end.",
       bullets: [
         "Delivered contract software engineering for WERN's clients, owning the work from data and APIs through to the interfaces users see.",
-        "Engagements include Dupely (a real-time shopping assistant) and a confidential AI-powered e-learning platform — backend services, data pipelines, AI/LLM features, and web interfaces.",
       ],
       skillsSummary: ["Python", "FastAPI", "Next.js", "React", "TypeScript", "LLMs", "AWS"],
+      children: [
+        {
+          company: "Dupely",
+          companyUrl: "https://dupely.io",
+          logoPath: "/logos/dupely_logo.jpeg",
+          monogram: "D",
+          accent: "linear-gradient(135deg,#34d36b,#15a34a)",
+          title: "Backend Engineer",
+          employmentType: "Contract",
+          period: "Dec 2025 - May 2026",
+          location: "Remote",
+          summary:
+            "Backend engineer for a real-time shopping assistant (browser extension and mobile app) that flags price inflation and surfaces better-value product alternatives.",
+          bullets: [
+            "Built high-performance REST APIs in Python and FastAPI to serve real-time product data to the browser extension and mobile app.",
+            "Designed and maintained multi-vendor data pipelines ingesting product details, pricing history, and availability from major marketplaces (Amazon, Walmart, eBay) — indexing 5K–10K products during the beta phase — with caching and fallback handling to reduce reliance on third-party providers.",
+            "Delivered real-time backend events over Socket.IO and enrichment APIs (reviews, availability, similarity explanations) for a responsive client experience.",
+            "Worked within a ~10-engineer team, integrating third-party data providers (Bright Data, Oxylabs, Keepa, BlueCart) and managing persistence across PostgreSQL, Redis, and Qdrant on AWS.",
+          ],
+          skillsSummary: ["Python", "FastAPI", "AWS", "PostgreSQL", "Redis", "Data Pipelines"],
+        },
+        {
+          company: "E-Learning Platform",
+          logoPath: "/logos/wern_logo.jpeg",
+          monogram: "EL",
+          accent: "linear-gradient(135deg,#8b6dff,#6d28d9)",
+          confidential: true,
+          title: "Full Stack & AI Engineer",
+          employmentType: "Contract",
+          period: "Dec 2024 - Nov 2025",
+          location: "Remote",
+          summary:
+            "Brought on through WERN primarily to integrate AI into a private e-learning platform, while also contributing full-stack to building the product.",
+          bullets: [
+            "Integrated AI into the platform: LLM/RAG retrieval over learning content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.",
+            "Designed and shipped, end to end, a node-and-connector visual configuration tool (Next.js/React/TypeScript) that lets non-technical users configure conversational-agent behavior across scenarios.",
+            "Contributed full-stack to building the platform — Django/Python (FastAPI) services and React/Next.js/TypeScript interfaces.",
+          ],
+          skillsSummary: ["LLMs", "RAG", "LangChain", "Python", "Django", "FastAPI", "Next.js", "React"],
+        },
+      ],
     },
     {
       company: "Universidad Nacional de Ingeniería (UNI)",
       logoPath: "/logos/universidad_nacional_de_ingenieria_nicaragua_logo.jpeg",
+      monogram: "UNI",
+      accent: "linear-gradient(135deg,#3b82f6,#1e40af)",
       title: "Systems Analyst",
       employmentType: "Full-time",
       period: "Jan 2023 - Dec 2024",

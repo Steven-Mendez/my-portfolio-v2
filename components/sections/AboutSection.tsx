@@ -11,15 +11,16 @@ export default function AboutSection() {
   const { coreStack } = portfolioData.skills;
 
   return (
-    <SectionWrapper id="about">
+    <SectionWrapper id="about" className="pb-10 md:pb-14">
       <SectionTitle 
         title={portfolioData.about.title} 
       />
       
-      <div className="grid w-full mx-auto gap-12 md:gap-16 lg:grid-cols-[minmax(280px,360px)_1fr] items-center">
+      <div className="grid w-full mx-auto gap-12 md:gap-16 lg:grid-cols-[minmax(280px,360px)_1fr] items-start">
         <div className="flex justify-center lg:justify-start">
           <ProfileCard
             avatarUrl={portfolioData.profile.avatarUrl}
+            avatarAlt={`${portfolioData.profile.fullName} — ${portfolioData.profile.role}`}
             handle={portfolioData.profile.handle}
             contactText="Get in Touch"
             onContactClick={() => window.location.href = `mailto:${portfolioData.profile.contactEmail}`}

@@ -121,24 +121,46 @@ export default function ResumePage() {
                   <p className="text-[11px] italic text-zinc-600">
                     {exp.title}
                     {exp.employmentType ? ` · ${exp.employmentType}` : ''}
-                    {exp.agency ? (
-                      <>
-                        {' · via '}
-                        {exp.agencyUrl ? (
-                          <a href={exp.agencyUrl} target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:underline">{exp.agency}</a>
-                        ) : (
-                          exp.agency
-                        )}
-                      </>
-                    ) : ''}
                   </p>
                   <span className="text-[11px] italic whitespace-nowrap text-zinc-600">{exp.location}</span>
                 </div>
-                <ul className={bulletListClass}>
-                  {exp.bullets.map((bullet, idx) => (
-                    <li key={idx}>{bullet}</li>
-                  ))}
-                </ul>
+                {exp.bullets.length > 0 ? (
+                  <ul className={bulletListClass}>
+                    {exp.bullets.map((bullet, idx) => (
+                      <li key={idx}>{bullet}</li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                {exp.children && exp.children.length > 0 ? (
+                  <div className="mt-2 ml-3 space-y-2 border-l border-zinc-300 pl-3">
+                    {exp.children.map((child) => (
+                      <div key={child.company} className="resume-block">
+                        <div className={rowClass}>
+                          <h4 className="text-[11.5px] font-bold text-zinc-900">
+                            {child.title}
+                            <span className="font-semibold text-zinc-600">
+                              {' — '}
+                              {child.companyUrl ? (
+                                <a href={child.companyUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">{child.company}</a>
+                              ) : (
+                                child.company
+                              )}
+                              {child.confidential ? ' · Confidential' : ''}
+                              {child.employmentType ? ` · ${child.employmentType}` : ''}
+                            </span>
+                          </h4>
+                          <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">{child.period}</span>
+                        </div>
+                        <ul className={bulletListClass}>
+                          {child.bullets.map((bullet, idx) => (
+                            <li key={idx}>{bullet}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
               </article>
             ))}
           </section>

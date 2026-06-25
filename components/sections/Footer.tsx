@@ -5,7 +5,7 @@ import { FileText, Mail } from 'lucide-react';
 import { portfolioData } from '@/lib/data';
 
 const linkClass =
-  "inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm font-medium text-[#e6ecff] transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
+  "inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2.5 md:px-5 md:py-3 text-xs font-medium text-white backdrop-blur-md shadow-lg transition-all hover:bg-white/10 hover:border-white/40 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 function GithubMark() {
   return (
@@ -36,7 +36,7 @@ export default function Footer() {
   const { profile, socials } = portfolioData;
 
   return (
-    <footer id="contact" className="relative z-10 mt-20 border-t border-white/10 bg-transparent px-6 py-14">
+    <footer id="contact" className="relative z-10 mt-8 border-t border-white/10 bg-transparent px-6 py-14">
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
         <p className="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
           Open to {profile.role} roles — let&apos;s talk.

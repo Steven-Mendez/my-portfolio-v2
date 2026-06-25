@@ -6,6 +6,7 @@ import './ProfileCard.css';
 
 interface ProfileCardProps {
   avatarUrl: string;
+  avatarAlt?: string;
   iconUrl?: string;
   grainUrl?: string;
   innerGradient?: string;
@@ -42,6 +43,7 @@ const adjust = (v: number, fMin: number, fMax: number, tMin: number, tMax: numbe
 
 const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   avatarUrl = '<Placeholder for avatar URL>',
+  avatarAlt,
   iconUrl = '<Placeholder for icon URL>',
   grainUrl = '<Placeholder for grain URL>',
   innerGradient,
@@ -344,8 +346,9 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                 <Image
                   className="avatar object-cover"
                   src={avatarUrl}
-                  alt={`${name || 'User'} avatar`}
+                  alt={avatarAlt || `${name || 'User'} avatar`}
                   fill
+                  quality={90}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   loading="lazy"
                 />
