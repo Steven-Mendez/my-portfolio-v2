@@ -7,8 +7,11 @@ import SectionTitle from './SectionTitle';
 import { portfolioData } from '@/lib/data';
 
 // Dynamically import heavy interaction component
-const MagicBento = dynamic(() => import('../MagicBento'), { 
-  ssr: false,
+// ssr stays enabled (the default) so the project titles/descriptions render into the
+// initial HTML — visible to ATS, AI agents, and crawlers. The component is still
+// code-split, and its heavy GSAP/particle interactivity only runs after hydration
+// (inside useEffect), so SSR stays cheap.
+const MagicBento = dynamic(() => import('../MagicBento'), {
   loading: () => <div className="h-[400px] w-full animate-pulse bg-white/5 rounded-3xl" />
 });
 

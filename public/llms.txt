@@ -1,0 +1,48 @@
+# Steven Mendez — Full Stack Engineer
+
+> Steven Mendez is a full-stack engineer who builds and ships production systems end to end — real-time backends, AI/LLM features, and the web interfaces in front of them. Experienced across React/Next.js, Python, and AWS.
+
+## About
+
+I'm a full-stack engineer who builds and ships products end to end — and owns the outcome, not just the ticket. I move across the stack and pick the tool that fits the problem in front of me, whether that's a real-time backend, an AI-powered feature, or the interface people actually use. I like ambiguous problems and seeing them through from first idea to production.
+
+- **Core stack:** Python, FastAPI, Django, React, Next.js, TypeScript, PostgreSQL, AWS
+- **Focus areas:** end-to-end delivery (from data and APIs to the UI); real-time systems and multi-vendor data pipelines; AI-powered product features (LLM/RAG)
+- **Location:** Managua, Nicaragua · Remote
+- **Languages:** Spanish (native), English (professional working proficiency, CEFR B2)
+
+## Experience
+
+### Backend Engineer — Dupely (Contract, via WERN) · Dec 2025 – May 2026
+Backend for a real-time shopping assistant (browser extension and mobile app) that flags price inflation and surfaces better-value product alternatives.
+- High-performance REST APIs in Python/FastAPI serving real-time product data to the extension and mobile app.
+- Multi-vendor data pipelines indexing 5K–10K products during beta (Amazon, Walmart, eBay), with caching and fallback handling.
+- Real-time events over Socket.IO; persistence across PostgreSQL, Redis, and Qdrant on AWS, within a ~10-engineer team.
+
+### Full Stack & AI Engineer — Confidential E-Learning Platform (Contract, via WERN) · Dec 2024 – Nov 2025
+Brought on primarily to integrate AI into a private e-learning platform, while also contributing full-stack.
+- LLM/RAG retrieval over learning content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph).
+- Built, end to end, a node-and-connector visual tool (Next.js/React/TypeScript) letting non-technical users configure conversational-agent behavior.
+
+### Systems Analyst — Universidad Nacional de Ingeniería (UNI) · Jan 2023 – Dec 2024
+Supported and modernized the university's mission-critical internal systems.
+- Maintained/modernized an ASP.NET / SQL Server budget system used by 400–700 staff (peaks of 100–200 concurrent users).
+- Optimized SQL Server queries over a decade of financial data: cut a critical report from ~20 minutes to 15–30 seconds, and most heavy queries from ~5 minutes to under 10 seconds.
+- Mentored 5–10 interns in modern development and clean-code practices.
+
+## Projects
+
+- **Real-Time E-Commerce Data Pipeline** (Python · FastAPI · AWS · Redis) — backend APIs and multi-vendor data pipelines powering a real-time shopping assistant; product ingestion, price tracking, caching, and live events. Indexed 5K–10K products during beta.
+- **GenAI Retrieval Features** (Python · FastAPI · LangChain · pgvector) — LLM/RAG features for an enterprise platform: a contextual assistant, retrieval over domain content with vector search, and a modular agent-service architecture. _(Confidential client.)_
+- **Visual Agent-Configuration Tool** (Next.js · React · TypeScript) — a node-and-connector visual editor to configure conversational-agent behavior across scenarios, built end to end. _(Confidential client.)_
+- **IDE Assistant Extension** (TypeScript · React · VS Code API) — a VS Code extension embedding an in-editor assistant via the Webview API, reusing an existing assistant backend. _(Confidential client.)_
+- **This Portfolio (v2)** (Next.js · React · TypeScript · GSAP · WebGL) — liquid-glass UI with full SEO and structured data, and CI-enforced Lighthouse budgets (≥95). Optimized the hero image from 19 MB to 446 KB (~98% smaller). https://www.stevenampaiz.com
+- **Enterprise Budget System** (ASP.NET · SQL Server · React) — modernized a mission-critical financial system; optimized complex queries (a key report from ~20 minutes to 15–30 seconds) and proposed a React.js front-end architecture.
+
+## Contact
+
+- Website: https://www.stevenampaiz.com
+- GitHub: https://github.com/Steven-Mendez
+- LinkedIn: https://linkedin.com/in/steven-mendez-dev
+- Upwork: https://www.upwork.com/freelancers/~0173f0f672925ee178
+- Email: stevenampaiz@gmail.com

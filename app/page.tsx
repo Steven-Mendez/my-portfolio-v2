@@ -30,6 +30,7 @@ export default function Page() {
       portfolioData.socials.upwork
     ],
     "jobTitle": portfolioData.profile.role,
+    "email": portfolioData.profile.contactEmail,
     "worksFor": {
       "@type": "Organization",
       "name": "WERN"

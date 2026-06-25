@@ -49,7 +49,11 @@ const permissionsPolicy = [
 ].join(", ")
 
 const nextConfig = {
-  cacheComponents: true,
+  // cacheComponents (PPR) is intentionally left off. This site is fully static — all
+  // content comes from lib/data.ts with no request-time data — so PPR has nothing to
+  // partially prerender. With it enabled, the home page's client islands deferred the
+  // entire <main> to the loading.tsx fallback, so the served HTML shipped no content
+  // (invisible to ATS, AI agents, and crawlers that don't execute JS).
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],

@@ -35,9 +35,9 @@ const spaceGrotesk = Space_Grotesk({
 
 
 export const viewport: Viewport = {
+  // No maximumScale / user-scalable lock: users must be able to zoom (WCAG 1.4.4).
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },

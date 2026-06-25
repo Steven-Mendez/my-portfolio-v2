@@ -11,6 +11,7 @@ import { portfolioData, type ExperienceItem as ExperienceItemType } from '@/lib/
 function ExperienceItem({ exp, isLast }: { exp: ExperienceItemType, isLast: boolean }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasBullets = exp.bullets.length > 0;
+  const bulletsId = React.useId();
 
   return (
     <div className={`p-5 md:p-7 flex flex-col gap-4 ${!isLast ? 'border-b border-white/10' : ''}`}>
@@ -91,8 +92,11 @@ function ExperienceItem({ exp, isLast }: { exp: ExperienceItemType, isLast: bool
       <div className="text-[14.5px] leading-[1.65] text-[#f1f5f9] font-normal mt-1">
         <p>{exp.summary}</p>
 
-        {hasBullets && isExpanded ? (
-          <ul className="mt-3 space-y-2">
+        {hasBullets ? (
+          // Always rendered into the DOM so the achievement metrics ship in the initial
+          // HTML (for ATS / SEO / AI agents); visually collapsed via `hidden` until the
+          // user expands. ATS and crawlers parse raw HTML, so the text is read either way.
+          <ul id={bulletsId} className={`mt-3 space-y-2 ${isExpanded ? '' : 'hidden'}`}>
             {exp.bullets.map((bullet, idx) => (
               <li key={idx} className="flex items-start gap-2.5">
                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/80" />
@@ -106,6 +110,7 @@ function ExperienceItem({ exp, isLast }: { exp: ExperienceItemType, isLast: bool
           <button
             onClick={() => setIsExpanded((v) => !v)}
             aria-expanded={isExpanded}
+            aria-controls={bulletsId}
             className="mt-2 inline-block text-white font-semibold hover:underline transition-colors focus:outline-none"
           >
             {isExpanded ? 'Show less' : 'Show more'}
