@@ -18,11 +18,14 @@ export default function SectionWrapper({
     <section 
       id={id} 
       className={cn(
-        "relative py-16 md:py-24 px-6 md:px-12 flex flex-col items-center w-full overflow-hidden",
+        "relative py-16 md:py-24 flex flex-col items-center w-full overflow-hidden",
         className
       )}
     >
-      <div className={cn("w-full max-w-7xl", containerClassName)}>
+      {/* Gutter (px-6 md:px-12) + cap (max-w-7xl) live on the SAME element as the
+          hero, so the content box is inset by the padding and its edges line up
+          with the hero at every breakpoint (incl. >1280px). */}
+      <div className={cn("mx-auto w-full max-w-7xl px-6 md:px-12", containerClassName)}>
         {children}
       </div>
     </section>

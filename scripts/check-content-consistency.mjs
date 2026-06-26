@@ -15,10 +15,11 @@ const checks = [
     mustNotInclude: ["Backend Engineer"],
   },
   {
-    file: "components/sections/Footer.tsx",
-    // Footer must render profile.role, never a hardcoded job label.
+    file: "components/sections/ContactSection.tsx",
+    // The contact CTA carries the role label; it must derive from profile.role,
+    // never a hardcoded job title.
     mustInclude: ["profile.role"],
-    mustNotInclude: ["Software Developer"],
+    mustNotInclude: ["Software Developer", "Backend Engineer"],
   },
   {
     file: "app/resume/page.tsx",

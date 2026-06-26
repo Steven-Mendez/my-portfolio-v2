@@ -1,10 +1,15 @@
 export const SITE_URL = "https://www.stevenampaiz.com";
-export const OG_IMAGE_PATH = "/opengraph-image";
+const OG_IMAGE_PATH = "/opengraph-image";
 
 // WERN is the freelancing agency Steven contracts through. Set this once the
 // public URL (site or LinkedIn) is known and it will light up every "WERN" /
 // "via WERN" reference as a link automatically. Empty string = render as text.
-export const WERN_URL = "https://www.upwork.com/agencies/wern/";
+const WERN_URL = "https://www.upwork.com/agencies/wern/";
+
+// The UNI degree title appears twice — the resume Education entry and the home
+// Credentials list (the kind:"DEGREE" certification). Single-source it so the
+// two surfaces can't drift apart.
+const UNI_DEGREE = "B.S. in Computer Engineering";
 
 export interface Profile {
   firstName: string;
@@ -15,15 +20,21 @@ export interface Profile {
   handle: string;
   avatarUrl: string;
   contactEmail: string;
+  /** "Managua, Nicaragua" — shown in the contact section / footer. */
+  location: string;
+  /** "UTC-6" — shown in the footer locale line, hero terminal, and resume header. */
+  timezone: string;
 }
 
 export interface About {
   title: string;
-  /** Punchy lead line — the large text on the home About section. */
-  description1: string;
-  /** Supporting paragraph. Home shows it below the lead; the resume joins
-   *  description1 + description2 into the single "Professional Summary". */
-  description2: string;
+  /** Home-only lead statement for the About card — a short, punchy positioning
+   *  line shown above the summary (the resume uses `resumeSummary` only). */
+  headline: string;
+  /** Shared "Professional Summary" — the single positioning paragraph rendered
+   *  on BOTH the home About section and the resume (years + quantified
+   *  achievements + value, in 3–4 lines). */
+  resumeSummary: string;
   /** Home-only "What I focus on" bullets (capability-level, no stack names —
    *  the stack lives in `skills`). */
   focusAreas: string[];
@@ -51,14 +62,8 @@ export interface ExperienceItem {
   confidential?: boolean;
   /** "Freelance" | "Contract" | "Full-time", etc. */
   employmentType?: string;
-  /** Agency the engagement was sourced/managed through (e.g. "WERN"). */
-  agency?: string;
-  /** Public agency URL, when one exists. */
-  agencyUrl?: string;
   period: string;
   location: string;
-  /** One-line intro; shown on both home and resume. */
-  summary: string;
   /** Achievement bullets — the single canonical source for home + resume. */
   bullets: string[];
   skillsSummary: string[];
@@ -75,13 +80,17 @@ export interface Project {
   title: string;
   description: string;
   label: string;
-  image: string;
+  /** Filter bucket surfaced by the Projects filter (e.g. "AI", "Web", "Data"). */
+  category?: string;
+  /** Card cover. Omit for finished projects so they don't show the
+   *  "coming soon" placeholder reserved for in-progress work. */
+  image?: string;
+  /** Links the card to its individual case-study page at /projects/<slug>. */
+  slug?: string;
   /** Public live URL, when one exists. */
   liveUrl?: string;
   /** Public source repository, when one exists. */
   repoUrl?: string;
-  /** Confidential client work — renders a non-clickable badge instead of links. */
-  confidential?: boolean;
   /** Detailed achievement bullets, shown on the resume. */
   highlights?: string[];
   /** Featured as the resume's "Selected Project". */
@@ -95,6 +104,16 @@ export interface EducationItem {
   degree: string;
   period: string;
   location: string;
+}
+
+export interface Credential {
+  /** Year awarded (string so it can read "2021" or a range). */
+  year: string;
+  name: string;
+  org: string;
+  kind: "DEGREE" | "COURSE" | "CERTIFICATION";
+  /** Public verification link (e.g. a Credly badge). */
+  href?: string;
 }
 
 export interface LanguageItem {
@@ -121,6 +140,8 @@ export interface PortfolioData {
   experience: ExperienceItem[];
   projects: Project[];
   education: EducationItem[];
+  /** Courses & certifications, surfaced in the Education & Credentials section. */
+  certifications: Credential[];
   languages: LanguageItem[];
   seo: Seo;
 }
@@ -132,10 +153,12 @@ export const portfolioData = {
     fullName: "Steven Mendez",
     role: "Full Stack Engineer",
     tagline:
-      "I build and ship software end to end — and own the outcome, not just the ticket.",
+      "I build for the web — backends, the apps on top, and the bits in between.",
     handle: "steven-mendez",
     avatarUrl: "/linkedin_photo.png",
     contactEmail: "stevenampaiz@gmail.com",
+    location: "Managua, Nicaragua",
+    timezone: "UTC-6",
   },
   socials: {
     github: "https://github.com/Steven-Mendez",
@@ -144,10 +167,9 @@ export const portfolioData = {
   },
   about: {
     title: "About Me",
-    description1:
-      "I'm a full-stack engineer who builds and ships products end to end — and owns the outcome, not just the ticket.",
-    description2:
-      "I move across the stack and pick the tool that fits the problem in front of me, whether that's a real-time backend indexing 5K–10K products, an AI-powered feature (LLM/RAG), or the interface people actually use — on systems serving hundreds of users. I like ambiguous problems and seeing them through from first idea to production.",
+    headline: "Professional Summary",
+    resumeSummary:
+      "Full-stack engineer with 3+ years building and shipping production software end to end — real-time backends, data pipelines, AI features (LLM/RAG), and the web interfaces in front of them. Comfortable owning a feature across the stack and optimizing for performance and reliability under real-world load. Works day-to-day across React/Next.js, Python (FastAPI/Django), and AWS, and is open to experimenting with and picking up new technologies as a problem demands.",
     focusAreas: [
       "End-to-end delivery — from data and APIs to the UI",
       "Real-time systems and multi-vendor data pipelines",
@@ -175,8 +197,6 @@ export const portfolioData = {
       title: "Freelance Software Engineer",
       period: "Dec 2024 - Present",
       location: "Remote",
-      summary:
-        "The agency I freelance through — they source and manage client engagements, and I embed with each product team to ship features end to end.",
       bullets: [
         "Delivered contract software engineering for WERN's clients, owning the work from data and APIs through to the interfaces users see.",
       ],
@@ -192,8 +212,6 @@ export const portfolioData = {
           employmentType: "Contract",
           period: "Dec 2025 - May 2026",
           location: "Remote",
-          summary:
-            "Backend engineer for a real-time shopping assistant (browser extension and mobile app) that flags price inflation and surfaces better-value product alternatives.",
           bullets: [
             "Built high-performance REST APIs in Python and FastAPI to serve real-time product data to the browser extension and mobile app.",
             "Designed and maintained multi-vendor data pipelines ingesting product details, pricing history, and availability from major marketplaces (Amazon, Walmart, eBay) — indexing 5K–10K products during the beta phase — with caching and fallback handling to reduce reliance on third-party providers.",
@@ -212,8 +230,6 @@ export const portfolioData = {
           employmentType: "Contract",
           period: "Dec 2024 - Nov 2025",
           location: "Remote",
-          summary:
-            "Brought on through WERN primarily to integrate AI into a private e-learning platform, while also contributing full-stack to building the product.",
           bullets: [
             "Integrated AI into the platform: LLM/RAG retrieval over learning content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.",
             "Designed and shipped, end to end, a node-and-connector visual configuration tool (Next.js/React/TypeScript) that lets non-technical users configure conversational-agent behavior across scenarios.",
@@ -232,8 +248,6 @@ export const portfolioData = {
       employmentType: "Full-time",
       period: "Jan 2023 - Dec 2024",
       location: "Managua, Nicaragua · On-site",
-      summary:
-        "Supported and modernized the university's mission-critical internal systems — the core enterprise application for budget management and administrative operations.",
       bullets: [
         "Maintained and modernized the university's mission-critical ASP.NET / SQL Server budget system, used by 400–700 staff across the institution with peaks of 100–200 concurrent users.",
         "Optimized complex SQL Server queries over a decade of accumulated financial data — cutting a critical report from ~20 minutes to 15–30 seconds, and most heavy queries from ~5 minutes to under 10 seconds.",
@@ -245,42 +259,23 @@ export const portfolioData = {
   ],
   projects: [
     {
-      title: "Real-Time E-Commerce Data Pipeline",
+      title: "AI Interview Simulator",
       description:
-        "Backend APIs and multi-vendor data pipelines powering a real-time shopping assistant — product ingestion, price tracking, caching, and live events.",
-      label: "Python · FastAPI · AWS · Redis",
-      image: "/projects/placeholder.jpg",
+        "A local-first, voice-based technical-interview simulator — a LangGraph agent interviews you by voice (STT ↔ TTS), grounded in your CV and the role, then an evaluator returns an evidence-backed report.",
+      label: "React · FastAPI · LangGraph · Qdrant · Ollama",
+      category: "AI",
+      image: "/projects/covers/ai-interview-simulator.jpg",
+      slug: "ai-interview-simulator",
+      repoUrl: "https://github.com/Steven-Mendez/ai-interview-simulator",
     },
     {
-      title: "GenAI Retrieval Features",
-      description:
-        "LLM/RAG features for an enterprise platform — a contextual assistant, retrieval over domain content with vector search, and a modular agent-service architecture.",
-      label: "Python · FastAPI · LangChain · pgvector",
-      image: "/projects/placeholder.jpg",
-      confidential: true,
-    },
-    {
-      title: "Visual Agent-Configuration Tool",
-      description:
-        "A node-and-connector visual editor in Next.js/React to configure conversational-agent behavior across scenarios — built end to end.",
-      label: "Next.js · React · TypeScript",
-      image: "/projects/placeholder.jpg",
-      confidential: true,
-    },
-    {
-      title: "IDE Assistant Extension",
-      description:
-        "A VS Code extension embedding an in-editor assistant via the Webview API, reusing an existing assistant backend.",
-      label: "TypeScript · React · VS Code API",
-      image: "/projects/placeholder.jpg",
-      confidential: true,
-    },
-    {
-      title: "This Portfolio (v2)",
+      title: "Portfolio",
       description:
         "Liquid-glass UI with Next.js, WebGL/GSAP motion, full SEO and structured data, and CI-enforced security headers.",
       label: "Next.js · React · TypeScript · GSAP · WebGL",
-      image: "/projects/placeholder.jpg",
+      category: "Web",
+      image: "/projects/covers/portfolio.jpg",
+      slug: "portfolio",
       liveUrl: SITE_URL,
       resumeFeatured: true,
       resumeTitle: "Personal Portfolio",
@@ -289,24 +284,85 @@ export const portfolioData = {
       ],
     },
     {
+      title: "Real-Time E-Commerce Data Pipeline",
+      description:
+        "Backend APIs and multi-vendor data pipelines powering a real-time shopping assistant — product ingestion, price tracking, caching, and live events.",
+      label: "Python · FastAPI · AWS · Redis",
+      category: "Data",
+      image: "/projects/placeholder.jpg",
+    },
+    {
+      title: "GenAI Retrieval Features",
+      description:
+        "LLM/RAG features for an enterprise platform — a contextual assistant, retrieval over domain content with vector search, and a modular agent-service architecture.",
+      label: "Python · FastAPI · LangChain · pgvector",
+      category: "AI",
+      image: "/projects/placeholder.jpg",
+    },
+    {
+      title: "Visual Agent-Configuration Tool",
+      description:
+        "A node-and-connector visual editor in Next.js/React to configure conversational-agent behavior across scenarios — built end to end.",
+      label: "Next.js · React · TypeScript",
+      category: "Web",
+      image: "/projects/placeholder.jpg",
+    },
+    {
+      title: "IDE Assistant Extension",
+      description:
+        "A VS Code extension embedding an in-editor assistant via the Webview API, reusing an existing assistant backend.",
+      label: "TypeScript · React · VS Code API",
+      category: "AI",
+      image: "/projects/placeholder.jpg",
+    },
+    {
       title: "Enterprise Budget System",
       description:
         "Modernized a mission-critical ASP.NET / SQL Server financial system; optimized complex queries and proposed a React.js front-end architecture.",
       label: "ASP.NET · SQL Server · React",
+      category: "Data",
       image: "/projects/placeholder.jpg",
     },
   ],
   education: [
     {
       institution: "Universidad Nacional de Ingeniería",
-      degree: "B.S. in Computer Engineering",
+      degree: UNI_DEGREE,
       period: "Mar 2019 - Dec 2023",
       location: "Managua, Nicaragua",
     },
   ],
+  certifications: [
+    {
+      year: "2023",
+      name: UNI_DEGREE,
+      org: "Universidad Nacional de Ingeniería (UNI) · Managua, Nicaragua",
+      kind: "DEGREE",
+    },
+    {
+      year: "2022",
+      name: "Application Development with Visual C#",
+      org: "UNI Posgrado · Computing & Systems",
+      kind: "COURSE",
+    },
+    {
+      year: "2021",
+      name: "Certified Big Data Consultant",
+      org: "Arcitura Education",
+      kind: "CERTIFICATION",
+      href: "https://www.credly.com/badges/a57aa250-4085-454b-a0be-c7dd7a880048",
+    },
+    {
+      year: "2021",
+      name: "Certified Big Data Professional",
+      org: "Arcitura Education",
+      kind: "CERTIFICATION",
+      href: "https://www.credly.com/badges/354d5191-214d-415f-9e4e-43e805d9175b",
+    },
+  ],
   languages: [
     { name: "Spanish", level: "Native" },
-    { name: "English", level: "Professional working proficiency (CEFR B2)" },
+    { name: "English", level: "Professional (B2)" },
   ],
   seo: {
     title: "Steven Mendez | Full Stack Engineer",

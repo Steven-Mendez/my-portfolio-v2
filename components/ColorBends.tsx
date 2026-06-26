@@ -23,6 +23,8 @@ type ColorBendsProps = {
 
 const MAX_COLORS = 8 as const;
 
+const EMPTY_COLORS: string[] = [];
+
 function hexToRgb(hex: string): [number, number, number] {
   const normalized = hex.replace("#", "").trim()
   const expanded =
@@ -137,7 +139,7 @@ export default function ColorBends({
   style,
   rotation = 45,
   speed = 0.2,
-  colors = [],
+  colors = EMPTY_COLORS,
   transparent = true,
   autoRotate = 0,
   scale = 1,

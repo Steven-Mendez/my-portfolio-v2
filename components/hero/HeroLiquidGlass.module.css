@@ -39,20 +39,26 @@
 }
 
 /* ─── Glass primitive (applied by GlassSurface) ─── */
+/* Driven by the shared --glass-* tokens so every card reads as one material:
+   a subtle, neutral frosted panel (Claude-design tones), not a bright white
+   gradient. Tune the look in globals.css, not here. */
 .glassSurface {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.06) 60%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
+  border: 1px solid var(--glass-border);
+  /* Navy tint (--glass-surface) for body + a soft periwinkle sheen at the top
+     edge so the panel catches light like the reference cards instead of reading
+     as a flat slab. saturate() lifts the blue that bleeds through the backdrop. */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(124, 152, 255, 0.07) 0%,
+      rgba(124, 152, 255, 0) 42%
+    ),
+    var(--glass-surface);
   box-shadow:
-    0 12px 44px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+    0 24px 60px -28px rgba(0, 0, 0, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
 }
 
 /* ─── Nav shell ─── */

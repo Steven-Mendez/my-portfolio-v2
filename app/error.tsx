@@ -21,6 +21,7 @@ export default function Error({
         An unexpected error occurred. Please try again in a moment.
       </p>
       <button
+        type="button"
         onClick={() => reset()}
         className="rounded-full bg-white px-8 py-3 text-sm font-bold text-[#04020c] transition-transform hover:scale-105"
       >

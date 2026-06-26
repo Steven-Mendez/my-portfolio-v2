@@ -4,6 +4,8 @@ import Image from 'next/image';
 import SectionWrapper from './SectionWrapper';
 import SectionTitle from './SectionTitle';
 import GlassSurface from '../hero/GlassSurface';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { portfolioData, type ExperienceItem as ExperienceItemType } from '@/lib/data';
 
 function ExperienceLogo({ exp, nested }: { exp: ExperienceItemType; nested?: boolean }) {
@@ -37,7 +39,9 @@ function ExperienceItem({ exp, isLast, isNested = false }: { exp: ExperienceItem
   const period = exp.period.replace(/\s*-\s*/, ' — ');
 
   return (
-    <div className={`${isNested ? 'px-5 py-5 md:px-6 md:py-6' : 'p-5 md:p-7'} ${!isLast ? 'border-b border-white/10' : ''}`}>
+    // Top-level entries are wrapped by their own GlassSurface card (padding +
+    // hover live there); nested client rows keep inline padding + a divider.
+    <div className={isNested ? `px-5 py-5 md:px-6 md:py-6 ${!isLast ? 'border-b border-white/10' : ''}` : undefined}>
       {/* Header: monogram + title/company + dates */}
       <div className="flex items-start gap-4">
         <ExperienceLogo exp={exp} nested={isNested} />
@@ -60,30 +64,30 @@ function ExperienceItem({ exp, isLast, isNested = false }: { exp: ExperienceItem
                 ) : (
                   <span className={isNested ? 'font-semibold text-primary' : 'font-semibold text-white'}>{exp.company}</span>
                 )}
-                {hasChildren ? <span className="text-[#8b97b4]"> · Agency</span> : null}
-                {exp.confidential ? <span className="text-[#8b97b4]"> · Confidential</span> : null}
-                {exp.employmentType ? <span className="text-[#8b97b4]"> · {exp.employmentType}</span> : null}
+                {hasChildren ? <span className="text-fg-muted"> · Agency</span> : null}
+                {exp.confidential ? <span className="text-fg-muted"> · Confidential</span> : null}
+                {exp.employmentType ? <span className="text-fg-muted"> · {exp.employmentType}</span> : null}
               </p>
             </div>
             <div className="shrink-0 text-left sm:text-right">
-              <p className={isNested ? 'font-mono text-[11.5px] whitespace-nowrap text-[#7e8aa8]' : 'text-[13px] whitespace-nowrap text-[#94a3b8] md:text-[14px]'}>
+              <p className={isNested ? 'font-mono text-[11.5px] whitespace-nowrap text-fg-faint' : 'font-mono text-[12px] whitespace-nowrap text-fg-muted md:text-[12.5px]'}>
                 {period}
               </p>
-              {!isNested ? <p className="mt-0.5 text-[13px] text-[#7e8aa8] md:text-[13.5px]">{exp.location}</p> : null}
+              {!isNested ? <p className="mt-0.5 text-[13px] text-fg-faint md:text-[13.5px]">{exp.location}</p> : null}
             </div>
           </div>
         </div>
       </div>
 
       {/* Divider under header for umbrella / standalone entries */}
-      {!isNested ? <div className="mt-4 h-px w-full bg-white/10" /> : null}
+      {!isNested ? <Separator className="mt-4 bg-white/10" /> : null}
 
       {/* Bullets (always visible) */}
       {exp.bullets.length > 0 ? (
-        <ul className={`${isNested ? 'mt-3' : 'mt-4'} space-y-2.5 text-[14px] leading-[1.6] text-[#d7dff2] md:text-[15px]`}>
-          {exp.bullets.map((bullet, idx) => (
-            <li key={idx} className="flex gap-2.5">
-              <span className="mt-[2px] select-none font-mono text-primary/75" aria-hidden>✳</span>
+        <ul className={`${isNested ? 'mt-3' : 'mt-4'} space-y-2.5 text-[14px] leading-[1.6] text-fg-secondary md:text-[15px]`}>
+          {exp.bullets.map((bullet) => (
+            <li key={bullet} className="flex gap-2.5">
+              <span className="mt-[2px] select-none font-mono text-accent-blue" aria-hidden>✳</span>
               <span>{bullet}</span>
             </li>
           ))}
@@ -94,24 +98,25 @@ function ExperienceItem({ exp, isLast, isNested = false }: { exp: ExperienceItem
       {showChips ? (
         <div className="mt-4 flex flex-wrap gap-2">
           {exp.skillsSummary.map((skill) => (
-            <span
+            <Badge
               key={skill}
-              className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] text-white/60"
+              variant="outline"
+              className="h-auto rounded-md border-[rgba(150,172,255,0.18)] bg-[rgba(124,152,255,0.08)] px-2.5 py-1 font-mono text-[11px] tracking-[0.04em] text-white/70"
             >
               {skill}
-            </span>
+            </Badge>
           ))}
         </div>
       ) : null}
 
-      {/* Nested client engagements */}
+      {/* Nested client engagements — accent-tinted to read as a sub-cluster */}
       {hasChildren ? (
-        <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.02] p-4 md:p-5">
+        <div className="mt-5 rounded-2xl border border-primary/25 bg-[rgba(124,152,255,0.07)] p-4 md:p-5">
           <div className="flex items-center justify-between gap-3">
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary/80">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-eyebrow">
               Clients delivered via {exp.company}
             </p>
-            <p className="font-mono text-[11px] whitespace-nowrap uppercase tracking-[0.16em] text-[#8b97b4]">
+            <p className="font-mono text-[11px] whitespace-nowrap uppercase tracking-[0.16em] text-fg-muted">
               {exp.children!.length} {exp.children!.length === 1 ? 'Engagement' : 'Engagements'}
             </p>
           </div>
@@ -134,18 +139,21 @@ function ExperienceItem({ exp, isLast, isNested = false }: { exp: ExperienceItem
 export default function ExperienceSection() {
   return (
     <SectionWrapper id="experience">
-      <SectionTitle title="Experience" />
+      <SectionTitle title="Experience" eyebrow="Career" />
 
-      <div className="mx-auto w-full">
-        <GlassSurface className="flex flex-col overflow-hidden rounded-2xl border border-white/5 p-0">
-          {portfolioData.experience.map((exp, i) => (
-            <ExperienceItem
-              key={exp.company}
-              exp={exp}
-              isLast={i === portfolioData.experience.length - 1}
-            />
-          ))}
-        </GlassSurface>
+      {/* Each role is its own glass card with a hover lift — matches the design
+          reference's separated, gap-spaced cards (vs. one monolithic panel). */}
+      <div className="mx-auto flex w-full flex-col gap-4 md:gap-[18px]">
+        {portfolioData.experience.map((exp) => (
+          <GlassSurface
+            key={exp.company}
+            as="article"
+            interactive
+            className="overflow-hidden rounded-2xl p-5 md:p-7"
+          >
+            <ExperienceItem exp={exp} isLast />
+          </GlassSurface>
+        ))}
       </div>
     </SectionWrapper>
   );

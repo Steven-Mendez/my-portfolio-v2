@@ -41,6 +41,11 @@ const round = (v: number, precision = 3): number => parseFloat(v.toFixed(precisi
 const adjust = (v: number, fMin: number, fMax: number, tMin: number, tMax: number): number =>
   round(tMin + ((tMax - tMin) * (v - fMin)) / (fMax - fMin));
 
+const getOffsets = (evt: PointerEvent, el: HTMLElement) => {
+  const rect = el.getBoundingClientRect();
+  return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+};
+
 const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   avatarUrl = '<Placeholder for avatar URL>',
   avatarAlt,
@@ -179,11 +184,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
       }
     };
   }, [enableTilt]);
-
-  const getOffsets = (evt: PointerEvent, el: HTMLElement) => {
-    const rect = el.getBoundingClientRect();
-    return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
-  };
 
   const handlePointerMove = useCallback(
     (event: PointerEvent) => {

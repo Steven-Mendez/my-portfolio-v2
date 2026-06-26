@@ -2,7 +2,8 @@
 
 export default function PrintButton() {
   return (
-    <button 
+    <button
+      type="button"
       onClick={() => window.print()}
       className="print:hidden bg-black text-white px-5 py-2.5 rounded-lg font-medium hover:bg-gray-800 transition-colors shadow-md flex items-center gap-2 text-sm"
     >

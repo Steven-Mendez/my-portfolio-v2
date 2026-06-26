@@ -5,21 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
+    /* One display family (Space Grotesk) + one mono (Geist Mono). The
+       font-heading/display/space aliases all resolve to --font-sans so existing
+       `font-heading`/`font-display`/`font-space` class usages keep working. */
     --font-sans: var(--font-sans);
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
+    --font-heading: var(--font-sans);
+    --font-display: var(--font-sans);
+    --font-space: var(--font-sans);
+    --font-mono: var(--font-mono);
+
     --color-ring: var(--ring);
     --color-input: var(--input);
     --color-border: var(--border);
@@ -34,21 +28,22 @@
     --color-primary: var(--primary);
     --color-popover-foreground: var(--popover-foreground);
     --color-popover: var(--popover);
-    --font-space: var(--font-space);
-
-    --color-surface: var(--surface);
-    --color-on-surface: var(--on-surface);
-    --color-surface-variant: var(--surface-variant);
-    --color-on-surface-variant: var(--on-surface-variant);
-    --color-tertiary: var(--tertiary);
-    --color-on-tertiary: var(--on-tertiary);
-    --color-tertiary-container: var(--tertiary-container);
-    --color-on-tertiary-container: var(--on-tertiary-container);
-
     --color-card-foreground: var(--card-foreground);
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+
+    /* Portfolio semantic tokens — periwinkle-blue family (keeps the original
+       aesthetic) but gives the recurring values one source of truth. */
+    --color-accent-blue: var(--accent-blue);
+    --color-eyebrow: var(--eyebrow);
+    --color-fg-secondary: var(--text-secondary);
+    --color-fg-muted: var(--text-muted);
+    --color-fg-faint: var(--text-faint);
+    --color-glass-surface: var(--glass-surface);
+    --color-glass-border: var(--glass-border);
+    --color-glass-border-hover: var(--glass-border-hover);
+
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -59,92 +54,58 @@
 }
 
 :root {
-    --background: #ffffff;
-    --foreground: #111019;
-    --card: #ffffff;
-    --card-foreground: #111019;
-    --popover: #ffffff;
-    --popover-foreground: #111019;
-    --primary: #6a1cf2;
-    --primary-foreground: #f8f5ff;
-    --secondary: #f4f4f6;
-    --secondary-foreground: #2d2d31;
-    --muted: #f4f4f6;
-    --muted-foreground: #6f7280;
-    --accent: #f4f4f6;
-    --accent-foreground: #2d2d31;
-    --destructive: #dc2626;
-    --border: #e5e5ea;
-    --input: #e5e5ea;
-    --ring: #8f909e;
-    --chart-1: #ffd98d;
-    --chart-2: #ffae63;
-    --chart-3: #ff8f4c;
-    --chart-4: #dc6d41;
-    --chart-5: #b6573a;
-    --radius: 0.45rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.141 0.005 285.823);
-    --sidebar-primary: oklch(0.558 0.288 302.321);
-    --sidebar-primary-foreground: oklch(0.977 0.014 308.299);
-    --sidebar-accent: oklch(0.967 0.001 286.375);
-    --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-    --sidebar-border: oklch(0.92 0.004 286.32);
-    --sidebar-ring: oklch(0.705 0.015 286.067);
+    /* The app is forced-dark (layout.tsx). The palette lives in .dark, which is
+       always applied; :root carries only structural defaults. */
+    --radius: 0.85rem;
 }
 
 .dark {
-    /* Standardized from Stitch.html */
     --background: #0e0e10;
-    --foreground: #e5e1e4;
+    --foreground: #e9eaf0;
     --card: #1c1b1e;
-    --card-foreground: #e5e1e4;
+    --card-foreground: #e9eaf0;
     --popover: #201f22;
-    --popover-foreground: #e5e1e4;
-    
+    --popover-foreground: #e9eaf0;
+
+    /* Periwinkle CTA — used as the solid button fill / on-brand primary. */
     --primary: #b0c6ff;
     --primary-foreground: #002d6e;
-    
-    --secondary: #b6d088;
-    --secondary-foreground: #233600;
-    
+
+    --secondary: #353437;
+    --secondary-foreground: #e9eaf0;
+
     --muted: #353437;
     --muted-foreground: #c5c5d4;
-    
+
     --accent: #353437;
-    --accent-foreground: #e5e1e4;
-    
+    --accent-foreground: #e9eaf0;
+
     --destructive: #ffb4ab;
     --border: #454652;
     --input: #454652;
     --ring: #8f909e;
-    
-    --chart-1: #ffd98d;
-    --chart-2: #ffae63;
-    --chart-3: #ff8f4c;
-    --chart-4: #dc6d41;
-    --chart-5: #b6573a;
-    
-    --sidebar: #131315;
-    --sidebar-foreground: #e5e1e4;
-    --sidebar-primary: #b0c6ff;
-    --sidebar-primary-foreground: #002d6e;
-    --sidebar-accent: #353437;
-    --sidebar-accent-foreground: #e5e1e4;
-    --sidebar-border: #454652;
-    --sidebar-ring: #8f909e;
-    
+
     --radius: 0.85rem;
 
-    /* Specific Stitch Tokens */
-    --surface: #131315;
-    --on-surface: #e5e1e4;
-    --surface-variant: #353437;
-    --on-surface-variant: #c5c5d4;
-    --tertiary: #cfbcff;
-    --on-tertiary: #3a0092;
-    --tertiary-container: #6a1cf2;
-    --on-tertiary-container: #dacbff;
+    /* ── Portfolio semantic tokens (periwinkle-blue family) ── */
+    /* Links, arrows, asterisk bullets. */
+    --accent-blue: #6f93ff;
+    /* Mono eyebrows / section kickers. */
+    --eyebrow: #8fa6ff;
+    /* Text ramp (cool greys, matching the original tone). */
+    --text-secondary: #cdd6ee;
+    --text-muted: #9aa3bd;
+    --text-faint: #6b7390;
+    /* One glass recipe shared by every card/surface. The reference design fills
+       its panels with a deep navy *tint* (rgba(10,12,22,~0.7)) rather than a
+       near-transparent wash — so cards read as real material and the bright blue
+       backdrop only bleeds through subtly, instead of washing the whole panel.
+       --glass-tint is the navy fill; the periwinkle sheen is layered on top in
+       the .glassSurface recipe (HeroLiquidGlass.module.css). */
+    --glass-tint: rgba(14, 18, 42, 0.62);
+    --glass-surface: var(--glass-tint);
+    --glass-border: rgba(150, 172, 255, 0.16);
+    --glass-border-hover: rgba(150, 176, 255, 0.55);
 }
 
 @layer base {
@@ -164,6 +125,39 @@
   }
 }
 
+/* Tech marquee — the duplicated track translates -50% for a seamless loop. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* About: on desktop, let the profile card fill its equal-height grid column
+   (dropping the fixed portrait aspect cap) so it matches the text card height
+   exactly. The avatar is object-cover, so it simply crops to the new box. */
+@media (min-width: 64rem) {
+  .about-profile-card,
+  .about-profile-card .pc-card-shell {
+    height: 100%;
+    width: 100%;
+  }
+  .about-profile-card .pc-card {
+    height: 100%;
+    width: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+  }
+}
+
 /* Animated Grain Overlay */
 .bg-grain {
   position: fixed;
@@ -177,7 +171,7 @@
   animation: grain 8s steps(10) infinite;
   pointer-events: none;
   z-index: 50;
-  opacity: 0.5;
+  opacity: 0.12;
   mix-blend-mode: overlay;
 }
 

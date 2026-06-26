@@ -22,11 +22,15 @@
   max-width: 100%;
   padding: 1.5em;
   border-radius: 18px; /* Softer radius for Apple look */
-  border: 1px solid rgba(255, 255, 255, 0.05); /* Faint border */
-  background: rgba(255, 255, 255, 0.02); /* Very subtle tint */
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 4px 24px -4px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(150, 172, 255, 0.16);
+  /* Deep navy tint (matches --glass-tint) so project cards read as real material
+     instead of the near-transparent white wash they used before. */
+  background:
+    linear-gradient(180deg, rgba(124, 152, 255, 0.06) 0%, rgba(124, 152, 255, 0) 40%),
+    rgba(14, 18, 42, 0.62);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px -16px rgba(0, 0, 0, 0.55);
   font-weight: 300;
   overflow: hidden;
   transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
@@ -40,6 +44,80 @@
 .magic-bento-card:hover {
   transform: translateY(-2px);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ---- Image-forward project covers --------------------------------------
+   The cover fills the whole card (full-bleed, full opacity) so the artwork is
+   the protagonist; a bottom-weighted scrim keeps the title/description/links
+   legible, and the image gives a slow push-in on hover so it feels alive. */
+.magic-bento-card__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.magic-bento-card__img {
+  object-fit: cover;
+  transform: scale(1.01);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.magic-bento-card:hover .magic-bento-card__img {
+  transform: scale(1.07);
+}
+
+/* Strong, smooth gradient anchored to the bottom (where the copy sits) plus a
+   light top wash so the tech-stack label stays readable over bright artwork. */
+.magic-bento-card__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(8, 11, 28, 0.95) 0%,
+      rgba(8, 11, 28, 0.82) 16%,
+      rgba(8, 11, 28, 0.5) 36%,
+      rgba(8, 11, 28, 0.18) 56%,
+      rgba(8, 11, 28, 0) 76%
+    ),
+    linear-gradient(to bottom, rgba(8, 11, 28, 0.55) 0%, rgba(8, 11, 28, 0) 26%);
+}
+
+/* Over artwork, give the copy a faint shadow so it never fights a bright pixel. */
+.magic-bento-card--has-media .magic-bento-card__label,
+.magic-bento-card--has-media .magic-bento-card__title {
+  text-shadow: 0 1px 14px rgba(4, 6, 18, 0.6);
+}
+
+.magic-bento-card--has-media .magic-bento-card__description {
+  text-shadow: 0 1px 10px rgba(4, 6, 18, 0.5);
+}
+
+/* ---- Whole-card click target -------------------------------------------
+   The entire cover is the link into the case study; the arrow + the card's
+   lift/zoom/cursor make it obvious the whole card is clickable. */
+.magic-bento-card__link {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+.magic-bento-card__link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magic-bento-card__img,
+  .magic-bento-card:hover .magic-bento-card__img {
+    transition: none;
+    transform: scale(1.01);
+  }
 }
 
 .magic-bento-card__header,
@@ -69,7 +147,7 @@
 
 .magic-bento-card__title,
 .magic-bento-card__description {
-  --clamp-title: 1;
+  --clamp-title: 2;
   --clamp-desc: 2;
 }
 
@@ -131,19 +209,34 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .magic-bento-card:nth-child(3) {
+  /* Default auto-bento (used when no explicit per-page layout is supplied). */
+  .card-grid:not([data-explicit-layout]) .magic-bento-card:nth-child(3) {
     grid-column: span 2;
     grid-row: span 2;
   }
 
-  .magic-bento-card:nth-child(4) {
+  .card-grid:not([data-explicit-layout]) .magic-bento-card:nth-child(4) {
     grid-column: 1 / span 2;
     grid-row: 2 / span 2;
   }
 
-  .magic-bento-card:nth-child(6) {
+  .card-grid:not([data-explicit-layout]) .magic-bento-card:nth-child(6) {
     grid-column: 4;
     grid-row: 3;
+  }
+
+  /* Paginated bento: explicit per-card placement that mutates per page. Cards
+     carry their span via inline --gc/--gr vars, consumed only here so they keep
+     flowing normally on the mobile/tablet breakpoints. */
+  .card-grid[data-explicit-layout] {
+    grid-auto-rows: 215px;
+  }
+
+  .card-grid[data-explicit-layout] .magic-bento-card {
+    grid-column: var(--gc, auto);
+    grid-row: var(--gr, auto);
+    aspect-ratio: auto;
+    min-height: 0;
   }
 }
 

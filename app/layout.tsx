@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Syne, Space_Grotesk } from "next/font/google"
+import { Geist_Mono, Space_Grotesk } from "next/font/google"
 import { Metadata, Viewport } from "next"
 
 import { Analytics } from "@vercel/analytics/next"
@@ -12,7 +12,12 @@ import { portfolioData } from "@/lib/data";
 /** Same as `.dark` `--background` in globals.css; paints before CSS/WebGL load. */
 const rootBackground = "#0e0e10";
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans', display: 'swap' })
+// Two families only: Space Grotesk for all sans/display, Geist Mono for labels.
+const fontSans = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -20,28 +25,12 @@ const fontMono = Geist_Mono({
   display: "swap",
 })
 
-const fontDisplay = Syne({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["400", "600", "700", "800"],
-  display: "swap",
-})
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space",
-  display: "swap",
-})
-
-
 export const viewport: Viewport = {
   // No maximumScale / user-scalable lock: users must be able to zoom (WCAG 1.4.4).
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  // App is forced-dark; advertise the actual painted background.
+  themeColor: rootBackground,
 };
 
 export const metadata: Metadata = {
@@ -101,7 +90,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("dark", "antialiased", "scroll-smooth", fontMono.variable, fontDisplay.variable, spaceGrotesk.variable, "font-sans", geist.variable)}
+      className={cn("dark", "antialiased", "scroll-smooth", fontSans.variable, fontMono.variable, "font-sans")}
       style={{ backgroundColor: rootBackground }}
     >
       <body>

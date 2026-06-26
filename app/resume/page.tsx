@@ -3,6 +3,8 @@ import { Metadata } from 'next';
 import PrintButton from './PrintButton';
 import { portfolioData } from '@/lib/data';
 
+const stripUrl = (u: string) => u.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+
 export const metadata: Metadata = {
   title: 'Resume',
   description: `${portfolioData.profile.role} resume of ${portfolioData.profile.fullName}. Building React/Next.js front ends and Python (FastAPI/Django) back ends, with data-pipeline and LLM/RAG experience on AWS.`,
@@ -18,7 +20,6 @@ export default function ResumePage() {
   const bulletListClass =
     "mt-1 ml-[15px] list-disc list-outside space-y-[3px] text-[10.5px] leading-[1.4] text-zinc-800 marker:text-zinc-400";
   const featuredProject = portfolioData.projects.find((p) => p.resumeFeatured);
-  const stripUrl = (u: string) => u.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 
   return (
     <>
@@ -62,9 +63,8 @@ export default function ResumePage() {
             <p className="mt-1.5 text-[12px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
               {portfolioData.profile.role}
             </p>
-            <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[10.5px] leading-tight text-zinc-700">
-              <span>Managua, Nicaragua (UTC&#8722;6)</span>
-              <span className="text-zinc-300">|</span>
+            <p className="mt-1.5 text-[10.5px] leading-tight text-zinc-600">{portfolioData.profile.location} ({portfolioData.profile.timezone})</p>
+            <div className="mt-1.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[10.5px] leading-tight text-zinc-700">
               <a href={`mailto:${portfolioData.profile.contactEmail}`} className="text-zinc-700 hover:underline">{portfolioData.profile.contactEmail}</a>
               <span className="text-zinc-300">|</span>
               <a href={portfolioData.socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">{stripUrl(portfolioData.socials.linkedin)}</a>
@@ -73,16 +73,13 @@ export default function ResumePage() {
               <span className="text-zinc-300">|</span>
               <a href={portfolioData.seo.url} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:underline">{stripUrl(portfolioData.seo.url)}</a>
             </div>
-            <p className="mt-1.5 text-[10px] uppercase tracking-[0.1em] text-zinc-500">
-              Remote &middot; Available for US time zones, flexible for EU
-            </p>
           </header>
 
           {/* ---------- Summary ---------- */}
           <section className="mb-3.5">
             <h2 className={sectionTitleClass}>Professional Summary</h2>
             <p className="text-[11px] leading-[1.45] text-zinc-800">
-              {portfolioData.about.description1} {portfolioData.about.description2}
+              {portfolioData.about.resumeSummary}
             </p>
           </section>
 
@@ -126,8 +123,8 @@ export default function ResumePage() {
                 </div>
                 {exp.bullets.length > 0 ? (
                   <ul className={bulletListClass}>
-                    {exp.bullets.map((bullet, idx) => (
-                      <li key={idx}>{bullet}</li>
+                    {exp.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
                     ))}
                   </ul>
                 ) : null}
@@ -153,8 +150,8 @@ export default function ResumePage() {
                           <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">{child.period}</span>
                         </div>
                         <ul className={bulletListClass}>
-                          {child.bullets.map((bullet, idx) => (
-                            <li key={idx}>{bullet}</li>
+                          {child.bullets.map((bullet) => (
+                            <li key={bullet}>{bullet}</li>
                           ))}
                         </ul>
                       </div>
@@ -186,8 +183,8 @@ export default function ResumePage() {
                 </div>
                 {featuredProject.highlights && featuredProject.highlights.length > 0 ? (
                   <ul className={bulletListClass}>
-                    {featuredProject.highlights.map((h, idx) => (
-                      <li key={idx}>{h}</li>
+                    {featuredProject.highlights.map((h) => (
+                      <li key={h}>{h}</li>
                     ))}
                   </ul>
                 ) : null}
@@ -210,6 +207,32 @@ export default function ResumePage() {
                 </div>
               </article>
             ))}
+          </section>
+
+          {/* ---------- Certifications & Courses ---------- */}
+          <section className="mb-3.5">
+            <h2 className={sectionTitleClass}>Certifications &amp; Courses</h2>
+            <div className="space-y-1.5">
+              {portfolioData.certifications.flatMap((cert) =>
+                cert.kind !== 'DEGREE'
+                  ? [
+                      <article key={cert.name} className="resume-block">
+                        <div className={rowClass}>
+                          <h3 className="text-[12px] font-bold text-zinc-900">
+                            {cert.href ? (
+                              <a href={cert.href} target="_blank" rel="noopener noreferrer" className="text-zinc-900 hover:underline">{cert.name}</a>
+                            ) : (
+                              cert.name
+                            )}
+                          </h3>
+                          <span className="text-[11px] font-semibold whitespace-nowrap text-zinc-700">{cert.year}</span>
+                        </div>
+                        <p className="text-[11px] italic text-zinc-600">{cert.org}</p>
+                      </article>,
+                    ]
+                  : [],
+              )}
+            </div>
           </section>
 
           {/* ---------- Languages ---------- */}

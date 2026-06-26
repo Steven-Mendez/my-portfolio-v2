@@ -3,7 +3,6 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
-import { Code2, ExternalLink, Lock } from 'lucide-react';
 import './MagicBento.css';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
@@ -13,15 +12,27 @@ export interface BentoCardProps {
   description?: string;
   label?: string;
   image?: string;
+  slug?: string;
   liveUrl?: string;
   repoUrl?: string;
-  confidential?: boolean;
+  /** Filter bucket (e.g. "AI", "Web") — rendered as a pill on the card. */
+  category?: string;
   textAutoHide?: boolean;
   disableAnimations?: boolean;
 }
 
+/** Per-card grid placement for the paginated bento layout. Each entry maps to a
+ *  card by index and is applied as inline CSS vars (`--gc`/`--gr`) consumed only
+ *  at the desktop breakpoint, so the cards still flow on mobile/tablet. */
+export interface BentoCardLayout {
+  gc: string;
+  gr: string;
+}
+
 export interface BentoProps {
   items?: BentoCardProps[];
+  /** Explicit per-card grid placement (one per item) for paginated bento pages. */
+  cardLayout?: BentoCardLayout[];
   className?: string;
   textAutoHide?: boolean;
   enableStars?: boolean;
@@ -503,8 +514,13 @@ const BentoCardGrid: React.FC<{
   children: React.ReactNode;
   gridRef?: React.RefObject<HTMLDivElement | null>;
   className?: string;
-}> = ({ children, gridRef, className }) => (
-  <div className={`card-grid bento-section ${className || ''}`} ref={gridRef}>
+  explicitLayout?: boolean;
+}> = ({ children, gridRef, className, explicitLayout }) => (
+  <div
+    className={`card-grid bento-section ${className || ''}`}
+    ref={gridRef}
+    data-explicit-layout={explicitLayout ? '' : undefined}
+  >
     {children}
   </div>
 );
@@ -526,6 +542,7 @@ const useMobileDetection = () => {
 
 const MagicBento: React.FC<BentoProps> = ({
   items = defaultCardData,
+  cardLayout,
   className = '',
   textAutoHide = true,
   enableStars = true,
@@ -556,20 +573,27 @@ const MagicBento: React.FC<BentoProps> = ({
         />
       ) : null}
 
-      <BentoCardGrid gridRef={gridRef} className={className}>
+      <BentoCardGrid gridRef={gridRef} className={className} explicitLayout={!!cardLayout}>
         {items.map((card, index) => {
           const baseClassName = `magic-bento-card ${textAutoHide ? 'magic-bento-card--text-autohide' : ''} ${enableBorderGlow ? 'magic-bento-card--border-glow' : ''}`;
+          const placement = cardLayout?.[index];
+          // Placeholder-covered projects are in-progress: show a neutral "Coming Soon"
+          // teaser instead of the real blurb (the real title is still the React key).
+          const comingSoon = !!card.image && card.image.includes('placeholder');
+          const displayTitle = comingSoon ? 'Coming Soon' : card.title;
+          const displayDescription = comingSoon ? 'More projects are on the way.' : card.description;
           const cardProps = {
             className: baseClassName,
             style: {
-              '--glow-color': glowColor
+              '--glow-color': glowColor,
+              ...(placement ? { '--gc': placement.gc, '--gr': placement.gr } : {})
             } as React.CSSProperties
           };
 
           if (enableStars) {
             return (
               <ParticleCard
-                key={index}
+                key={card.title}
                 {...cardProps}
                 disableAnimations={shouldDisableAnimations}
                 particleCount={particleCount}
@@ -591,8 +615,9 @@ const MagicBento: React.FC<BentoProps> = ({
 
           return (
             <article
-              key={index}
-              {...cardProps}
+              key={card.title}
+              className={`${baseClassName}${card.image ? ' magic-bento-card--has-media' : ''}`}
+              style={cardProps.style}
               ref={el => {
                 if (!el) return;
 
@@ -703,52 +728,38 @@ const MagicBento: React.FC<BentoProps> = ({
               }}
             >
               {card.image ? (
-                <div 
-                  className="absolute inset-x-0 top-0 h-[65%] z-0 rounded-t-[18px] overflow-hidden opacity-80 pointer-events-none"
-                  style={{ WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)' }}
-                >
-                  <Image src={card.image} alt={card.title || "Project Image"} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
+                <div className="magic-bento-card__media pointer-events-none">
+                  <Image
+                    src={card.image}
+                    alt={displayTitle || "Project Image"}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="magic-bento-card__img"
+                  />
+                  <div className="magic-bento-card__scrim" />
                 </div>
               ) : null}
               
-              <div className="magic-bento-card__header relative z-10 flex items-center justify-between gap-2">
-                <div className="magic-bento-card__label">{card.label}</div>
-                {card.confidential ? (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/85">
-                    <Lock size={10} aria-hidden /> Confidential
+              {card.category ? (
+                <div className="magic-bento-card__header relative z-10 flex items-start justify-end gap-2">
+                  <span className="ml-auto inline-flex items-center rounded-full border border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10px] font-medium tracking-wide text-white/85 backdrop-blur-sm">
+                    {card.category}
                   </span>
-                ) : null}
+                </div>
+              ) : null}
+              <div className="magic-bento-card__content relative z-10 flex flex-1 flex-col justify-end">
+                <h3 className="magic-bento-card__title">{displayTitle}</h3>
+                <p className="magic-bento-card__description">{displayDescription}</p>
               </div>
-              <div className="magic-bento-card__content relative z-10 flex flex-col justify-end flex-1">
-                <h3 className="magic-bento-card__title">{card.title}</h3>
-                <p className="magic-bento-card__description">{card.description}</p>
-                {card.liveUrl || card.repoUrl ? (
-                  <div className="mt-3 flex flex-wrap gap-4">
-                    {card.liveUrl ? (
-                      <a
-                        href={card.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={e => e.stopPropagation()}
-                        className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-white/90 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-                      >
-                        <ExternalLink size={13} aria-hidden /> Live Demo
-                      </a>
-                    ) : null}
-                    {card.repoUrl ? (
-                      <a
-                        href={card.repoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={e => e.stopPropagation()}
-                        className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-white/90 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-                      >
-                        <Code2 size={13} aria-hidden /> View Code
-                      </a>
-                    ) : null}
-                  </div>
-                ) : null}
-              </div>
+
+              {/* Stretched link: the whole cover is the click target into the case study. */}
+              {card.slug ? (
+                <a
+                  href={`/projects/${card.slug}`}
+                  className="magic-bento-card__link"
+                  aria-label={`Open case study: ${card.title}`}
+                />
+              ) : null}
             </article>
           );
         })}
