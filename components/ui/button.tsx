@@ -21,12 +21,20 @@ const buttonVariants = cva(
         "pill-link":
           "border border-white/15 bg-transparent font-mono uppercase tracking-[0.18em] text-white/90 shadow-none hover:border-white/40 hover:text-white",
         link: "text-accent-blue underline-offset-4 shadow-none hover:underline",
+        // Stock-shadcn-compatible variants used by vendored components
+        // (AI Elements / shadcn primitives expect `default` and `outline`).
+        default:
+          "bg-foreground text-background font-semibold hover:bg-foreground/90",
+        outline:
+          "border border-border bg-transparent text-foreground shadow-none hover:bg-foreground/10",
       },
       size: {
         default: "px-6 py-3 text-xs tracking-[0.08em]",
         sm: "px-4 py-2.5 text-[11px] tracking-[0.08em]",
         lg: "px-7 py-3.5 text-sm tracking-[0.08em]",
         icon: "size-10 [&_svg:not([class*='size-'])]:size-4",
+        // Smaller icon button used by vendored components.
+        "icon-sm": "size-8 [&_svg:not([class*='size-'])]:size-4",
       },
     },
     defaultVariants: {

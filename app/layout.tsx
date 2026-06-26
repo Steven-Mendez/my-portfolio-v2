@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { PortfolioChat } from "@/components/chat/portfolio-chat"
 import { cn } from "@/lib/utils";
 import { portfolioData } from "@/lib/data";
 
@@ -109,6 +110,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <PortfolioChat />
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
