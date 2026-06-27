@@ -94,25 +94,28 @@ export function PortfolioChat() {
     setInput("");
   };
 
-  if (!open) {
-    return (
-      <button
-        aria-label="Open chat"
-        className="fixed bottom-5 right-5 z-[150] flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-black/30 transition-transform hover:-translate-y-0.5 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        onClick={() => setOpen(true)}
-        type="button"
-      >
-        <BotIcon className="size-6" />
-      </button>
-    );
-  }
-
+  // Non-modal native <dialog> driven declaratively by `open` (the open attribute
+  // *is* non-modal display): the page stays interactive while chatting, with no
+  // page-blocking backdrop. .showModal() would trap focus + dim the page, which
+  // is wrong for a corner widget.
   return (
-    <div
-      aria-label={`Chat with ${AGENT_NAME}, ${FIRST_NAME}'s assistant`}
-      className="fixed bottom-5 right-5 z-[150] flex h-[min(75vh,36rem)] w-[min(92vw,24rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#141418]/95 shadow-2xl shadow-black/60 backdrop-blur-xl"
-      role="dialog"
-    >
+    <>
+      {!open && (
+        <button
+          aria-label="Open chat"
+          className="fixed bottom-5 right-5 z-[150] flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-black/30 transition-transform hover:-translate-y-0.5 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          onClick={() => setOpen(true)}
+          type="button"
+        >
+          <BotIcon className="size-6" />
+        </button>
+      )}
+      <dialog
+        open={open}
+        aria-label={`Chat with ${AGENT_NAME}, ${FIRST_NAME}'s assistant`}
+        className="fixed inset-auto bottom-5 right-5 z-[150] m-0 hidden h-[min(75vh,36rem)] max-h-none w-[min(92vw,24rem)] max-w-none flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#141418]/95 p-0 shadow-2xl shadow-black/60 backdrop-blur-xl open:flex"
+        onClose={() => setOpen(false)}
+      >
       <header className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
         <Avatar />
         <span className="flex min-w-0 flex-1 flex-col">
@@ -156,9 +159,12 @@ export function PortfolioChat() {
             </div>
           )}
           {messages.map((message) => {
-            const text = message.parts.map((part, i) =>
+            const text = message.parts.map((part) =>
               part.type === "text" ? (
-                <MessageResponse key={`${message.id}-${i}`}>
+                // No tools in this chat, so a message has a single text part —
+                // a per-message text key is stable and won't churn while it
+                // streams (a content-based key would remount on every token).
+                <MessageResponse key={`${message.id}-text`}>
                   {part.text}
                 </MessageResponse>
               ) : null,
@@ -220,6 +226,7 @@ export function PortfolioChat() {
           />
         </PromptInput>
       </div>
-    </div>
+      </dialog>
+    </>
   );
 }

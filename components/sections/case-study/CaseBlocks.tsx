@@ -2,9 +2,31 @@ import type { CaseBlock } from "@/lib/case-studies";
 
 import Mermaid from "./Mermaid";
 import MediaFrame from "./MediaFrame";
-import { renderInline } from "./richText";
+import { Inline } from "./richText";
 
 const PROSE = "text-[18px] leading-[1.7] text-foreground/90 md:text-[19px]";
+
+/** Stable, content-derived key for a block. The blocks are authored, static
+ *  case-study data that never reorders or filters, so a content key is both
+ *  stable and unique among siblings (no two authored sibling blocks are
+ *  byte-identical) — and, unlike the array index, it follows the block if the
+ *  data is ever reordered. */
+function blockKey(block: CaseBlock): string {
+  switch (block.type) {
+    case "paragraph":
+    case "subheading":
+    case "quote":
+      return `${block.type}:${block.text}`;
+    case "list":
+      return `list:${block.items.join("|")}`;
+    case "table":
+      return `table:${block.headers.join("|")}`;
+    case "mermaid":
+      return `mermaid:${block.code}`;
+    case "media":
+      return `media:${JSON.stringify(block.media)}`;
+  }
+}
 
 /** Renders a section's rich `blocks` — prose, sub-headings, lists, tables, live
  *  Mermaid diagrams, and placeholder media — in order, with a single shared
@@ -12,19 +34,19 @@ const PROSE = "text-[18px] leading-[1.7] text-foreground/90 md:text-[19px]";
 export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
   return (
     <div className="mt-8 flex flex-col gap-8">
-      {blocks.map((block, i) => {
+      {blocks.map((block) => {
         switch (block.type) {
           case "paragraph":
             return (
-              <p key={i} className={PROSE}>
-                {renderInline(block.text)}
+              <p key={blockKey(block)} className={PROSE}>
+                <Inline text={block.text} />
               </p>
             );
 
           case "subheading":
             return (
               <h3
-                key={i}
+                key={blockKey(block)}
                 className="pt-2 text-[21px] font-medium leading-[1.2] tracking-tight text-white md:text-[25px]"
               >
                 {block.text}
@@ -33,9 +55,9 @@ export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
 
           case "quote":
             return (
-              <blockquote key={i} className="border-l-2 border-accent-blue py-1 pl-5 md:pl-6">
+              <blockquote key={blockKey(block)} className="border-l-2 border-accent-blue py-1 pl-5 md:pl-6">
                 <p className="text-[22px] font-medium leading-[1.35] tracking-tight text-white md:text-[28px]">
-                  {renderInline(block.text)}
+                  <Inline text={block.text} />
                 </p>
                 {block.attribution && (
                   <footer className="mt-3 font-mono text-[11px] uppercase tracking-[0.14em] text-fg-muted">
@@ -47,14 +69,14 @@ export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
 
           case "list":
             return (
-              <ul key={i} className="flex flex-col gap-4">
+              <ul key={blockKey(block)} className="flex flex-col gap-4">
                 {block.items.map((item, j) => (
                   <li key={j} className={`relative pl-6 ${PROSE}`}>
                     <span
                       aria-hidden
                       className="absolute left-0 top-[0.85em] size-1.5 -translate-y-1/2 rounded-full bg-accent-blue"
                     />
-                    {renderInline(item)}
+                    <Inline text={item} />
                   </li>
                 ))}
               </ul>
@@ -63,7 +85,7 @@ export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
           case "table":
             return (
               <div
-                key={i}
+                key={blockKey(block)}
                 className="overflow-x-auto rounded-xl border border-white/10 bg-white/[0.02]"
               >
                 <table className="w-full border-collapse text-left text-sm">
@@ -90,7 +112,7 @@ export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
                             key={c}
                             className="px-4 py-3 leading-relaxed text-fg-secondary first:font-medium first:text-white"
                           >
-                            {renderInline(cell)}
+                            <Inline text={cell} />
                           </td>
                         ))}
                       </tr>
@@ -102,7 +124,7 @@ export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
 
           case "mermaid":
             return (
-              <figure key={i}>
+              <figure key={blockKey(block)}>
                 <div className="rounded-2xl border border-white/10 bg-[#0b0e18] p-4 md:p-6">
                   <Mermaid code={block.code} title={block.caption} />
                 </div>
@@ -117,7 +139,7 @@ export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
           case "media":
             return (
               <MediaFrame
-                key={i}
+                key={blockKey(block)}
                 media={block.media}
                 sizes="(min-width: 768px) 680px, 100vw"
               />

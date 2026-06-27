@@ -14,7 +14,7 @@ export interface CaseMetric {
  *  the frame renders an empty styled slot carrying `description`, marking exactly
  *  where to drop a real capture without touching the layout. */
 export interface CaseMedia {
-  /** Public path, e.g. "/projects/media/diagram.png". Omitted for placeholders. */
+  /** Public path, e.g. "/projects/media/diagram.webp". Omitted for placeholders. */
   src?: string;
   /** Mono caption shown beneath the frame. */
   caption?: string;

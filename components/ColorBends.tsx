@@ -156,8 +156,11 @@ export default function ColorBends({
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   const rotationRef = useRef<number>(rotation);
   const autoRotateRef = useRef<number>(autoRotate);
-  const pointerTargetRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
-  const pointerCurrentRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
+  // Stable per-instance pointer vectors. useRef has no lazy-initializer form,
+  // so they start null and are built exactly once inside the effects below
+  // (via `??=`) instead of allocating a throwaway Vector2 on every render.
+  const pointerTargetRef = useRef<THREE.Vector2 | null>(null);
+  const pointerCurrentRef = useRef<THREE.Vector2 | null>(null);
   const pointerSmoothRef = useRef<number>(8);
 
   useEffect(() => {
@@ -165,6 +168,10 @@ export default function ColorBends({
 
     const container = containerRef.current;
     if (!container) return;
+
+    // Lazy-init the shared pointer vectors once (see ref declarations above).
+    const pointerTarget = (pointerTargetRef.current ??= new THREE.Vector2(0, 0));
+    const pointerCurrent = (pointerCurrentRef.current ??= new THREE.Vector2(0, 0));
 
     // Create a fresh canvas on every mount. Reusing a single React-managed
     // canvas breaks under StrictMode/HMR: the cleanup's forceContextLoss()
@@ -258,8 +265,8 @@ export default function ColorBends({
       const s = Math.sin(rad);
       (material.uniforms.uRot.value as THREE.Vector2).set(c, s);
 
-      const cur = pointerCurrentRef.current;
-      const tgt = pointerTargetRef.current;
+      const cur = pointerCurrent;
+      const tgt = pointerTarget;
       const amt = Math.min(1, dt * pointerSmoothRef.current);
       cur.lerp(tgt, amt);
       (material.uniforms.uPointer.value as THREE.Vector2).copy(cur);
@@ -373,11 +380,13 @@ export default function ColorBends({
     const container = containerRef.current;
     if (!material || !container) return;
 
+    const pointerTarget = (pointerTargetRef.current ??= new THREE.Vector2(0, 0));
+
     const handlePointerMove = (e: PointerEvent) => {
       const rect = container.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / (rect.width || 1)) * 2 - 1;
       const y = -(((e.clientY - rect.top) / (rect.height || 1)) * 2 - 1);
-      pointerTargetRef.current.set(x, y);
+      pointerTarget.set(x, y);
     };
 
     container.addEventListener('pointermove', handlePointerMove);

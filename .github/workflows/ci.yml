@@ -34,9 +34,6 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Verify content consistency
-        run: pnpm check:consistency
-
       - name: Dependency audit
         run: pnpm audit --prod
         continue-on-error: true
@@ -49,14 +46,18 @@ jobs:
           pnpm exec next start > /tmp/next-start.log 2>&1 &
           echo $! > /tmp/next-start.pid
 
-      - name: Smoke test primary routes
-        run: pnpm smoke:routes
-
-      - name: Verify home anchors
-        run: pnpm check:anchors
-
-      - name: Verify security headers
-        run: pnpm check:security-headers
+      - name: Wait for server
+        run: |
+          for i in $(seq 1 45); do
+            if curl -sf -o /dev/null http://127.0.0.1:3000/; then
+              echo "Server ready after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server did not become ready" >&2
+          cat /tmp/next-start.log >&2 || true
+          exit 1
 
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12

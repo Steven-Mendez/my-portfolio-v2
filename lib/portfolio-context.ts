@@ -16,7 +16,7 @@ import { portfolioData, type ExperienceItem } from "@/lib/data";
 // PLACEHOLDERS — bot-specific content not present in lib/data.ts.
 // Replace the text with real content; do not fabricate biographical facts.
 // ---------------------------------------------------------------------------
-export const PLACEHOLDERS = {
+const PLACEHOLDERS = {
   /** PLACEHOLDER: extra FAQ-style answers (availability, rates, timezone overlap,
    *  preferred contact, etc.). Leave empty until the owner provides real values. */
   faq: "" as string,
@@ -40,7 +40,7 @@ function formatExperience(item: ExperienceItem, depth = 0): string {
  * Structured, prompt-ready view of the portfolio, grouped by the sections the
  * bot answers about: bio, skills, experience, projects, education, contact.
  */
-export const portfolioContext = {
+const portfolioContext = {
   get bio(): string {
     const { profile, about } = portfolioData;
     return [

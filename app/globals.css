@@ -199,3 +199,52 @@
     display: none !important;
   }
 }
+/* ── Native <dialog> mobile nav ──────────────────────────────────────────────
+   The mobile menu is a real modal (showModal): the browser gives us a focus
+   trap, Escape-to-close, background inerting, and the ::backdrop for free. The
+   element stays mounted, so the slide-in/out is animated with @starting-style +
+   the `overlay`/`display` allow-discrete transitions (the standard pattern for
+   animating a top-layer dialog) rather than mount/unmount. */
+#mobile-sidebar {
+  translate: 100% 0;
+  opacity: 0;
+  transition:
+    translate 0.3s ease,
+    opacity 0.3s ease,
+    overlay 0.3s ease allow-discrete,
+    display 0.3s ease allow-discrete;
+}
+#mobile-sidebar[open] {
+  translate: 0 0;
+  opacity: 1;
+}
+@starting-style {
+  #mobile-sidebar[open] {
+    translate: 100% 0;
+    opacity: 0;
+  }
+}
+#mobile-sidebar::backdrop {
+  background: rgba(4, 2, 12, 0.55);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    overlay 0.3s ease allow-discrete,
+    display 0.3s ease allow-discrete;
+}
+#mobile-sidebar[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  #mobile-sidebar[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mobile-sidebar,
+  #mobile-sidebar::backdrop {
+    transition: none;
+  }
+}

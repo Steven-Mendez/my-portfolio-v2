@@ -20,9 +20,10 @@ const MARQUEE_ITEMS = [
   "Socket.IO",
 ] as const;
 
-// Render the list twice so the -50% translate loops seamlessly. Built once at
-// module scope — it depends only on MARQUEE_ITEMS, never on render-time state.
-const MARQUEE_LOOP = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
+// The list is rendered twice so the -50% translate loops seamlessly. The two
+// copies are keyed by a per-copy prefix (`a`/`b`) rather than the array index,
+// so the repeated item names stay unique without keying on position.
+const MARQUEE_COPIES = ["a", "b"] as const;
 
 export default function TechMarquee() {
   return (
@@ -31,12 +32,17 @@ export default function TechMarquee() {
       className="relative z-10 overflow-hidden border-y border-[rgba(150,172,255,0.12)] bg-[rgba(14,18,42,0.5)] py-4 backdrop-blur-md"
     >
       <div className="marquee-track flex w-max gap-[52px] whitespace-nowrap font-mono text-sm tracking-[0.12em] text-fg-faint">
-        {MARQUEE_LOOP.map((item, i) => (
-          <span key={i} className="inline-flex items-center gap-[52px]">
-            {item}
-            <span className="text-accent-blue/40">/</span>
-          </span>
-        ))}
+        {MARQUEE_COPIES.map((copy) =>
+          MARQUEE_ITEMS.map((item) => (
+            <span
+              key={`${copy}-${item}`}
+              className="inline-flex items-center gap-[52px]"
+            >
+              {item}
+              <span className="text-accent-blue/40">/</span>
+            </span>
+          ))
+        )}
       </div>
     </div>
   );

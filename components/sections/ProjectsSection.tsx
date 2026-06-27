@@ -71,7 +71,7 @@ export default function ProjectsSection() {
   const projects = portfolioData.projects;
 
   const categories = useMemo(
-    () => [ALL, ...Array.from(new Set(projects.map((p) => p.category).filter(Boolean) as string[]))],
+    () => [ALL, ...Array.from(new Set(projects.flatMap((p) => (p.category ? [p.category] : []))))],
     [projects]
   );
 
@@ -133,8 +133,7 @@ export default function ProjectsSection() {
         items={pageItems}
         cardLayout={layout}
         glowColor="255, 255, 255" // Clean white spotlight glow to match glass
-        enableTilt={true}
-        enableStars={false}
+        effects={{ tilt: true, stars: false }}
         className="w-full"
       />
 

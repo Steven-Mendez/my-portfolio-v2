@@ -155,7 +155,7 @@ export const portfolioData = {
     tagline:
       "I build for the web — backends, the apps on top, and the bits in between.",
     handle: "steven-mendez",
-    avatarUrl: "/linkedin_photo.png",
+    avatarUrl: "/linkedin_photo.webp",
     contactEmail: "stevenampaiz@gmail.com",
     location: "Managua, Nicaragua",
     timezone: "UTC-6",
@@ -191,7 +191,7 @@ export const portfolioData = {
     {
       company: "WERN",
       companyUrl: WERN_URL || undefined,
-      logoPath: "/logos/wern_logo.jpeg",
+      logoPath: "/logos/wern_logo.webp",
       monogram: "W",
       accent: "linear-gradient(135deg,#3b5bff,#1e2a78)",
       title: "Freelance Software Engineer",
@@ -205,7 +205,7 @@ export const portfolioData = {
         {
           company: "Dupely",
           companyUrl: "https://dupely.io",
-          logoPath: "/logos/dupely_logo.jpeg",
+          logoPath: "/logos/dupely_logo.webp",
           monogram: "D",
           accent: "linear-gradient(135deg,#34d36b,#15a34a)",
           title: "Backend Engineer",
@@ -222,7 +222,7 @@ export const portfolioData = {
         },
         {
           company: "E-Learning Platform",
-          logoPath: "/logos/wern_logo.jpeg",
+          logoPath: "/logos/wern_logo.webp",
           monogram: "EL",
           accent: "linear-gradient(135deg,#8b6dff,#6d28d9)",
           confidential: true,
@@ -241,7 +241,7 @@ export const portfolioData = {
     },
     {
       company: "Universidad Nacional de Ingeniería (UNI)",
-      logoPath: "/logos/universidad_nacional_de_ingenieria_nicaragua_logo.jpeg",
+      logoPath: "/logos/universidad_nacional_de_ingenieria_nicaragua_logo.webp",
       monogram: "UNI",
       accent: "linear-gradient(135deg,#3b82f6,#1e40af)",
       title: "Systems Analyst",
@@ -264,7 +264,7 @@ export const portfolioData = {
         "A local-first, voice-based technical-interview simulator — a LangGraph agent interviews you by voice (STT ↔ TTS), grounded in your CV and the role, then an evaluator returns an evidence-backed report.",
       label: "React · FastAPI · LangGraph · Qdrant · Ollama",
       category: "AI",
-      image: "/projects/covers/ai-interview-simulator.jpg",
+      image: "/projects/covers/ai-interview-simulator.webp",
       slug: "ai-interview-simulator",
       repoUrl: "https://github.com/Steven-Mendez/ai-interview-simulator",
     },
@@ -274,7 +274,7 @@ export const portfolioData = {
         "Liquid-glass UI with Next.js, WebGL/GSAP motion, full SEO and structured data, and CI-enforced security headers.",
       label: "Next.js · React · TypeScript · GSAP · WebGL",
       category: "Web",
-      image: "/projects/covers/portfolio.jpg",
+      image: "/projects/covers/portfolio.webp",
       slug: "portfolio",
       liveUrl: SITE_URL,
       resumeFeatured: true,
@@ -289,7 +289,7 @@ export const portfolioData = {
         "Backend APIs and multi-vendor data pipelines powering a real-time shopping assistant — product ingestion, price tracking, caching, and live events.",
       label: "Python · FastAPI · AWS · Redis",
       category: "Data",
-      image: "/projects/placeholder.jpg",
+      image: "/projects/placeholder.webp",
     },
     {
       title: "GenAI Retrieval Features",
@@ -297,7 +297,7 @@ export const portfolioData = {
         "LLM/RAG features for an enterprise platform — a contextual assistant, retrieval over domain content with vector search, and a modular agent-service architecture.",
       label: "Python · FastAPI · LangChain · pgvector",
       category: "AI",
-      image: "/projects/placeholder.jpg",
+      image: "/projects/placeholder.webp",
     },
     {
       title: "Visual Agent-Configuration Tool",
@@ -305,7 +305,7 @@ export const portfolioData = {
         "A node-and-connector visual editor in Next.js/React to configure conversational-agent behavior across scenarios — built end to end.",
       label: "Next.js · React · TypeScript",
       category: "Web",
-      image: "/projects/placeholder.jpg",
+      image: "/projects/placeholder.webp",
     },
     {
       title: "IDE Assistant Extension",
@@ -313,7 +313,7 @@ export const portfolioData = {
         "A VS Code extension embedding an in-editor assistant via the Webview API, reusing an existing assistant backend.",
       label: "TypeScript · React · VS Code API",
       category: "AI",
-      image: "/projects/placeholder.jpg",
+      image: "/projects/placeholder.webp",
     },
     {
       title: "Enterprise Budget System",
@@ -321,7 +321,7 @@ export const portfolioData = {
         "Modernized a mission-critical ASP.NET / SQL Server financial system; optimized complex queries and proposed a React.js front-end architecture.",
       label: "ASP.NET · SQL Server · React",
       category: "Data",
-      image: "/projects/placeholder.jpg",
+      image: "/projects/placeholder.webp",
     },
   ],
   education: [

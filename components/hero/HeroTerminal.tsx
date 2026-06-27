@@ -98,16 +98,20 @@ export default function HeroTerminal() {
 
   // Distribute the revealed characters across lines, then across the tokens
   // within each line, in order — so the reveal cuts through colored tokens.
-  let remaining = revealed;
-  const display = SCRIPT.map((line) => {
-    let lineRemaining = remaining;
+  const display = SCRIPT.map((line, index) => {
+    // Characters the reveal has already spent on the lines above this one.
+    // Deriving it per line (instead of threading a running counter) keeps the
+    // render pure — no mid-render reassignment for the React Compiler to flag.
+    const before = SCRIPT.slice(0, index).reduce((sum, l) => sum + lineLength(l), 0);
+    let lineRemaining = revealed - before;
     const parts = line.map((token) => {
       const shown = Math.max(0, Math.min(lineRemaining, token.text.length));
       lineRemaining -= token.text.length;
       return token.text.slice(0, shown);
     });
-    remaining -= lineLength(line);
-    return parts;
+    // Each authored line has unique text, so its full text is a stable key.
+    // The script never reorders — the reveal only fills lines top to bottom.
+    return { key: line.map((t) => t.text).join(""), line, parts };
   });
 
   return (
@@ -126,11 +130,10 @@ export default function HeroTerminal() {
         </span>
       </div>
       <div className="min-h-[300px] px-5 py-5 font-mono text-[13px] leading-[1.85] sm:text-[13.5px]">
-        {SCRIPT.map((line, i) => {
-          const parts = display[i];
+        {display.map(({ key, line, parts }) => {
           if (!parts.some((p) => p.length > 0)) return null;
           return (
-            <div key={i} className="break-words whitespace-pre-wrap">
+            <div key={key} className="break-words whitespace-pre-wrap">
               {line.map((token, j) =>
                 parts[j] ? (
                   <span key={j} className={token.className}>

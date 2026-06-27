@@ -40,7 +40,7 @@ export type ConversationEmptyStateProps = ComponentProps<"div"> & {
   icon?: React.ReactNode;
 };
 
-export const ConversationEmptyState = ({
+const ConversationEmptyState = ({
   className,
   title = "No messages yet",
   description = "Start a conversation to see messages here",
@@ -101,10 +101,10 @@ export const ConversationScrollButton = ({
 };
 
 const getMessageText = (message: UIMessage): string =>
-  message.parts
-    .filter((part) => part.type === "text")
-    .map((part) => part.text)
-    .join("");
+  message.parts.reduce(
+    (text, part) => (part.type === "text" ? text + part.text : text),
+    ""
+  );
 
 export type ConversationDownloadProps = Omit<
   ComponentProps<typeof Button>,
@@ -121,7 +121,7 @@ const defaultFormatMessage = (message: UIMessage): string => {
   return `**${roleLabel}:** ${getMessageText(message)}`;
 };
 
-export const messagesToMarkdown = (
+const messagesToMarkdown = (
   messages: UIMessage[],
   formatMessage: (
     message: UIMessage,
@@ -129,7 +129,7 @@ export const messagesToMarkdown = (
   ) => string = defaultFormatMessage
 ): string => messages.map((msg, i) => formatMessage(msg, i)).join("\n\n");
 
-export const ConversationDownload = ({
+const ConversationDownload = ({
   messages,
   filename = "conversation.md",
   formatMessage = defaultFormatMessage,

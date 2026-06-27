@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, { useRef, useEffect, useCallback, useEffectEvent, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import './MagicBento.css';
@@ -29,28 +29,53 @@ export interface BentoCardLayout {
   gr: string;
 }
 
+/** Independent hover/animation effects for the bento grid. Pass a partial to
+ *  toggle individual effects; anything omitted falls back to DEFAULT_EFFECTS.
+ *  Grouped into one object (instead of six standalone boolean props) so the
+ *  on/off combinations stay easy to pass and test as a single unit. */
+export interface BentoEffects {
+  /** Particle "stars" that spawn on hover (renders cards via ParticleCard). */
+  stars?: boolean;
+  /** Cursor-following radial spotlight across the whole grid. */
+  spotlight?: boolean;
+  /** Glow that traces the card border near the cursor. */
+  borderGlow?: boolean;
+  /** 3D tilt of the card toward the cursor. */
+  tilt?: boolean;
+  /** Slight magnetic pull of the card toward the cursor. */
+  magnetism?: boolean;
+  /** Ripple burst on click. */
+  click?: boolean;
+}
+
 export interface BentoProps {
   items?: BentoCardProps[];
   /** Explicit per-card grid placement (one per item) for paginated bento pages. */
   cardLayout?: BentoCardLayout[];
   className?: string;
   textAutoHide?: boolean;
-  enableStars?: boolean;
-  enableSpotlight?: boolean;
-  enableBorderGlow?: boolean;
+  /** Master kill-switch for motion (also auto-disabled on mobile / reduced-motion). */
   disableAnimations?: boolean;
   spotlightRadius?: number;
   particleCount?: number;
-  enableTilt?: boolean;
   glowColor?: string;
-  clickEffect?: boolean;
-  enableMagnetism?: boolean;
+  /** Per-effect toggles; see BentoEffects. Defaults to DEFAULT_EFFECTS. */
+  effects?: BentoEffects;
 }
 
 const DEFAULT_PARTICLE_COUNT = 12;
 const DEFAULT_SPOTLIGHT_RADIUS = 300;
 const DEFAULT_GLOW_COLOR = '132, 0, 255';
 const MOBILE_BREAKPOINT = 768;
+
+const DEFAULT_EFFECTS: Required<BentoEffects> = {
+  stars: true,
+  spotlight: true,
+  borderGlow: true,
+  tilt: false,
+  magnetism: true,
+  click: true
+};
 
 const defaultCardData: BentoCardProps[] = [
   {
@@ -223,6 +248,13 @@ const ParticleCard: React.FC<{
     });
   }, [initializeParticles]);
 
+  // Effect Event: always reads the latest animateParticles without being a
+  // reactive dependency, so the listener effect below doesn't tear down and
+  // re-attach every time animateParticles' identity changes.
+  const onAnimateParticles = useEffectEvent(() => {
+    animateParticles();
+  });
+
   useEffect(() => {
     if (disableAnimations || !cardRef.current) return;
 
@@ -230,7 +262,7 @@ const ParticleCard: React.FC<{
 
     const handleMouseEnter = () => {
       isHoveredRef.current = true;
-      animateParticles();
+      onAnimateParticles();
 
       if (enableTilt) {
         gsap.to(element, {
@@ -352,14 +384,16 @@ const ParticleCard: React.FC<{
     element.addEventListener('click', handleClick);
 
     return () => {
-      isHoveredRef.current = false;
       element.removeEventListener('mouseenter', handleMouseEnter);
       element.removeEventListener('mouseleave', handleMouseLeave);
       element.removeEventListener('mousemove', handleMouseMove);
       element.removeEventListener('click', handleClick);
+      // clearAllParticles() cancels every pending particle timeout, so the
+      // in-flight spawns that guarded on isHoveredRef are already stopped here —
+      // no need to reset the flag through the ref in cleanup.
       clearAllParticles();
     };
-  }, [animateParticles, clearAllParticles, disableAnimations, enableTilt, enableMagnetism, clickEffect, glowColor]);
+  }, [clearAllParticles, disableAnimations, enableTilt, enableMagnetism, clickEffect, glowColor]);
 
   return (
     <div
@@ -525,37 +559,34 @@ const BentoCardGrid: React.FC<{
   </div>
 );
 
-const useMobileDetection = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  return isMobile;
+const subscribeViewport = (callback: () => void) => {
+  window.addEventListener('resize', callback);
+  return () => window.removeEventListener('resize', callback);
 };
+const getIsMobileSnapshot = () => window.innerWidth <= MOBILE_BREAKPOINT;
+// The server has no viewport, so it renders the desktop baseline and
+// useSyncExternalStore corrects to the real size on the client — no extra
+// mount-effect render like the previous useState+useEffect pair produced.
+const getIsMobileServerSnapshot = () => false;
+
+const useMobileDetection = () =>
+  useSyncExternalStore(subscribeViewport, getIsMobileSnapshot, getIsMobileServerSnapshot);
 
 const MagicBento: React.FC<BentoProps> = ({
   items = defaultCardData,
   cardLayout,
   className = '',
   textAutoHide = true,
-  enableStars = true,
-  enableSpotlight = true,
-  enableBorderGlow = true,
   disableAnimations = false,
   spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
   particleCount = DEFAULT_PARTICLE_COUNT,
-  enableTilt = false,
   glowColor = DEFAULT_GLOW_COLOR,
-  clickEffect = true,
-  enableMagnetism = true
+  effects
 }) => {
+  const { stars, spotlight, borderGlow, tilt, magnetism, click } = {
+    ...DEFAULT_EFFECTS,
+    ...effects
+  };
   const gridRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileDetection();
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -563,11 +594,11 @@ const MagicBento: React.FC<BentoProps> = ({
 
   return (
     <>
-      {enableSpotlight ? (
+      {spotlight ? (
         <GlobalSpotlight
           gridRef={gridRef}
           disableAnimations={shouldDisableAnimations}
-          enabled={enableSpotlight}
+          enabled={spotlight}
           spotlightRadius={spotlightRadius}
           glowColor={glowColor}
         />
@@ -575,7 +606,7 @@ const MagicBento: React.FC<BentoProps> = ({
 
       <BentoCardGrid gridRef={gridRef} className={className} explicitLayout={!!cardLayout}>
         {items.map((card, index) => {
-          const baseClassName = `magic-bento-card ${textAutoHide ? 'magic-bento-card--text-autohide' : ''} ${enableBorderGlow ? 'magic-bento-card--border-glow' : ''}`;
+          const baseClassName = `magic-bento-card ${textAutoHide ? 'magic-bento-card--text-autohide' : ''} ${borderGlow ? 'magic-bento-card--border-glow' : ''}`;
           const placement = cardLayout?.[index];
           // Placeholder-covered projects are in-progress: show a neutral "Coming Soon"
           // teaser instead of the real blurb (the real title is still the React key).
@@ -590,7 +621,7 @@ const MagicBento: React.FC<BentoProps> = ({
             } as React.CSSProperties
           };
 
-          if (enableStars) {
+          if (stars) {
             return (
               <ParticleCard
                 key={card.title}
@@ -598,9 +629,9 @@ const MagicBento: React.FC<BentoProps> = ({
                 disableAnimations={shouldDisableAnimations}
                 particleCount={particleCount}
                 glowColor={glowColor}
-                enableTilt={enableTilt}
-                clickEffect={clickEffect}
-                enableMagnetism={enableMagnetism}
+                enableTilt={tilt}
+                clickEffect={click}
+                enableMagnetism={magnetism}
               >
                 <div className="magic-bento-card__header">
                   <div className="magic-bento-card__label">{card.label}</div>
@@ -630,7 +661,7 @@ const MagicBento: React.FC<BentoProps> = ({
                   const centerX = rect.width / 2;
                   const centerY = rect.height / 2;
 
-                  if (enableTilt) {
+                  if (tilt) {
                     const rotateX = ((y - centerY) / centerY) * -10;
                     const rotateY = ((x - centerX) / centerX) * 10;
                     gsap.to(el, {
@@ -642,7 +673,7 @@ const MagicBento: React.FC<BentoProps> = ({
                     });
                   }
 
-                  if (enableMagnetism) {
+                  if (magnetism) {
                     const magnetX = (x - centerX) * 0.05;
                     const magnetY = (y - centerY) * 0.05;
                     gsap.to(el, {
@@ -657,7 +688,7 @@ const MagicBento: React.FC<BentoProps> = ({
                 const handleMouseLeave = () => {
                   if (shouldDisableAnimations) return;
 
-                  if (enableTilt) {
+                  if (tilt) {
                     gsap.to(el, {
                       rotateX: 0,
                       rotateY: 0,
@@ -666,7 +697,7 @@ const MagicBento: React.FC<BentoProps> = ({
                     });
                   }
 
-                  if (enableMagnetism) {
+                  if (magnetism) {
                     gsap.to(el, {
                       x: 0,
                       y: 0,
@@ -677,7 +708,7 @@ const MagicBento: React.FC<BentoProps> = ({
                 };
 
                 const handleClick = (e: MouseEvent) => {
-                  if (!clickEffect || shouldDisableAnimations) return;
+                  if (!click || shouldDisableAnimations) return;
 
                   const rect = el.getBoundingClientRect();
                   const x = e.clientX - rect.left;
