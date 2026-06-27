@@ -18,37 +18,42 @@ export default function CredentialsSection() {
           {certifications.map((item, i) => (
             <li
               key={item.name}
-              className={`flex items-start gap-5 py-5 ${i > 0 ? 'border-t border-white/10' : ''}`}
+              className={`flex items-start gap-4 py-5 sm:gap-5 ${i > 0 ? 'border-t border-white/10' : ''}`}
             >
-              <span className="mt-0.5 w-12 shrink-0 font-mono text-[13px] text-fg-muted">
+              <span className="mt-0.5 w-10 shrink-0 font-mono text-[13px] text-fg-muted sm:w-12">
                 {item.year}
               </span>
 
-              <div className="min-w-0 flex-1">
-                {item.href ? (
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[17px] font-semibold tracking-tight text-white transition-colors hover:text-eyebrow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                  >
-                    {item.name}
-                    <ArrowUpRight className="size-3.5 text-eyebrow" aria-hidden />
-                  </a>
-                ) : (
-                  <div className="text-[17px] font-semibold tracking-tight text-white">
-                    {item.name}
-                  </div>
-                )}
-                <div className="mt-1 text-sm leading-snug text-fg-muted">{item.org}</div>
-              </div>
+              {/* On mobile the kind badge stacks under the title so long names
+                  ("Application Development with Visual C#") get the full column
+                  width; on sm+ it returns to a right-aligned, centered chip. */}
+              <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between sm:gap-4">
+                <div className="min-w-0">
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[17px] font-semibold tracking-tight text-white transition-colors hover:text-eyebrow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    >
+                      {item.name}
+                      <ArrowUpRight className="size-3.5 text-eyebrow" aria-hidden />
+                    </a>
+                  ) : (
+                    <div className="text-[17px] font-semibold tracking-tight text-white">
+                      {item.name}
+                    </div>
+                  )}
+                  <div className="mt-1 text-sm leading-snug text-fg-muted">{item.org}</div>
+                </div>
 
-              <Badge
-                variant="outline"
-                className="shrink-0 self-center border-primary/30 bg-primary/[0.06] font-mono tracking-[0.12em] text-eyebrow"
-              >
-                {item.kind}
-              </Badge>
+                <Badge
+                  variant="outline"
+                  className="mt-2 shrink-0 self-start border-primary/30 bg-primary/[0.06] font-mono tracking-[0.12em] text-eyebrow sm:mt-0 sm:self-center"
+                >
+                  {item.kind}
+                </Badge>
+              </div>
             </li>
           ))}
         </ul>

@@ -112,7 +112,7 @@ function ExperienceItem({ exp, isLast, isNested = false }: { exp: ExperienceItem
       {/* Nested client engagements — accent-tinted to read as a sub-cluster */}
       {hasChildren ? (
         <div className="mt-5 rounded-2xl border border-primary/25 bg-[rgba(124,152,255,0.07)] p-4 md:p-5">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-eyebrow">
               Clients delivered via {exp.company}
             </p>
