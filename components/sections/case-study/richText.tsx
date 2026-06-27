@@ -1,15 +1,43 @@
 import * as React from "react";
 
-// Lightweight inline markup for case-study copy: **bold**, *italic*, `code`.
-// The content is authored in lib/case-studies.ts (trusted, not user input), so
-// a small tokenizer is enough — no full Markdown parser. Bold is matched before
-// italic so a `**` pair is never mistaken for two italic markers.
-const TOKEN = /(`[^`]+`|\*\*[^*]+?\*\*|\*[^*]+?\*)/g;
+// Lightweight inline markup for case-study copy: **bold**, *italic*, `code`, and
+// [links](url). The content is authored in lib/case-studies.ts (trusted, not
+// user input), so a small tokenizer is enough — no full Markdown parser. Match
+// order is code → bold → link → italic, so a `**` pair is never mistaken for two
+// italic markers and a `*` inside code/links is taken literally. A link's text
+// holds no `]` and its URL no `)` or whitespace.
+const TOKEN = /(`[^`]+`|\*\*[^*]+?\*\*|\[[^\]]+\]\([^)\s]+\)|\*[^*]+?\*)/g;
 
-/** Renders a string with inline markup (**bold**, *italic*, `code`) as React
- *  nodes. A real component (rather than a `renderInline()` helper) so React
- *  reconciles it by identity and it shows up in the tree. Safe in server
- *  components — returns elements, never dangerouslySetInnerHTML.
+// Parses a single link token `[label](href)` into its parts, or null if the
+// token is not a well-formed link.
+const LINK = /^\[([^\]]+)\]\(([^)\s]+)\)$/;
+
+// A link is external when it points off-site (http(s):// or protocol-relative
+// //). Internal links (/path, #anchor) render as plain anchors.
+function isExternal(href: string): boolean {
+  return /^(https?:)?\/\//.test(href);
+}
+
+/** Plain-text form of a marked-up string — markers removed, link labels kept.
+ *  Use wherever a string (not React nodes) is required, e.g. an `alt`. */
+export function stripInline(text: string): string {
+  return text.replace(TOKEN, (token) => {
+    if (token.startsWith("`")) return token.slice(1, -1);
+    if (token.startsWith("**")) return token.slice(2, -2);
+    if (token.startsWith("[")) {
+      const m = LINK.exec(token);
+      return m ? m[1] : token;
+    }
+    if (token.startsWith("*")) return token.slice(1, -1);
+    return token;
+  });
+}
+
+/** Renders a string with inline markup (**bold**, *italic*, `code`, and
+ *  [links](url)) as React nodes. A real component (rather than a
+ *  `renderInline()` helper) so React reconciles it by identity and it shows up
+ *  in the tree. Safe in server components — returns elements, never
+ *  dangerouslySetInnerHTML.
  *
  *  Each token is keyed by its start offset in the source string. The offset is
  *  unique (no two tokens begin at the same position) and stable across renders,
@@ -47,6 +75,22 @@ export function Inline({ text }: { text: string }): React.ReactElement {
             <strong key={key} className="font-semibold text-white">
               {value.slice(2, -2)}
             </strong>
+          );
+        }
+        const link = value.startsWith("[") ? LINK.exec(value) : null;
+        if (link) {
+          const [, label, href] = link;
+          return (
+            <a
+              key={key}
+              href={href}
+              className="font-medium text-accent-blue underline decoration-accent-blue/40 underline-offset-2 transition-colors hover:decoration-accent-blue"
+              {...(isExternal(href)
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+            >
+              {label}
+            </a>
           );
         }
         if (value.startsWith("*") && value.endsWith("*")) {

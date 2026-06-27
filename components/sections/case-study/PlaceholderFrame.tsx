@@ -2,6 +2,8 @@ import { Camera, Play } from "lucide-react";
 
 import type { CaseMedia } from "@/lib/case-studies";
 
+import { Inline } from "./richText";
+
 /** An empty, deliberately-styled media slot. Renders where a real screenshot or
  *  clip will go, carrying its description so the layout is final and the asset
  *  can be dropped in later without touching anything else. A dashed border and
@@ -26,7 +28,7 @@ export default function PlaceholderFrame({ media }: { media: CaseMedia }) {
           </span>
           {media.description && (
             <p className="max-w-[54ch] text-sm leading-relaxed text-fg-secondary">
-              {media.description}
+              <Inline text={media.description} />
             </p>
           )}
         </div>

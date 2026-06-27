@@ -49,7 +49,7 @@ export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
                 key={blockKey(block)}
                 className="pt-2 text-[21px] font-medium leading-[1.2] tracking-tight text-white md:text-[25px]"
               >
-                {block.text}
+                <Inline text={block.text} />
               </h3>
             );
 

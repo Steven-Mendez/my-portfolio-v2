@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CaseStudy } from "@/lib/case-studies";
 
+import { Inline } from "./richText";
+
 /** GitHub logo mark — lucide dropped its brand icons, so we inline the official
  *  mark, sized to sit inline with the button label. */
 function GithubMark() {
@@ -30,14 +32,14 @@ export default function CaseHeader({ study }: { study: CaseStudy }) {
       </div>
 
       <h1 className="mt-6 text-4xl font-bold leading-[1.02] tracking-tight text-white sm:text-5xl md:text-6xl">
-        {study.title}
+        <Inline text={study.title} />
       </h1>
 
       {/* Lead reads like the body paragraphs — left-aligned (ragged right),
           same size/leading/colour and width — not centred like the rest of the
           hero, so a long paragraph stays comfortable to read. */}
       <p className="mx-auto mt-7 max-w-[680px] text-left text-[18px] leading-[1.7] text-foreground/90 md:text-[19px]">
-        {study.overview}
+        <Inline text={study.overview} />
       </p>
 
       <div className="mt-8 flex flex-wrap justify-center gap-2">

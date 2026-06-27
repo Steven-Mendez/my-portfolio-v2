@@ -30,10 +30,11 @@ export interface CaseMedia {
   optional?: boolean;
 }
 
-/** A unit of rich section content. Sections built from `blocks` can mix prose,
- *  lists, tables, live Mermaid diagrams, and placeholder media; the legacy
- *  `paragraphs` + single `media` shape still works for simpler case studies.
- *  Text fields accept lightweight inline markup: **bold**, *italic*, `code`. */
+/** A unit of rich section content. A section's body is an ordered list of these
+ *  blocks, mixing prose, lists, tables, live Mermaid diagrams, and media. Any
+ *  block type is available to every case study, even if only one uses it today.
+ *  Text fields accept lightweight inline markup: **bold**, *italic*, `code`,
+ *  and [links](url). */
 export type CaseBlock =
   | { type: "paragraph"; text: string }
   | { type: "subheading"; text: string }
@@ -44,16 +45,13 @@ export type CaseBlock =
   | { type: "media"; media: CaseMedia };
 
 export interface CaseSection {
-  /** Mono kicker, e.g. "CONTEXT". */
-  kicker: string;
-  heading: string;
-  /** Simple prose body. Used when a section has no rich `blocks`. */
-  paragraphs?: string[];
-  /** Rich, mixed content (prose, lists, tables, diagrams, media). When present,
-   *  it replaces `paragraphs` + `media` for this section. */
-  blocks?: CaseBlock[];
-  /** Optional supporting figure rendered under the prose (legacy shape). */
-  media?: CaseMedia;
+  /** Mono kicker, e.g. "CONTEXT". Optional — omit for an untitled section. */
+  kicker?: string;
+  /** Section heading. Optional — omit for a stand-alone diagram or quote. */
+  heading?: string;
+  /** The section body: an ordered, mixed list of content blocks (prose, lists,
+   *  tables, diagrams, media). The single, canonical way to author a section. */
+  blocks: CaseBlock[];
 }
 
 export interface CaseStudy {
@@ -161,11 +159,11 @@ const caseStudies: Record<string, CaseStudy> = {
         blocks: [
           {
             type: "paragraph",
-            text: "FastAPI backend (data in SQLModel + Alembic), React + TanStack Start front end, with the AI models running locally on Ollama. Docker Compose runs the API, database, vector store, and speech services together.",
+            text: "I built it to run on your own machine, so nothing you say in practice ever leaves the room. A FastAPI backend (data in SQLModel + Alembic), a React + TanStack Start front end, and the AI models run locally on Ollama. Docker Compose runs the API, database, vector store, and speech services together.",
           },
           {
             type: "paragraph",
-            text: "One rule holds it together: **every part talks through a clear interface.** Speech-to-text, text-to-speech, and turn detection are used only through `STTProvider`, `TTSProvider`, and `TurnDetector`, and a setting picks which one. Moving the model, vector store, or database to the cloud is a config change — not a rewrite.",
+            text: "One rule holds it together: **every part talks through a clear interface.** Speech-to-text, text-to-speech, and turn detection are used only through `STTProvider`, `TTSProvider`, and `TurnDetector`, and a setting picks which one. Turn detection mattered most to me — it decides when the interviewer is allowed to speak, the one thing the real bot got wrong — so I kept it easy to swap without touching anything else. Moving the model, vector store, or database to the cloud is the same kind of change: a config switch, not a rewrite.",
           },
           {
             type: "mermaid",
@@ -244,11 +242,11 @@ const caseStudies: Record<string, CaseStudy> = {
         blocks: [
           {
             type: "paragraph",
-            text: "**Ollama native, not in Docker.** On Apple Silicon, Docker cannot use the GPU, so Ollama in Docker runs CPU-only and crawls. Running it natively uses the Apple GPU (Metal) and is far faster. *Cost:* no single `docker compose up` — but for real use, the speed is worth it.",
+            text: "**Ollama native, not in Docker.** On Apple Silicon, Docker cannot use the GPU, so Ollama in Docker runs CPU-only and crawls. Running it natively uses the Apple GPU (Metal) and is far faster. *Cost:* no single `docker compose up` — but a fast reply is what makes a turn feel like talking to a person, so it earns the extra step.",
           },
           {
             type: "paragraph",
-            text: "**Turn detection: a simple rule, not a big model.** By default the app uses a light rule over the words so far — no heavy model, no restrictive license bundled in. You can opt into a stronger model instead; I documented the trade-off for each:",
+            text: "**Turn detection: a simple rule, not a big model.** This is the part that decides you have finished speaking — get it wrong and you are the one being cut off. By default the app uses a light rule over the words so far — no heavy model, no restrictive license bundled in. You can opt into a stronger model instead; I documented the trade-off for each:",
           },
           {
             type: "table",
@@ -287,6 +285,14 @@ const caseStudies: Record<string, CaseStudy> = {
             text: "And I **measure it instead of guessing.** The app times each step — `turn_detection_ms`, `stt_ms`, `graph_ms`, `tts_ms`, plus time-to-first-audio — sends them to LangSmith, and warns me when a step runs slow. On a local GPU the interviewer replies about 1–3 seconds after you stop (≈0.7–1s in the cloud).",
           },
           {
+            type: "paragraph",
+            text: "This is the part I cared about most. The bot ignored what I said. This one is built around it. The report quotes you back to yourself — every point ties to a moment in your own interview — so you walk away feeling heard, not graded by a stranger. And because it stays private and runs on your machine, you can freeze, ramble, and start over with no one watching. That was the goal: do the awkward reps here, in private, so the real interview is not the first time you have had the conversation.",
+          },
+          {
+            type: "paragraph",
+            text: "I have not taken it into a real interview yet — but I built it for exactly that moment, and I trust it to get me there ready.",
+          },
+          {
             type: "media",
             media: {
               kind: "REPORT",
@@ -305,7 +311,7 @@ const caseStudies: Record<string, CaseStudy> = {
             type: "list",
             items: [
               "**Clear interfaces from the start** let the app run both locally and in the cloud without writing the code twice.",
-              "**How fast it *feels* beats the total time.** Speaking back one sentence at a time helped more than any other speed fix.",
+              "**How fast it feels beats the total time.** Speaking back one sentence at a time helped more than any other speed fix.",
               "**Measure before optimizing.** Timing each step in LangSmith showed the real slow point, instead of guessing.",
             ],
           },
@@ -338,7 +344,7 @@ const caseStudies: Record<string, CaseStudy> = {
     year: "2026",
     role: "Designer & Engineer",
     overview:
-      "This is the website you are reading right now. I built it to show my work as a full-stack developer. Most of my strongest projects come from freelance jobs, and I cannot show many of them because of NDAs — which is a real shame.",
+      "This is the website you are reading right now. Most of my strongest work is freelance and locked behind NDAs, so I cannot show it. That left one honest option: make the site itself the proof of how I build.",
     seoDescription:
       "The site you are on now — a fast, fully static Next.js portfolio with a glass design system and accessibility & SEO checked in CI on every change.",
     stack: "NEXT.JS · REACT · TYPESCRIPT · TAILWIND",
@@ -354,41 +360,125 @@ const caseStudies: Record<string, CaseStudy> = {
       {
         kicker: "THE IDEA",
         heading: "A site that works like the things I build",
-        paragraphs: [
-          "I did not want a ready-made theme with stock animations. I wanted my own site to show how I work as a developer: with care for speed, small details, and clean code.",
-          "So I treated it like a real product, not a quick demo. Every part has a reason, and every choice — from the layout to the last byte — was made on purpose.",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "The easy path was a template. Grab a theme, drop in my projects, ship a demo over a weekend — that is what most portfolios are. But a site that *says* I care about quality, built on someone else's quick demo, proves nothing. So I gave myself a harder rule: the site has to **be** the proof, not just claim it.",
+          },
+          {
+            type: "quote",
+            text: "I treated my own portfolio like a real product, not a quick demo.",
+          },
+          {
+            type: "paragraph",
+            text: "I held it to the same bar I hold client work to: real care for **speed**, **small details**, and **clean code**. Every choice — *from the layout to the last byte* — had to earn its place.",
+          },
         ],
       },
       {
         kicker: "THE PROCESS",
-        heading: "A clear spec, AI agents, and solid tools",
-        paragraphs: [
-          "Yes, I write code — that is what I do. But I have changed the way I develop, adapting to the modern era. Today I work with AI agents in a Spec-Driven way: first I write a clear, detailed spec of what I want, then the agents help me turn it into code. I review, test, and guide each step, so the result still matches my taste and standards.",
-          "I also use proven tools instead of building everything from zero — like shadcn/ui and Radix for the components and Tailwind for the styles. My job is to pick them well, connect them, and make them feel like one site.",
+        heading: "Taste is the part you cannot outsource",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Agents write code now, and good libraries hand me components for free. Neither of them knows what *good* looks like, or when a thing is ready to ship. That judgment is mine — and it is the part of this job that matters most.",
+          },
+          {
+            type: "paragraph",
+            text: "So I treat AI like a fast, tireless team, and I stay the one in charge. I work **Spec-Driven**, in three steps:",
+          },
+          {
+            type: "list",
+            items: [
+              "**I set the standard** — I write a clear, exact spec of what *good* means here, down to the detail.",
+              "**Agents build to it** — they turn that spec into code, fast.",
+              "**I hold the line** — I review, test, and push back until the result meets my taste, not only the spec.",
+            ],
+          },
+          {
+            type: "paragraph",
+            text: "I lean on proven parts instead of reinventing them — [shadcn/ui](https://ui.shadcn.com) and [Radix](https://www.radix-ui.com) for components, [Tailwind](https://tailwindcss.com) for styling. Choosing the right ones, wiring them together, and making them feel like *one* site is the real skill. The pieces are off the shelf; the judgment is not.",
+          },
         ],
       },
       {
         kicker: "HOW IT'S BUILT",
         heading: "The tools behind the site",
-        paragraphs: [
-          "The site runs on Next.js with React and TypeScript, and Tailwind CSS for the styles. Every page is built ahead of time, so it loads fast and search engines and AI assistants can read it without running any code.",
-          "All the text and data live in one file. The same source feeds the whole site, including a résumé page that is ready to print. I change it in one place, and it updates everywhere.",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "The site runs on [Next.js](https://nextjs.org) with [React](https://react.dev) and [TypeScript](https://www.typescriptlang.org), and **Tailwind CSS** for the styles. Every page is built ahead of time, so it loads fast and search engines and AI assistants can read it without running any code.",
+          },
+          {
+            type: "table",
+            headers: ["Tool", "Role"],
+            rows: [
+              ["Next.js", "App framework, static-first rendering"],
+              ["React + TypeScript", "UI, with types end to end"],
+              ["Tailwind CSS", "Styling from design tokens"],
+              ["shadcn/ui + Radix", "Accessible component primitives"],
+            ],
+          },
+          { type: "subheading", text: "One source of truth" },
+          {
+            type: "paragraph",
+            text: "All the text and data live in **one file** — `lib/data.ts`. The same source feeds the whole site, including a résumé page that is ready to print. I change it in one place, and it updates everywhere.",
+          },
         ],
       },
       {
         kicker: "THE LOOK",
         heading: "Liquid glass, with my own electric colors",
-        paragraphs: [
-          "The look is inspired by “Liquid Glass”, the design Apple introduced with the iPhone 17, its newest phone at the time. Many people did not like it — I did. I did not copy it; I took the idea of soft, see-through glass and gave it my own electric colors, the tones I like most, so the site feels alive.",
-          "The glass comes from one shared building block that I reuse on every card and panel, with design tokens for the colors and spacing, so everything matches and is easy to change later.",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "The look is inspired by *Liquid Glass*, the design Apple introduced with the iPhone 17, its newest phone at the time. Many people did not like it — I did. I did not copy it; I took the idea of soft, see-through glass and gave it my own **electric colors**, the tones I like most, so the site feels alive.",
+          },
+          {
+            type: "paragraph",
+            text: "The glass comes from **one shared building block** that I reuse on every card and panel, with `design tokens` for the colors and spacing, so everything matches and is easy to change later.",
+          },
         ],
       },
       {
         kicker: "QUALITY",
         heading: "Quality is checked, not just promised",
-        paragraphs: [
-          "I did not just hope the site was fast — I measured it. Every change runs automatic checks before it goes live: code style, types, a full build, and page tests. Lighthouse also checks accessibility and SEO, and the build fails if the score drops below 95.",
-          "Then I optimized the details most sites ignore: images are compressed (the hero went from 19 MB to about 446 KB), security headers keep safe defaults, and the page opens almost instantly with no jumpy layout.",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "A standard only means something if something enforces it. So I did not just hope the site was fast — I **measured** it. Every change runs automatic checks before it goes live:",
+          },
+          {
+            type: "list",
+            items: [
+              "**Lint & format** — a consistent code style on every commit.",
+              "**Types** — a full `tsc` type-check, no `any` slipping through.",
+              "**Build & tests** — a production build plus the page test suite.",
+              "**Lighthouse** — accessibility and SEO, and the build *fails* if the score drops below **95**.",
+            ],
+          },
+          {
+            type: "paragraph",
+            text: "Then I optimized the details most sites ignore: images are compressed (the hero went from **19 MB** to about **446 KB**), security headers keep safe defaults, and the page opens almost instantly with *no jumpy layout*.",
+          },
+        ],
+      },
+      {
+        kicker: "WHAT I LEARNED",
+        heading: "What it cost, and what surprised me",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "**It cost real time.** A template ships in a weekend; this did not. For a personal site with no client waiting, I had to keep asking whether the extra polish was worth it. I believe it was — but it is a fair question.",
+              "**The agents were never the bottleneck — my judgment was.** They built fast. The slow part was deciding what *good* meant, then reviewing and pushing back until it was right. The work moved from typing to taste, which is exactly where I want it.",
+              "**Knowing when to stop was the hardest part.** A site about caring for quality can quietly turn into polishing forever. Shipping meant deciding that *good enough* really was good enough — and letting go.",
+            ],
+          },
+          {
+            type: "paragraph",
+            text: "And it did the job I built it for. Clients on Upwork reached out — and what they singled out was the quality, the care in the details. The site was the proof, so I did not have to claim it.",
+          },
         ],
       },
     ],

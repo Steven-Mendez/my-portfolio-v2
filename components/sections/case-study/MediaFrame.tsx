@@ -4,6 +4,7 @@ import { Play } from "lucide-react";
 import type { CaseMedia } from "@/lib/case-studies";
 
 import PlaceholderFrame from "./PlaceholderFrame";
+import { Inline, stripInline } from "./richText";
 
 /** A framed media still — glass border, kind badge, optional play affordance,
  *  and a mono caption. Reused by the inline section figures and the gallery so
@@ -21,7 +22,7 @@ export default function MediaFrame({ media, sizes }: { media: CaseMedia; sizes: 
         <div className="relative aspect-[16/10]">
           <Image
             src={media.src}
-            alt={media.caption ?? ""}
+            alt={media.caption ? stripInline(media.caption) : ""}
             fill
             sizes={sizes}
             className="object-cover"
@@ -45,7 +46,7 @@ export default function MediaFrame({ media, sizes }: { media: CaseMedia; sizes: 
       </div>
       {media.caption && (
         <figcaption className="mt-3 font-mono text-xs leading-relaxed text-fg-muted">
-          {media.caption}
+          <Inline text={media.caption} />
         </figcaption>
       )}
     </figure>

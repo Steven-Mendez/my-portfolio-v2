@@ -3,6 +3,8 @@
  * CSP tuned for App Router, JSON-LD, Tailwind (inline styles), WebGL canvas,
  * and Vercel Analytics / Speed Insights.
  */
+const isDev = process.env.NODE_ENV === "development"
+
 const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -10,8 +12,10 @@ const contentSecurityPolicy = [
   "frame-ancestors 'none'",
   "frame-src 'none'",
   "object-src 'none'",
-  // Keep 'unsafe-inline' for current JSON-LD injection strategy.
-  "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live",
+  // Keep 'unsafe-inline' for current JSON-LD injection strategy. React's dev
+  // mode needs 'unsafe-eval' for debugging features (it never uses eval() in
+  // production), so it is added only in development.
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com https://vercel.live`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
@@ -58,6 +62,9 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
+    // Next.js 16 defaults to [75]; the profile photo renders at 90, so both
+    // allowed qualities must be listed or the value is coerced to the nearest.
+    qualities: [75, 90],
   },
   async headers() {
     return [
