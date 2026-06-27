@@ -13,11 +13,15 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0e0e10",
-          color: "#5b8cff",
-          fontSize: 280,
+          // Round badge: periwinkle circle, deep-navy letters (same palette as
+          // the primary "VIEW EXPERIENCE" button). borderRadius 50% leaves the
+          // corners transparent so it reads as a clean circle on any tab bar.
+          borderRadius: "50%",
+          background: "#b0c6ff",
+          color: "#002d6e",
+          fontSize: 300,
           fontWeight: 800,
-          letterSpacing: -12,
+          letterSpacing: -10,
           fontFamily: "sans-serif",
         }}
       >
