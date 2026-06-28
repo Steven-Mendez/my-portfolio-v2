@@ -125,10 +125,14 @@
   }
 }
 
-/* Tech marquee — the duplicated track translates -50% for a seamless loop. */
+/* Tech marquee — the track holds two identical copies of the list and scrolls
+   left for a seamless infinite loop. A plain -50% would leave a 26px seam: the
+   two copies are separated by the same 52px gap as the items within them, so one
+   full copy actually starts at 50% + half a gap. Translating the extra half-gap
+   (26px) lands copy B exactly where copy A began, so the wrap is invisible. */
 @keyframes marquee {
   from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  to   { transform: translateX(calc(-50% - 26px)); }
 }
 
 .marquee-track {
