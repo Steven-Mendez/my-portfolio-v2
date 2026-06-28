@@ -225,10 +225,12 @@
     grid-row: 3;
   }
 
-  /* Paginated bento: explicit per-card placement that mutates per page. Cards
-     carry their span via inline --gc/--gr vars, consumed only here so they keep
-     flowing normally on the mobile/tablet breakpoints. */
+  /* Explicit bento: a 12-column grid so any card's column span (its inline --gc)
+     can be any width from 1/12 to full — fine-grained control to emphasize any
+     card on any page. Cards carry their span via inline --gc/--gr vars, consumed
+     only here so they keep flowing normally on the mobile/tablet breakpoints. */
   .card-grid[data-explicit-layout] {
+    grid-template-columns: repeat(12, 1fr);
     grid-auto-rows: 215px;
   }
 

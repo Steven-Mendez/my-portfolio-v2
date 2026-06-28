@@ -35,29 +35,31 @@ const MagicBento = dynamic(() => import('../MagicBento'), {
 const PAGE_SIZE = 4;
 const ALL = 'All';
 
-// Bento layouts that tile a 4-col grid (1 or 2 rows). One variant is picked per
-// page index so the grid mutates as you paginate — like the reference design.
+// The explicit bento is a 12-column grid (see `.card-grid[data-explicit-layout]`
+// in MagicBento.css). Each cell sets a card's column span (`cs`, 1–12) and row
+// span (`rs`), so ANY card on ANY page can be made wider/taller — that's how you
+// make an element stand out more or less, purely the developer's call. One
+// variant is picked per page index, so a multi-page grid mutates as you paginate.
 type Cell = { c: number; r: number; cs: number; rs: number };
 
 const LAYOUTS: Record<number, Cell[][]> = {
-  1: [[{ c: 1, r: 1, cs: 4, rs: 1 }]],
-  // Two projects: the default (page 0) features the FIRST card (3 of 4 columns)
-  // so the primary project is highlighted over the secondary one; the equal and
-  // mirror variants follow for any future paginated pages.
+  1: [[{ c: 1, r: 1, cs: 12, rs: 1 }]],
+  // e.g. for two cards the default weights them 2:1 (8 vs 4 cols); swap to the
+  // equal (6/6) or mirror (4/8) variant — or just edit a `cs` — to re-weight them.
   2: [
-    [{ c: 1, r: 1, cs: 3, rs: 2 }, { c: 4, r: 1, cs: 1, rs: 2 }],
-    [{ c: 1, r: 1, cs: 2, rs: 2 }, { c: 3, r: 1, cs: 2, rs: 2 }],
-    [{ c: 1, r: 1, cs: 1, rs: 2 }, { c: 2, r: 1, cs: 3, rs: 2 }],
+    [{ c: 1, r: 1, cs: 8, rs: 2 }, { c: 9, r: 1, cs: 4, rs: 2 }],
+    [{ c: 1, r: 1, cs: 6, rs: 2 }, { c: 7, r: 1, cs: 6, rs: 2 }],
+    [{ c: 1, r: 1, cs: 4, rs: 2 }, { c: 5, r: 1, cs: 8, rs: 2 }],
   ],
   3: [
-    [{ c: 1, r: 1, cs: 2, rs: 2 }, { c: 3, r: 1, cs: 2, rs: 1 }, { c: 3, r: 2, cs: 2, rs: 1 }],
-    [{ c: 1, r: 1, cs: 1, rs: 2 }, { c: 2, r: 1, cs: 2, rs: 2 }, { c: 4, r: 1, cs: 1, rs: 2 }],
-    [{ c: 1, r: 1, cs: 2, rs: 1 }, { c: 1, r: 2, cs: 2, rs: 1 }, { c: 3, r: 1, cs: 2, rs: 2 }],
+    [{ c: 1, r: 1, cs: 6, rs: 2 }, { c: 7, r: 1, cs: 6, rs: 1 }, { c: 7, r: 2, cs: 6, rs: 1 }],
+    [{ c: 1, r: 1, cs: 3, rs: 2 }, { c: 4, r: 1, cs: 6, rs: 2 }, { c: 10, r: 1, cs: 3, rs: 2 }],
+    [{ c: 1, r: 1, cs: 6, rs: 1 }, { c: 1, r: 2, cs: 6, rs: 1 }, { c: 7, r: 1, cs: 6, rs: 2 }],
   ],
   4: [
-    [{ c: 1, r: 1, cs: 2, rs: 2 }, { c: 3, r: 1, cs: 2, rs: 1 }, { c: 3, r: 2, cs: 1, rs: 1 }, { c: 4, r: 2, cs: 1, rs: 1 }],
-    [{ c: 3, r: 1, cs: 2, rs: 2 }, { c: 1, r: 1, cs: 2, rs: 1 }, { c: 1, r: 2, cs: 1, rs: 1 }, { c: 2, r: 2, cs: 1, rs: 1 }],
-    [{ c: 1, r: 1, cs: 2, rs: 1 }, { c: 3, r: 1, cs: 2, rs: 1 }, { c: 1, r: 2, cs: 2, rs: 1 }, { c: 3, r: 2, cs: 2, rs: 1 }],
+    [{ c: 1, r: 1, cs: 6, rs: 2 }, { c: 7, r: 1, cs: 6, rs: 1 }, { c: 7, r: 2, cs: 3, rs: 1 }, { c: 10, r: 2, cs: 3, rs: 1 }],
+    [{ c: 7, r: 1, cs: 6, rs: 2 }, { c: 1, r: 1, cs: 6, rs: 1 }, { c: 1, r: 2, cs: 3, rs: 1 }, { c: 4, r: 2, cs: 3, rs: 1 }],
+    [{ c: 1, r: 1, cs: 6, rs: 1 }, { c: 7, r: 1, cs: 6, rs: 1 }, { c: 1, r: 2, cs: 6, rs: 1 }, { c: 7, r: 2, cs: 6, rs: 1 }],
   ],
 };
 
