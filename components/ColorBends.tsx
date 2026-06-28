@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import './ColorBends.css';
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { useReducedWebGL } from '@/hooks/useReducedWebGL';
 
 type ColorBendsProps = {
   className?: string;
@@ -149,7 +149,9 @@ export default function ColorBends({
   parallax = 0.5,
   noise = 0.1
 }: ColorBendsProps) {
-  const prefersReducedMotion = usePrefersReducedMotion();
+  // Skip the WebGL backdrop (use the static gradient) on reduced-motion AND on
+  // phone-sized viewports, where the full-screen shader is the biggest perf cost.
+  const reduceWebGL = useReducedWebGL();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -164,7 +166,7 @@ export default function ColorBends({
   const pointerSmoothRef = useRef<number>(8);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (reduceWebGL) return;
 
     const container = containerRef.current;
     if (!container) return;
@@ -323,7 +325,7 @@ export default function ColorBends({
       materialRef.current = null;
       rendererRef.current = null;
     };
-  }, [prefersReducedMotion]);
+  }, [reduceWebGL]);
 
   useEffect(() => {
     const material = materialRef.current;
@@ -374,7 +376,7 @@ export default function ColorBends({
   ]);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (reduceWebGL) return;
 
     const material = materialRef.current;
     const container = containerRef.current;
@@ -393,9 +395,9 @@ export default function ColorBends({
     return () => {
       container.removeEventListener('pointermove', handlePointerMove);
     };
-  }, [prefersReducedMotion]);
+  }, [reduceWebGL]);
 
-  if (prefersReducedMotion) {
+  if (reduceWebGL) {
     const [start = "#04020c", middle = "#5a5e40", end = "#0050FF"] = colors
     const [startR, startG, startB] = hexToRgb(start)
     const [middleR, middleG, middleB] = hexToRgb(middle)
