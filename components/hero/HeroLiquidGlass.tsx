@@ -27,11 +27,7 @@ export default function HeroLiquidGlass() {
 
           <Eyebrow className="mt-6 text-[13px] tracking-[0.22em]">{profile.role}</Eyebrow>
 
-          <p className="mt-6 max-w-[46ch] text-base leading-relaxed text-fg-muted md:text-lg">
-            {profile.tagline}
-          </p>
-
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button asChild size="lg">
               <a href="#experience">
                 VIEW EXPERIENCE
