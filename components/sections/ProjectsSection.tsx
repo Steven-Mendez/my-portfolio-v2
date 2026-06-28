@@ -41,9 +41,12 @@ type Cell = { c: number; r: number; cs: number; rs: number };
 
 const LAYOUTS: Record<number, Cell[][]> = {
   1: [[{ c: 1, r: 1, cs: 4, rs: 1 }]],
+  // Two projects: the default (page 0) features the FIRST card (3 of 4 columns)
+  // so the primary project is highlighted over the secondary one; the equal and
+  // mirror variants follow for any future paginated pages.
   2: [
-    [{ c: 1, r: 1, cs: 2, rs: 2 }, { c: 3, r: 1, cs: 2, rs: 2 }],
     [{ c: 1, r: 1, cs: 3, rs: 2 }, { c: 4, r: 1, cs: 1, rs: 2 }],
+    [{ c: 1, r: 1, cs: 2, rs: 2 }, { c: 3, r: 1, cs: 2, rs: 2 }],
     [{ c: 1, r: 1, cs: 1, rs: 2 }, { c: 2, r: 1, cs: 3, rs: 2 }],
   ],
   3: [
