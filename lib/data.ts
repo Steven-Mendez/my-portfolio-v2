@@ -283,46 +283,6 @@ export const portfolioData = {
         "Designed and built a liquid-glass personal site with WebGL/GSAP motion, full SEO and structured data, and CI-enforced accessibility & SEO budgets (Lighthouse CI gated at ≥95); optimized the hero image from 19 MB to 446 KB (~98% smaller).",
       ],
     },
-    {
-      title: "Real-Time E-Commerce Data Pipeline",
-      description:
-        "Backend APIs and multi-vendor data pipelines powering a real-time shopping assistant — product ingestion, price tracking, caching, and live events.",
-      label: "Python · FastAPI · AWS · Redis",
-      category: "Data",
-      image: "/projects/placeholder.webp",
-    },
-    {
-      title: "GenAI Retrieval Features",
-      description:
-        "LLM/RAG features for an enterprise platform — a contextual assistant, retrieval over domain content with vector search, and a modular agent-service architecture.",
-      label: "Python · FastAPI · LangChain · pgvector",
-      category: "AI",
-      image: "/projects/placeholder.webp",
-    },
-    {
-      title: "Visual Agent-Configuration Tool",
-      description:
-        "A node-and-connector visual editor in Next.js/React to configure conversational-agent behavior across scenarios — built end to end.",
-      label: "Next.js · React · TypeScript",
-      category: "Web",
-      image: "/projects/placeholder.webp",
-    },
-    {
-      title: "IDE Assistant Extension",
-      description:
-        "A VS Code extension embedding an in-editor assistant via the Webview API, reusing an existing assistant backend.",
-      label: "TypeScript · React · VS Code API",
-      category: "AI",
-      image: "/projects/placeholder.webp",
-    },
-    {
-      title: "Enterprise Budget System",
-      description:
-        "Modernized a mission-critical ASP.NET / SQL Server financial system; optimized complex queries and proposed a React.js front-end architecture.",
-      label: "ASP.NET · SQL Server · React",
-      category: "Data",
-      image: "/projects/placeholder.webp",
-    },
   ],
   education: [
     {
