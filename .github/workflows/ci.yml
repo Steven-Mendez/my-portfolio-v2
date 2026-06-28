@@ -59,6 +59,32 @@ jobs:
           cat /tmp/next-start.log >&2 || true
           exit 1
 
+      - name: Assert security headers
+        run: |
+          echo "Checking security headers on http://127.0.0.1:3000/ ..."
+          headers="$(curl -sSI http://127.0.0.1:3000/)"
+          echo "$headers"
+          required=(
+            "content-security-policy"
+            "strict-transport-security"
+            "x-frame-options"
+            "x-content-type-options"
+            "referrer-policy"
+            "permissions-policy"
+          )
+          missing=0
+          for h in "${required[@]}"; do
+            if ! printf '%s\n' "$headers" | grep -iq "^$h:"; then
+              echo "::error::Missing security header: $h"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Security header check failed" >&2
+            exit 1
+          fi
+          echo "All required security headers present."
+
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
         with:
