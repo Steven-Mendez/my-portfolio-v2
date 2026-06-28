@@ -54,7 +54,7 @@ export default function ContactSection() {
         <Eyebrow className="mb-5">Contact</Eyebrow>
 
         <h2 className="text-4xl font-bold uppercase leading-[0.95] tracking-tight text-white md:text-6xl lg:text-7xl">
-          Let&apos;s build
+          Let&apos;s build{" "}
           <br />
           something solid
         </h2>

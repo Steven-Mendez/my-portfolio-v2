@@ -28,7 +28,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 h-16 bg-[#080b18]/78 backdrop-blur-xl border-b border-white/10 shadow-[0_24px_48px_-12px_rgba(176,198,255,0.05)] transition-all">
+      <nav aria-label="Primary" className="fixed top-0 w-full z-50 h-16 bg-[#080b18]/78 backdrop-blur-xl border-b border-white/10 shadow-[0_24px_48px_-12px_rgba(176,198,255,0.05)] transition-all">
         {/* Content rides the hero's max-w-7xl px-6 md:px-12 rail so the brand and
             CTAs line up with the hero/section edges; the bar background stays full-bleed. */}
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 md:px-12">
