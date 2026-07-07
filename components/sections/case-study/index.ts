@@ -4,6 +4,7 @@
 export { default as MediaFrame } from "./MediaFrame";
 export { default as PlaceholderFrame } from "./PlaceholderFrame";
 export { default as Mermaid } from "./Mermaid";
+export { default as ImageLightbox } from "./ImageLightbox";
 export { default as CaseHeader } from "./CaseHeader";
 export { default as CaseMetrics } from "./CaseMetrics";
 export { default as CaseStory } from "./CaseStory";
