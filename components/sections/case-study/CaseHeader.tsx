@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CaseStudy } from "@/lib/case-studies";
 
+import { CASE_CONTAINER } from "./layout";
 import { Inline } from "./richText";
 
 /** GitHub logo mark — lucide dropped its brand icons, so we inline the official
@@ -17,13 +18,13 @@ function GithubMark() {
 }
 
 /** The case-study lead: category/year/role line, title, overview, tags, and the
- *  live/source CTAs — all centred in a narrow column, like an editorial article
- *  opener, so the project reads as a focused hero rather than a wide banner.
- *  Reused as the opening block of every project. */
+ *  live/source CTAs — all left-aligned to the shared container margin, so the
+ *  opener lines up on the same edge as the metrics, hero image, and story that
+ *  follow. Reused as the opening block of every project. */
 export default function CaseHeader({ study }: { study: CaseStudy }) {
   return (
-    <header className="mx-auto max-w-3xl px-6 pb-12 pt-28 text-center md:pb-16 md:pt-36">
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-mono text-xs tracking-[0.12em] text-eyebrow">
+    <header className={`${CASE_CONTAINER} pb-12 pt-28 md:pb-16 md:pt-36`}>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs tracking-[0.12em] text-eyebrow">
         <span>{study.category}</span>
         <span className="text-fg-faint">/</span>
         <span className="text-accent-blue">{study.year}</span>
@@ -35,14 +36,14 @@ export default function CaseHeader({ study }: { study: CaseStudy }) {
         <Inline text={study.title} />
       </h1>
 
-      {/* Lead reads like the body paragraphs — left-aligned (ragged right),
-          same size/leading/colour and width — not centred like the rest of the
-          hero, so a long paragraph stays comfortable to read. */}
-      <p className="mx-auto mt-7 max-w-[680px] text-left text-[18px] leading-[1.7] text-foreground/90 md:text-[19px]">
+      {/* Lead spans the full shared container width, left-aligned to the same
+          margin as the metrics, image, and story below — one consistent edge
+          (the "notebook margin") for every block of the article. */}
+      <p className="mt-7 text-[18px] leading-[1.7] text-foreground/90 md:text-[19px]">
         <Inline text={study.overview} />
       </p>
 
-      <div className="mt-8 flex flex-wrap justify-center gap-2">
+      <div className="mt-8 flex flex-wrap gap-2">
         {study.tags.map((tag) => (
           <Badge
             key={tag}
@@ -55,7 +56,7 @@ export default function CaseHeader({ study }: { study: CaseStudy }) {
       </div>
 
       {(study.liveUrl || study.repoUrl) && (
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <div className="mt-8 flex flex-wrap gap-3">
           {study.liveUrl && (
             <Button asChild size="sm">
               <a href={study.liveUrl} target="_blank" rel="noopener noreferrer">

@@ -12,3 +12,4 @@ export { default as CaseStorySection } from "./CaseStorySection";
 export { default as CaseBlocks } from "./CaseBlocks";
 export { default as CaseGallery } from "./CaseGallery";
 export { default as CaseCTA } from "./CaseCTA";
+export { CASE_CONTAINER } from "./layout";

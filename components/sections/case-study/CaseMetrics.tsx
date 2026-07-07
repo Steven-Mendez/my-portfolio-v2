@@ -1,6 +1,8 @@
 import GlassSurface from "@/components/hero/GlassSurface";
 import type { CaseMetric } from "@/lib/case-studies";
 
+import { CASE_CONTAINER } from "./layout";
+
 // Column tracks per metric count, so the slab stays balanced whether a project
 // supplies two, three, or four headline numbers.
 const COLS: Record<number, string> = {
@@ -18,7 +20,7 @@ export default function CaseMetrics({ metrics }: { metrics: CaseMetric[] }) {
   const cols = COLS[metrics.length] ?? "sm:grid-cols-3";
 
   return (
-    <section className="mx-auto max-w-7xl px-6 md:px-12">
+    <section className={CASE_CONTAINER}>
       <GlassSurface
         as="div"
         className={`grid grid-cols-1 divide-y divide-white/10 overflow-hidden rounded-2xl sm:divide-x sm:divide-y-0 ${cols}`}

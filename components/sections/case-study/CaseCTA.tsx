@@ -4,12 +4,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { portfolioData } from "@/lib/data";
 
+import { CASE_CONTAINER } from "./layout";
+
 /** Closing call-to-action shared by every case study: a prompt to get in touch
  *  plus a route back to the work grid. */
 export default function CaseCTA() {
   return (
     <section className="border-t border-white/[0.07]">
-      <div className="mx-auto max-w-7xl px-6 py-20 text-center md:px-12 md:py-28">
+      <div className={`${CASE_CONTAINER} py-20 text-center md:py-28`}>
         <h2 className="text-3xl font-bold uppercase leading-[1] tracking-tight text-white md:text-5xl">
           Want the full story?
         </h2>

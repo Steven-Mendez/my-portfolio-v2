@@ -1,5 +1,6 @@
 import type { CaseSection } from "@/lib/case-studies";
 
+import { CASE_CONTAINER } from "./layout";
 import CaseStorySection from "./CaseStorySection";
 
 /** Stable, unique key for a section. Sections are authored, static data that
@@ -20,7 +21,7 @@ export default function CaseStory({ sections }: { sections: CaseSection[] }) {
   if (sections.length === 0) return null;
 
   return (
-    <article className="mx-auto max-w-7xl px-6 py-16 md:px-12 md:py-24">
+    <article className={`${CASE_CONTAINER} py-16 md:py-24`}>
       <div className="flex flex-col gap-20 md:gap-28">
         {sections.map((s, i) => (
           <CaseStorySection key={sectionKey(s, i)} section={s} />

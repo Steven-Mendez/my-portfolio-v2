@@ -1,6 +1,7 @@
 import { Eyebrow } from "@/components/ui/eyebrow";
 import type { CaseMedia } from "@/lib/case-studies";
 
+import { CASE_CONTAINER } from "./layout";
 import MediaFrame from "./MediaFrame";
 
 /** A compact grid of demos and screenshots that supports the story above
@@ -10,7 +11,7 @@ export default function CaseGallery({ items }: { items?: CaseMedia[] }) {
   if (!items || items.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-6 pb-20 md:px-12 md:pb-28">
+    <section className={`${CASE_CONTAINER} pb-20 md:pb-28`}>
       <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow className="tracking-[0.2em]">Media</Eyebrow>

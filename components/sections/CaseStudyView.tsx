@@ -1,6 +1,7 @@
 import Navbar from "@/components/hero/Navbar";
 import SiteBackground from "@/components/SiteBackground";
 import {
+  CASE_CONTAINER,
   CaseCTA,
   CaseGallery,
   CaseHeader,
@@ -27,13 +28,11 @@ export default function CaseStudyView({ study }: { study: CaseStudy }) {
         <CaseHeader study={study} />
         <CaseMetrics metrics={study.metrics} />
         {study.heroMedia && (
-          <section className="mx-auto mt-12 max-w-7xl px-6 md:mt-16 md:px-12">
-            <div className="mx-auto max-w-[680px]">
-              <MediaFrame
-                media={study.heroMedia}
-                sizes="(min-width: 768px) 680px, 100vw"
-              />
-            </div>
+          <section className={`${CASE_CONTAINER} mt-12 md:mt-16`}>
+            <MediaFrame
+              media={study.heroMedia}
+              sizes="(min-width: 1152px) 1056px, 100vw"
+            />
           </section>
         )}
         <CaseStory sections={study.sections} />

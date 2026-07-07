@@ -141,7 +141,7 @@ export default function CaseBlocks({ blocks }: { blocks: CaseBlock[] }) {
               <MediaFrame
                 key={blockKey(block)}
                 media={block.media}
-                sizes="(min-width: 768px) 680px, 100vw"
+                sizes="(min-width: 1152px) 1056px, 100vw"
               />
             );
 
