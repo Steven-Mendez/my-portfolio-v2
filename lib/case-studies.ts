@@ -80,30 +80,40 @@ export interface CaseStudy {
 }
 
 const caseStudies: Record<string, CaseStudy> = {
-  "ai-interview-simulator": {
-    slug: "ai-interview-simulator",
-    title: "AI Interview Simulator",
+  "interview-agent": {
+    slug: "interview-agent",
+    title: "Interview Agent",
     category: "AI",
     year: "2026",
     role: "Full-Stack & AI Engineer",
     overview:
-      "A voice app to practice technical interviews. You give it your CV and a job description, set up the interviewer, and then talk through a real interview with an AI. When you finish, a second AI gives you a clear report on how you did, with examples from your own answers. It runs on your own computer to keep your data private, and you can move it to the cloud by changing a setting — no rewrite needed.",
+      "A voice app to practice technical interviews, end to end. Upload your CV and paste the job offer — one AI plans a session tailored to both, a second conducts it with you by voice in the browser, in real time, and when you finish a third rules like a hiring committee: hired or not, a 0–100 score, and strengths and concerns drawn from your own answers. It interviews in English or Spanish, and you choose the interviewer's name, voice, and persona.",
     seoDescription:
-      "AI Interview Simulator — a voice app to practice technical interviews on your own computer. An AI talks with you by voice, using your CV and the job, then gives a clear report with examples. Built with React, FastAPI, LangGraph, Qdrant, and Ollama.",
-    stack: "REACT · FASTAPI · LANGGRAPH · QDRANT · OLLAMA",
-    tags: ["React", "TanStack Start", "FastAPI", "LangGraph", "Qdrant", "Ollama", "Docker"],
-    repoUrl: "https://github.com/Steven-Mendez/ai-interview-simulator",
+      "Interview Agent — practice technical interviews by voice. One AI plans the session from your CV and the job offer, one interviews you in real time over WebRTC, and one scores you with evidence from your own answers.",
+    stack: "TANSTACK START · FASTAPI · LANGGRAPH · LIVEKIT · OPENAI",
+    tags: [
+      "React",
+      "TanStack Start",
+      "FastAPI",
+      "LangGraph",
+      "LiveKit",
+      "OpenAI",
+      "Qdrant",
+      "PostgreSQL",
+      "Docker",
+    ],
+    repoUrl: "https://github.com/Steven-Mendez/interview-agent",
     metrics: [
-      { value: "100%", label: "runs on your computer" },
-      { value: "Voice", label: "you speak, it speaks back" },
-      { value: "2 AIs", label: "one asks, one scores" },
+      { value: "3 AIs", label: "one plans, one interviews, one scores" },
+      { value: "Real-time", label: "voice over WebRTC — it listens and speaks back" },
+      { value: "0–100", label: "hiring score backed by your own answers" },
+      { value: "EN · ES", label: "full interviews in English or Spanish" },
     ],
     heroMedia: {
-      kind: "VIDEO",
-      placeholder: true,
-      video: true,
-      description:
-        "A 30–60 second demo of a live voice interview: upload a CV, start, speak a few answers, and see the final report. Keep this at the top — it is the hook.",
+      src: "/projects/media/interview-agent-live.webp",
+      kind: "LIVE INTERVIEW",
+      caption:
+        "A live session: the conversation is transcribed in real time while the interviewer tracks which of the planned topics are already covered.",
     },
     sections: [
       {
@@ -120,119 +130,106 @@ const caseStudies: Record<string, CaseStudy> = {
           },
           {
             type: "paragraph",
-            text: "Every frustration from that call became a design choice — I wanted mine to be everything that bot was not. It waits until you have truly finished before it replies, and answers one sentence at a time, so a turn feels like a real conversation instead of a fight to be heard.",
+            text: "Every frustration from that call became a design choice — I wanted mine to be everything that bot was not. It waits until you have truly finished before it replies, and it starts speaking the moment it has something to say, so a turn feels like a real conversation instead of a fight to be heard.",
           },
         ],
       },
       {
         kicker: "WHAT I BUILT",
-        heading: "A voice interviewer, plus an AI that scores you",
+        heading: "Three AIs, one interview",
         blocks: [
           {
             type: "paragraph",
-            text: "You give it your CV and a job description, then talk through a real voice interview. Four parts work together on every turn:",
+            text: "You upload your CV as a PDF and paste the job offer. From there, three agents hand the work to each other:",
           },
           {
             type: "list",
             items: [
-              "**Listen** — your speech becomes text with Faster-Whisper.",
-              "**Lead** — a LangGraph agent asks questions matched to your CV and the job (searched with Qdrant).",
-              "**Speak** — its replies are spoken back to you with Piper.",
-              "**Score** — when you finish, a second AI writes a report that links each point to something you actually said, not just a number.",
+              "**Plan** — a planner reads your CV and the offer, then designs the session: who the interviewer is, what the interview should probe, and 4–6 ordered milestones it must cover.",
+              "**Interview** — a real-time voice agent conducts it in your browser. It transcribes as you speak, asks follow-ups grounded in your CV — which it can search mid-conversation — and checks milestones off as you cover them.",
+              "**Score** — when it ends, an evaluator reads the full transcript against the plan and rules like a hiring committee: hired or not, a 0–100 score, and strengths and concerns, each backed by something you actually said.",
             ],
-          },
-          {
-            type: "media",
-            media: {
-              kind: "VIDEO",
-              placeholder: true,
-              video: true,
-              description:
-                "A short clip of a live voice interview: your speech goes to the AI, and its replies are spoken back. Something the reader can hear.",
-            },
           },
         ],
       },
       {
         kicker: "ARCHITECTURE",
-        heading: "Local first, and easy to move to the cloud",
+        heading: "A voice worker and an API around one database",
         blocks: [
           {
             type: "paragraph",
-            text: "I built it to run on your own machine, so nothing you say in practice ever leaves the room. A FastAPI backend (data in SQLModel + Alembic), a React + TanStack Start front end, and the AI models run locally on Ollama. Docker Compose runs the API, database, vector store, and speech services together.",
+            text: "The app is two processes sharing one PostgreSQL database. A **FastAPI** backend serves the REST API and the compiled **TanStack Start** SPA; a separate **voice worker**, built on LiveKit Agents, joins each interview room over **WebRTC**. When you upload a CV, the backend converts the PDF to markdown, embeds it with OpenAI's `text-embedding-3-small`, and indexes it in **Qdrant**; the planner then writes the interview plan and its milestones to Postgres, and the browser connects to the room where the interviewer is waiting.",
           },
           {
             type: "paragraph",
-            text: "One rule holds it together: **every part talks through a clear interface.** Speech-to-text, text-to-speech, and turn detection are used only through `STTProvider`, `TTSProvider`, and `TurnDetector`, and a setting picks which one. Turn detection mattered most to me — it decides when the interviewer is allowed to speak, the one thing the real bot got wrong — so I kept it easy to swap without touching anything else. Moving the model, vector store, or database to the cloud is the same kind of change: a config switch, not a rewrite.",
+            text: "Inside a turn: **Silero VAD** plus a **turn-detection model** decide that you have actually finished speaking — the one thing the bot that interviewed me got wrong — then **AssemblyAI** transcribes the turn, a **LangGraph** agent running on OpenAI models decides what to say, and **Cartesia** speaks it back, streaming, so the reply starts before it is fully written. The agent carries three tools: search your CV in Qdrant, mark a milestone complete, and end the interview.",
           },
           {
             type: "mermaid",
             caption:
-              "How the parts fit together: the front end, the gateway, the two AIs, the parts you can swap, and storage.",
+              "How the parts fit together: the browser, the WebRTC room, the voice worker's pipeline, the planner and evaluator behind the API, and storage.",
             code: `flowchart TB
-    subgraph client["Frontend — React + TanStack Start"]
-        UI["Voice room UI<br/>(microphone capture)"]
-        CAP["PCM capture worklet<br/>16 kHz mono Int16"]
+    subgraph client["Frontend — TanStack Start SPA"]
+        UI["Interview room UI<br/>livekit-client"]
     end
 
-    subgraph backend["Backend — async FastAPI"]
-        GW["WebSocket Gateway<br/>/sessions/{id}/voice"]
-        GRAPH["AI orchestration<br/>LangChain + LangGraph"]
-        EVAL["Evaluator agent<br/>evidence-backed report"]
+    subgraph rtc["LiveKit — WebRTC"]
+        ROOM["Room per interview<br/>audio both ways + live transcript"]
     end
 
-    subgraph contracts["Swappable providers (by contract)"]
-        STT["STTProvider<br/>Faster-Whisper / cloud"]
-        TTS["TTSProvider<br/>Piper / cloud"]
-        TURN["TurnDetector<br/>VAD + silence + semantic"]
-        LLM["LLM<br/>Ollama (local) / cloud"]
+    subgraph worker["Voice worker — LiveKit Agents"]
+        VAD["Silero VAD<br/>+ turn detector"]
+        STT["STT<br/>AssemblyAI streaming"]
+        GRAPH["Interviewer agent<br/>LangGraph + OpenAI"]
+        TTS["TTS<br/>Cartesia / Inworld"]
     end
 
-    subgraph data["Persistence & memory"]
-        VEC["Qdrant<br/>vector store (CV + JD)"]
-        DB["SQLModel + Alembic<br/>SQLite local / Postgres cloud"]
+    subgraph api["Backend — FastAPI under /api"]
+        PLANNER["Planner<br/>designs persona + milestones"]
+        EVAL["Evaluator<br/>hired · score · evidence"]
     end
 
-    OBS["LangSmith<br/>tracing + per-stage latency"]
+    subgraph data["Storage"]
+        VEC["Qdrant<br/>CV chunks, deleted after scoring"]
+        DB["PostgreSQL<br/>plan · transcript · evaluation"]
+    end
 
-    UI --> CAP --> GW
-    GW <--> GRAPH
-    GRAPH --> EVAL
-    GRAPH <--> STT
-    GRAPH <--> TTS
-    GRAPH <--> TURN
-    GRAPH <--> LLM
+    UI <--> ROOM
+    ROOM <--> VAD
+    VAD --> STT --> GRAPH --> TTS --> ROOM
+    UI -->|REST /api| PLANNER
+    PLANNER --> VEC
+    PLANNER --> DB
     GRAPH <--> VEC
-    GRAPH <--> DB
-    GW -.traces.-> OBS
-    GRAPH -.traces.-> OBS`,
+    GRAPH --> DB
+    GRAPH -->|on close| EVAL
+    EVAL --> DB`,
           },
           { type: "subheading", text: "How a single turn works" },
           {
             type: "mermaid",
             caption:
-              "One turn, step by step. Sound streams both ways, so the wait feels short. When the interview ends, the second AI runs.",
+              "One turn, step by step. The reply streams to speech as it is written, so the wait feels short. When the interview ends, the evaluator runs on its own.",
             code: `sequenceDiagram
-    participant U as You
-    participant GW as Gateway (WS)
-    participant T as TurnDetector
-    participant S as STT (Faster-Whisper)
-    participant G as Graph (LangGraph + LLM)
-    participant V as TTS (Piper)
+    participant U as You (browser)
+    participant R as LiveKit room (WebRTC)
+    participant W as Voice worker
+    participant G as Interviewer agent (LangGraph)
+    participant Q as Qdrant
 
-    Note over U,V: Setup: CV + job description → ingested into Qdrant
-    U->>GW: Audio stream (PCM 16 kHz)
-    GW->>T: Audio buffer + partial transcript
-    GW->>S: Audio windows
-    S-->>GW: Partial transcript (pseudo-streaming)
-    T-->>GW: End of turn detected
-    GW->>G: Final turn transcript
-    G-->>GW: Interviewer reply (sentence by sentence)
-    GW->>V: Sentence 1
-    V-->>GW: Audio for sentence 1
-    GW-->>U: Audio (starts speaking before generation finishes)
-    Note over GW,V: Streaming on both legs = low perceived latency
-    Note over G: On finish → evaluator generates evidence-backed report`,
+    Note over U,Q: Setup: CV + job offer → plan with 4–6 milestones
+    U->>R: Mic audio
+    R->>W: Audio stream
+    W->>W: Silero VAD + turn detector: you finished
+    W->>W: AssemblyAI STT → final transcript
+    W->>G: Your turn + milestone status
+    G->>Q: search_resume (when it needs your CV)
+    Q-->>G: Relevant CV chunks
+    G-->>W: Reply, streamed as it is written
+    W-->>R: Cartesia TTS audio
+    R-->>U: The interviewer speaks
+    Note over G: Tools: complete_milestone · end_interview
+    Note over W: On close → evaluator scores the transcript`,
           },
         ],
       },
@@ -242,51 +239,33 @@ const caseStudies: Record<string, CaseStudy> = {
         blocks: [
           {
             type: "paragraph",
-            text: "**Ollama native, not in Docker.** On Apple Silicon, Docker cannot use the GPU, so Ollama in Docker runs CPU-only and crawls. Running it natively uses the Apple GPU (Metal) and is far faster. *Cost:* no single `docker compose up` — but a fast reply is what makes a turn feel like talking to a person, so it earns the extra step.",
+            text: "**I stopped hand-rolling the voice plumbing.** An early version tried to own the whole audio path — capture, silence rules, my own turn heuristics. It taught me a lot, and it was never going to feel human. Now WebRTC and LiveKit Agents handle echo, interruptions, and reconnection, and end-of-turn is decided by a purpose-built turn-detection model on top of Silero VAD — the exact part the bot that interviewed me got wrong. *Cost:* a hosted dependency I do not control. *Gain:* every hour not spent on audio plumbing went into the interview itself.",
           },
           {
             type: "paragraph",
-            text: "**Turn detection: a simple rule, not a big model.** This is the part that decides you have finished speaking — get it wrong and you are the one being cut off. By default the app uses a light rule over the words so far — no heavy model, no restrictive license bundled in. You can opt into a stronger model instead; I documented the trade-off for each:",
-          },
-          {
-            type: "table",
-            headers: ["Model", "Input", "Size / placement", "License"],
-            rows: [
-              ["Pipecat Smart Turn v3", "Audio / waveform", "~8M params, CPU", "BSD-2-Clause — permissive"],
-              [
-                "LiveKit turn-detector",
-                "Text (partial transcript)",
-                "~0.1B (Qwen2.5-0.5B), INT8 ONNX, CPU",
-                "Code Apache-2.0; weights under restricted LiveKit license",
-              ],
-              ["TEN Turn Detection", "Text", "8B (Qwen2.5-7B), GPU only", "Apache-2.0 with extra restrictions"],
-            ],
+            text: "**Two model tiers, on purpose.** The interviewer sits in the latency path, so it runs on a small, fast OpenAI model with reasoning turned off — a shorter wait before it starts talking. The planner and the evaluator have no one waiting on them, so they run on a stronger model with reasoning effort set high. The interviewer can afford to be quick rather than brilliant *because* the planner already did the thinking: the persona, the focus areas, and the milestones are decided before the call starts.",
           },
           {
             type: "paragraph",
-            text: "They take different inputs — some audio, some text — so the `TurnDetector` interface carries **both**. Any of them drops in without touching the rest of the app.",
-          },
-          {
-            type: "paragraph",
-            text: "**Voice is an optional extra.** It installs on demand (`uv sync --extra voice`) and loads only when needed, so the text-only version and the tests stay small and fast. *Cost:* voice users run one extra install step.",
+            text: "**The \"LLM\" is actually a graph.** LiveKit expects a language model in its pipeline; I hand it a LangGraph agent disguised as one. Only text the graph explicitly streams is spoken — tool calls and their results never reach the voice, and a filter drops accidental JSON before it can be read aloud. The graph keeps no memory of its own: each turn, the milestone status is re-injected as context, because the voice framework rebuilds the conversation from the transcript. *Cost:* a stricter contract to respect. *Gain:* the interviewer can use tools mid-sentence without ever mumbling raw JSON at you.",
           },
         ],
       },
       {
         kicker: "OUTCOME",
-        heading: "Private by default, measured, and free to run",
+        heading: "A verdict with evidence, not a vibe",
         blocks: [
           {
             type: "paragraph",
-            text: "Because the AI runs locally, no data leaves your computer and there is no per-request bill. The same code runs on a laptop or in the cloud, with no change to the app logic.",
+            text: "Every session ends the way a real hiring loop does: with a decision. The evaluator reads the whole transcript against the plan and returns hired-or-not, a 0–100 score on an anchored rubric, and strengths and concerns that each point back to something you said — or failed to say. It is deliberately strict: milestones you never reached count against you, and leaving early is treated as missing evidence, not a pass.",
           },
           {
             type: "paragraph",
-            text: "And I **measure it instead of guessing.** The app times each step — `turn_detection_ms`, `stt_ms`, `graph_ms`, `tts_ms`, plus time-to-first-audio — sends them to LangSmith, and warns me when a step runs slow. On a local GPU the interviewer replies about 1–3 seconds after you stop (≈0.7–1s in the cloud).",
+            text: "It also cleans up after itself. The interview has hard limits — a session cap with a spoken warning near the end, an idle timeout, and detection of a closed tab — and whichever way it ends, the evaluation runs on its own. The moment scoring completes, your CV's chunks are **deleted from the vector store**, so the most personal document in the system does not outlive its one job.",
           },
           {
             type: "paragraph",
-            text: "This is the part I cared about most. The bot ignored what I said. This one is built around it. The report quotes you back to yourself — every point ties to a moment in your own interview — so you walk away feeling heard, not graded by a stranger. And because it stays private and runs on your machine, you can freeze, ramble, and start over with no one watching. That was the goal: do the awkward reps here, in private, so the real interview is not the first time you have had the conversation.",
+            text: "This is the part I cared about most. The bot ignored what I said. This one is built around it. The report quotes you back to yourself — every point ties to a moment in your own interview — so you walk away feeling heard, not graded by a stranger. You can freeze, ramble, and start over with no one watching. That was the goal: do the awkward reps here, in private, so the real interview is not the first time you have had the conversation.",
           },
           {
             type: "paragraph",
@@ -295,10 +274,10 @@ const caseStudies: Record<string, CaseStudy> = {
           {
             type: "media",
             media: {
+              src: "/projects/media/interview-agent-report.webp",
               kind: "REPORT",
-              placeholder: true,
-              description:
-                "The final report: each point links back to a moment in the interview, not just a score. The end result the reader wants to see.",
+              caption:
+                "The final report of a session I abandoned early — on purpose. 8/100, not hired, and every concern points at what was actually missing. It is strict because the real thing is.",
             },
           },
         ],
@@ -310,9 +289,9 @@ const caseStudies: Record<string, CaseStudy> = {
           {
             type: "list",
             items: [
-              "**Clear interfaces from the start** let the app run both locally and in the cloud without writing the code twice.",
-              "**How fast it feels beats the total time.** Speaking back one sentence at a time helped more than any other speed fix.",
-              "**Measure before optimizing.** Timing each step in LangSmith showed the real slow point, instead of guessing.",
+              "**Don't rebuild solved problems.** My hand-rolled audio pipeline taught me why WebRTC, VAD, and turn detection are their own discipline — and that my time was better spent on the agents than on the plumbing.",
+              "**How fast it feels beats how smart it is.** Turning reasoning off on the interviewer and streaming its reply into speech did more for the conversation than any smarter model would have.",
+              "**Structured outputs turn LLM calls into functions.** The planner and evaluator return validated schemas with retries, which is what lets both run unattended — no human checks the output before it ships to the screen.",
             ],
           },
         ],
@@ -320,19 +299,15 @@ const caseStudies: Record<string, CaseStudy> = {
     ],
     gallery: [
       {
-        kind: "DASHBOARD",
-        placeholder: true,
-        description: "The session overview screen.",
+        src: "/projects/media/interview-agent-new-interview.webp",
+        kind: "NEW INTERVIEW",
+        caption: "Where every session starts: a resume and a job offer.",
       },
       {
-        kind: "SCORING",
-        placeholder: true,
-        description: "The score for each skill.",
-      },
-      {
-        kind: "CODE",
-        placeholder: true,
-        description: "The pipeline that loads the CV and job into Qdrant.",
+        src: "/projects/media/interview-agent-lobby.webp",
+        kind: "LOBBY",
+        caption:
+          "The room before the call: one click, microphone access, and the interviewer greets you first.",
       },
     ],
   },

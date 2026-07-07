@@ -84,9 +84,9 @@ describe("CaseStory — both shipped studies render via blocks", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders the ai-interview-simulator narrative from blocks", () => {
+  it("renders the interview-agent narrative from blocks", () => {
     // Scenario: Both shipped case studies use the block model
-    const study = getCaseStudy("ai-interview-simulator")!;
+    const study = getCaseStudy("interview-agent")!;
     render(<CaseStory sections={study.sections} />);
     expect(
       screen.getByText(/I built this after a job interview/i),

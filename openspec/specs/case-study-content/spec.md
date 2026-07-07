@@ -26,7 +26,7 @@ The supported block types SHALL be: `paragraph`, `subheading`, `quote`, `list`,
 
 #### Scenario: Both shipped case studies use the block model
 
-- **WHEN** the `portfolio` and `ai-interview-simulator` case studies render
+- **WHEN** the `portfolio` and `interview-agent` case studies render
 - **THEN** both produce their narrative entirely from `blocks[]`
 - **AND** the `portfolio` study's prose appears with its sections intact after
   migration

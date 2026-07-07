@@ -259,14 +259,14 @@ export const portfolioData = {
   ],
   projects: [
     {
-      title: "AI Interview Simulator",
+      title: "Interview Agent",
       description:
-        "A local-first, voice-based technical-interview simulator — a LangGraph agent interviews you by voice (STT ↔ TTS), grounded in your CV and the role, then an evaluator returns an evidence-backed report.",
-      label: "React · FastAPI · LangGraph · Qdrant · Ollama",
+        "A real-time voice interviewer — one AI plans the interview from your CV and the job offer, a second conducts it by voice over WebRTC, and a third scores you 0–100 with evidence from your own answers.",
+      label: "React · FastAPI · LangGraph · LiveKit · OpenAI",
       category: "AI",
-      image: "/projects/covers/ai-interview-simulator.webp",
-      slug: "ai-interview-simulator",
-      repoUrl: "https://github.com/Steven-Mendez/ai-interview-simulator",
+      image: "/projects/covers/interview-agent.webp",
+      slug: "interview-agent",
+      repoUrl: "https://github.com/Steven-Mendez/interview-agent",
     },
     {
       title: "Portfolio",
