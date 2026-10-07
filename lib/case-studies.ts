@@ -4,9 +4,9 @@
 
 export interface CaseMetric {
   /** Headline value, e.g. "≥95" or "Voice". */
-  value: string;
+  value: string
   /** What the value measures. */
-  label: string;
+  label: string
 }
 
 /** A framed media item — a screenshot, diagram, or demo still. Real assets live
@@ -15,19 +15,19 @@ export interface CaseMetric {
  *  where to drop a real capture without touching the layout. */
 export interface CaseMedia {
   /** Public path, e.g. "/projects/media/diagram.webp". Omitted for placeholders. */
-  src?: string;
+  src?: string
   /** Mono caption shown beneath the frame. */
-  caption?: string;
+  caption?: string
   /** Short badge label rendered on the frame, e.g. "DIAGRAM", "VIDEO". */
-  kind: string;
+  kind: string
   /** Renders a play affordance over the frame when true. */
-  video?: boolean;
+  video?: boolean
   /** When true, renders an empty "drop media here" slot instead of an image. */
-  placeholder?: boolean;
+  placeholder?: boolean
   /** Inside-frame guidance shown for placeholders — what asset belongs here. */
-  description?: string;
+  description?: string
   /** Tags the slot as nice-to-have rather than required. */
-  optional?: boolean;
+  optional?: boolean
 }
 
 /** A unit of rich section content. A section's body is an ordered list of these
@@ -42,41 +42,41 @@ export type CaseBlock =
   | { type: "list"; items: string[] }
   | { type: "table"; headers: string[]; rows: string[][] }
   | { type: "mermaid"; code: string; caption?: string }
-  | { type: "media"; media: CaseMedia };
+  | { type: "media"; media: CaseMedia }
 
 export interface CaseSection {
   /** Mono kicker, e.g. "CONTEXT". Optional — omit for an untitled section. */
-  kicker?: string;
+  kicker?: string
   /** Section heading. Optional — omit for a stand-alone diagram or quote. */
-  heading?: string;
+  heading?: string
   /** The section body: an ordered, mixed list of content blocks (prose, lists,
    *  tables, diagrams, media). The single, canonical way to author a section. */
-  blocks: CaseBlock[];
+  blocks: CaseBlock[]
 }
 
 export interface CaseStudy {
-  slug: string;
-  title: string;
+  slug: string
+  title: string
   /** Short category, e.g. "AI", "Web". */
-  category: string;
-  year: string;
-  role: string;
+  category: string
+  year: string
+  role: string
   /** Hero paragraph — what the project is, in one breath. */
-  overview: string;
+  overview: string
   /** Meta description for the page (<=160 chars ideal). */
-  seoDescription: string;
+  seoDescription: string
   /** Mono stack line, e.g. "REACT · FASTAPI · LANGGRAPH". */
-  stack: string;
-  tags: string[];
-  liveUrl?: string;
-  repoUrl?: string;
+  stack: string
+  tags: string[]
+  liveUrl?: string
+  repoUrl?: string
   /** Real, factual highlights — no invented benchmarks. */
-  metrics: CaseMetric[];
+  metrics: CaseMetric[]
   /** Optional lead media (e.g. a hero demo), shown between metrics and story. */
-  heroMedia?: CaseMedia;
-  sections: CaseSection[];
+  heroMedia?: CaseMedia
+  sections: CaseSection[]
   /** Optional demo/screenshot gallery rendered after the story. */
-  gallery?: CaseMedia[];
+  gallery?: CaseMedia[]
 }
 
 const caseStudies: Record<string, CaseStudy> = {
@@ -87,9 +87,9 @@ const caseStudies: Record<string, CaseStudy> = {
     year: "2026",
     role: "Full-Stack & AI Engineer",
     overview:
-      "A voice app to practice technical interviews, end to end. Upload your CV and paste the job offer — one AI plans a session tailored to both, a second conducts it with you by voice in the browser, in real time, and when you finish a third rules like a hiring committee: hired or not, a 0–100 score, and strengths and concerns drawn from your own answers. It interviews in English or Spanish, and you choose the interviewer's name, voice, and persona.",
+      "A voice application for technical interview practice. A planner prepares the session from your CV and job description, an interviewer conducts it in the browser, and an evaluator assesses your answers against the plan. Feedback ties each criterion to transcript evidence; partial sessions show what was covered without a global score or verdict. Interviews support English and Spanish, with configurable voices and interviewer personas.",
     seoDescription:
-      "Interview Agent — practice technical interviews by voice. One AI plans the session from your CV and the job offer, one interviews you in real time over WebRTC, and one scores you with evidence from your own answers.",
+      "Interview Agent: a three-agent voice interview application using React, FastAPI, LiveKit, LangGraph and PostgreSQL, with transcript-based assessments and recoverable interview sessions.",
     stack: "TANSTACK START · FASTAPI · LANGGRAPH · LIVEKIT · OPENAI",
     tags: [
       "React",
@@ -98,15 +98,20 @@ const caseStudies: Record<string, CaseStudy> = {
       "LangGraph",
       "LiveKit",
       "OpenAI",
-      "Qdrant",
       "PostgreSQL",
       "Docker",
     ],
     repoUrl: "https://github.com/Steven-Mendez/interview-agent",
     metrics: [
-      { value: "3 AIs", label: "one plans, one interviews, one scores" },
-      { value: "Real-time", label: "voice over WebRTC — it listens and speaks back" },
-      { value: "0–100", label: "hiring score backed by your own answers" },
+      { value: "3 agents", label: "planning, voice interview, evaluation" },
+      {
+        value: "Real-time",
+        label: "voice over WebRTC — it listens and speaks back",
+      },
+      {
+        value: "Evidence",
+        label: "feedback grounded in the interview transcript",
+      },
       { value: "EN · ES", label: "full interviews in English or Spanish" },
     ],
     heroMedia: {
@@ -136,7 +141,7 @@ const caseStudies: Record<string, CaseStudy> = {
       },
       {
         kicker: "WHAT I BUILT",
-        heading: "Three AIs, one interview",
+        heading: "Three agents, one interview",
         blocks: [
           {
             type: "paragraph",
@@ -145,9 +150,9 @@ const caseStudies: Record<string, CaseStudy> = {
           {
             type: "list",
             items: [
-              "**Plan** — a planner reads your CV and the offer, then designs the session: who the interviewer is, what the interview should probe, and 4–6 ordered milestones it must cover.",
-              "**Interview** — a real-time voice agent conducts it in your browser. It transcribes as you speak, asks follow-ups grounded in your CV — which it can search mid-conversation — and checks milestones off as you cover them.",
-              "**Score** — when it ends, an evaluator reads the full transcript against the plan and rules like a hiring committee: hired or not, a 0–100 score, and strengths and concerns, each backed by something you actually said.",
+              "**Plan** — the planner reads the CV and job description, then prepares an interviewer persona and milestones in the selected language.",
+              "**Interview** — a voice agent uses LiveKit to conduct the session in the browser, with the complete CV, job description and plan available as context.",
+              "**Evaluate** — after the session closes and its transcript is sealed, the evaluator reviews criterion-level evidence. Partial or insufficient interviews receive feedback without a global score or hiring verdict.",
             ],
           },
         ],
@@ -158,78 +163,67 @@ const caseStudies: Record<string, CaseStudy> = {
         blocks: [
           {
             type: "paragraph",
-            text: "The app is two processes sharing one PostgreSQL database. A **FastAPI** backend serves the REST API and the compiled **TanStack Start** SPA; a separate **voice worker**, built on LiveKit Agents, joins each interview room over **WebRTC**. When you upload a CV, the backend converts the PDF to markdown, embeds it with OpenAI's `text-embedding-3-small`, and indexes it in **Qdrant**; the planner then writes the interview plan and its milestones to Postgres, and the browser connects to the room where the interviewer is waiting.",
+            text: "The application combines a **React/TanStack Start** frontend, a **FastAPI** API and a **LiveKit Agents** voice worker. **PostgreSQL** holds the extracted CV text, interview plans, milestones, transcripts and assessments. The planner, interviewer and evaluator receive the CV and job description directly as text context. The browser joins the interview room over **WebRTC**.",
           },
           {
             type: "paragraph",
-            text: "Inside a turn: **Silero VAD** plus a **turn-detection model** decide that you have actually finished speaking — the one thing the bot that interviewed me got wrong — then **AssemblyAI** transcribes the turn, a **LangGraph** agent running on OpenAI models decides what to say, and **Cartesia** speaks it back, streaming, so the reply starts before it is fully written. The agent carries three tools: search your CV in Qdrant, mark a milestone complete, and end the interview.",
+            text: "**LiveKit Agents** handles speech recognition, synthesis and turn detection. **LangGraph** coordinates interview decisions using OpenAI models, and validated decisions are persisted before a question is delivered. Confirmed answers retain their text versions and provenance, so corrections and uncertain recordings remain distinguishable. Evaluation uses a sealed transcript rather than an unfinished stream of live captions.",
           },
           {
             type: "mermaid",
             caption:
               "How the parts fit together: the browser, the WebRTC room, the voice worker's pipeline, the planner and evaluator behind the API, and storage.",
             code: `flowchart TB
-    subgraph client["Frontend — TanStack Start SPA"]
-        UI["Interview room UI<br/>livekit-client"]
+    subgraph client["Frontend — React / TanStack Start"]
+        UI["Interview UI"]
     end
-
     subgraph rtc["LiveKit — WebRTC"]
-        ROOM["Room per interview<br/>audio both ways + live transcript"]
+        ROOM["Audio room"]
     end
-
-    subgraph worker["Voice worker — LiveKit Agents"]
-        VAD["Silero VAD<br/>+ turn detector"]
-        STT["STT<br/>AssemblyAI streaming"]
-        GRAPH["Interviewer agent<br/>LangGraph + OpenAI"]
-        TTS["TTS<br/>Cartesia / Inworld"]
+    subgraph worker["Voice worker"]
+        VOICE["LiveKit Agents<br/>recognition, synthesis, turn detection"]
+        GRAPH["Interviewer<br/>LangGraph + OpenAI"]
     end
-
-    subgraph api["Backend — FastAPI under /api"]
-        PLANNER["Planner<br/>designs persona + milestones"]
-        EVAL["Evaluator<br/>hired · score · evidence"]
+    subgraph backend["FastAPI"]
+        API["Interview lifecycle API"]
+        PLANNER["Planner<br/>persona and milestones"]
+        EVAL["Evaluator<br/>criterion evidence and feedback"]
     end
-
-    subgraph data["Storage"]
-        VEC["Qdrant<br/>CV chunks, deleted after scoring"]
-        DB["PostgreSQL<br/>plan · transcript · evaluation"]
-    end
-
+    DB["PostgreSQL<br/>CV text, plans, transcripts, assessments"]
     UI <--> ROOM
-    ROOM <--> VAD
-    VAD --> STT --> GRAPH --> TTS --> ROOM
-    UI -->|REST /api| PLANNER
-    PLANNER --> VEC
-    PLANNER --> DB
-    GRAPH <--> VEC
-    GRAPH --> DB
-    GRAPH -->|on close| EVAL
-    EVAL --> DB`,
+    ROOM <--> VOICE
+    VOICE <--> GRAPH
+    UI --> API
+    API <--> DB
+    API --> PLANNER
+    PLANNER --> API
+    API --> GRAPH
+    VOICE -->|session closure and transcript| API
+    API --> EVAL
+    EVAL --> API`,
           },
           { type: "subheading", text: "How a single turn works" },
           {
             type: "mermaid",
             caption:
-              "One turn, step by step. The reply streams to speech as it is written, so the wait feels short. When the interview ends, the evaluator runs on its own.",
+              "Conceptual turn flow: confirmed answers and validated decisions are persisted before question delivery. Assessment follows session closure and transcript sealing.",
             code: `sequenceDiagram
-    participant U as You (browser)
-    participant R as LiveKit room (WebRTC)
+    participant U as Candidate (browser)
+    participant R as LiveKit room
     participant W as Voice worker
-    participant G as Interviewer agent (LangGraph)
-    participant Q as Qdrant
-
-    Note over U,Q: Setup: CV + job offer → plan with 4–6 milestones
-    U->>R: Mic audio
+    participant G as Interviewer (LangGraph)
+    participant S as Persisted interview state
+    Note over U,S: Setup: full CV and job description in context, with an interview plan
+    U->>R: Spoken answer
     R->>W: Audio stream
-    W->>W: Silero VAD + turn detector: you finished
-    W->>W: AssemblyAI STT → final transcript
-    W->>G: Your turn + milestone status
-    G->>Q: search_resume (when it needs your CV)
-    Q-->>G: Relevant CV chunks
-    G-->>W: Reply, streamed as it is written
-    W-->>R: Cartesia TTS audio
-    R-->>U: The interviewer speaks
-    Note over G: Tools: complete_milestone · end_interview
-    Note over W: On close → evaluator scores the transcript`,
+    W->>W: Turn detection and transcription
+    W->>S: Confirmed answer and text version
+    W->>G: Confirmed turn and milestone state
+    G->>S: Validated interview decision
+    G-->>W: Next question
+    W-->>R: Synthesized speech
+    R-->>U: Interviewer audio
+    Note over W,S: Close session, seal transcript, request evaluation`,
           },
         ],
       },
@@ -243,33 +237,33 @@ const caseStudies: Record<string, CaseStudy> = {
           },
           {
             type: "paragraph",
-            text: "**Two model tiers, on purpose.** The interviewer sits in the latency path, so it runs on a small, fast OpenAI model with reasoning turned off — a shorter wait before it starts talking. The planner and the evaluator have no one waiting on them, so they run on a stronger model with reasoning effort set high. The interviewer can afford to be quick rather than brilliant *because* the planner already did the thinking: the persona, the focus areas, and the milestones are decided before the call starts.",
+            text: "**Keep a session’s configuration stable.** Each interview stores its language, voice, models, level and limits. Reconnecting preserves the original start time and consumed budget. A repeat interview gets a fresh plan while retaining the source CV and job description, and remains linked to the original run. That makes the session history useful for comparing practice attempts.",
           },
           {
             type: "paragraph",
-            text: "**The \"LLM\" is actually a graph.** LiveKit expects a language model in its pipeline; I hand it a LangGraph agent disguised as one. Only text the graph explicitly streams is spoken — tool calls and their results never reach the voice, and a filter drops accidental JSON before it can be read aloud. The graph keeps no memory of its own: each turn, the milestone status is re-injected as context, because the voice framework rebuilds the conversation from the transcript. *Cost:* a stricter contract to respect. *Gain:* the interviewer can use tools mid-sentence without ever mumbling raw JSON at you.",
+            text: "**Treat interview decisions as persisted state.** LangGraph decisions are validated and committed before question delivery. An uncertain or interrupted question is not automatically repeated; an explicit replay can use the saved question without creating a new model decision. Transcript corrections and assessment attempts retain their earlier versions, so recovery does not silently overwrite the session’s history.",
           },
         ],
       },
       {
         kicker: "OUTCOME",
-        heading: "A verdict with evidence, not a vibe",
+        heading: "Feedback you can trace to your answers",
         blocks: [
           {
             type: "paragraph",
-            text: "Every session ends the way a real hiring loop does: with a decision. The evaluator reads the whole transcript against the plan and returns hired-or-not, a 0–100 score on an anchored rubric, and strengths and concerns that each point back to something you said — or failed to say. It is deliberately strict: milestones you never reached count against you, and leaving early is treated as missing evidence, not a pass.",
+            text: "The report distinguishes topic coverage from demonstrated ability. It links each assessed criterion to transcript evidence and suggests what to practice. An incomplete recording or an abandoned session remains visibly incomplete: missing audio is not treated as a wrong answer, and partial or insufficient interviews do not receive a global score or verdict.",
           },
           {
             type: "paragraph",
-            text: "It also cleans up after itself. The interview has hard limits — a session cap with a spoken warning near the end, an idle timeout, and detection of a closed tab — and whichever way it ends, the evaluation runs on its own. The moment scoring completes, your CV's chunks are **deleted from the vector store**, so the most personal document in the system does not outlive its one job.",
+            text: "Plans, transcripts and evaluation attempts are persisted in PostgreSQL. The History view groups repeat interviews and retains earlier feedback when a new assessment is requested. Recoverable requests preserve their identities and previous results, rather than replacing an earlier assessment after an uncertain response.",
           },
           {
             type: "paragraph",
-            text: "This is the part I cared about most. The bot ignored what I said. This one is built around it. The report quotes you back to yourself — every point ties to a moment in your own interview — so you walk away feeling heard, not graded by a stranger. You can freeze, ramble, and start over with no one watching. That was the goal: do the awkward reps here, in private, so the real interview is not the first time you have had the conversation.",
+            text: "This is the part I cared about most. The report gives me specific answers to review and topics to practice again. I can pause, revisit feedback and repeat the same role with a fresh interview plan. The goal is to practice the difficult conversations before facing them in a real hiring process.",
           },
           {
             type: "paragraph",
-            text: "I have not taken it into a real interview yet — but I built it for exactly that moment, and I trust it to get me there ready.",
+            text: "I built it to make practice useful before a real interview: a session I can review, repeat and learn from.",
           },
           {
             type: "media",
@@ -277,7 +271,7 @@ const caseStudies: Record<string, CaseStudy> = {
               src: "/projects/media/interview-agent-report.webp",
               kind: "REPORT",
               caption:
-                "The final report of a session I abandoned early — on purpose. 8/100, not hired, and every concern points at what was actually missing. It is strict because the real thing is.",
+                "Historical report from an earlier scoring flow. The current application shows criterion feedback for partial interviews without a global score or verdict.",
             },
           },
         ],
@@ -312,7 +306,7 @@ const caseStudies: Record<string, CaseStudy> = {
     ],
   },
 
-  "portfolio": {
+  portfolio: {
     slug: "portfolio",
     title: "This Portfolio",
     category: "Web",
@@ -458,10 +452,10 @@ const caseStudies: Record<string, CaseStudy> = {
       },
     ],
   },
-};
+}
 
-export const caseStudySlugs = Object.keys(caseStudies);
+export const caseStudySlugs = Object.keys(caseStudies)
 
 export function getCaseStudy(slug: string): CaseStudy | undefined {
-  return caseStudies[slug];
+  return caseStudies[slug]
 }

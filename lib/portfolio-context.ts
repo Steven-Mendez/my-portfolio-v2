@@ -10,7 +10,7 @@
  * fill it in with real information or leave it for the portfolio owner.
  */
 
-import { portfolioData, type ExperienceItem } from "@/lib/data";
+import { portfolioData, type ExperienceItem } from "@/lib/data"
 
 // ---------------------------------------------------------------------------
 // PLACEHOLDERS — bot-specific content not present in lib/data.ts.
@@ -22,18 +22,26 @@ const PLACEHOLDERS = {
   faq: "" as string,
   /** PLACEHOLDER: anything the owner wants the assistant to emphasize or avoid. */
   notes: "" as string,
-};
+}
 
 function formatExperience(item: ExperienceItem, depth = 0): string {
-  const indent = depth > 0 ? "  ".repeat(depth) : "";
+  const indent = depth > 0 ? "  ".repeat(depth) : ""
   const head = `${indent}- ${item.title} @ ${item.company} (${item.period}${
     item.location ? `, ${item.location}` : ""
-  })`;
-  const bullets = item.bullets.map((b) => `${indent}    • ${b}`).join("\n");
+  })`
+  const relationship = [
+    item.employmentType,
+    item.confidential ? "Confidential client" : "",
+    item.context,
+  ]
+    .filter(Boolean)
+    .join("; ")
+  const context = relationship ? `${indent}    ${relationship}` : ""
+  const bullets = item.bullets.map((b) => `${indent}    • ${b}`).join("\n")
   const children = (item.children ?? [])
     .map((c) => formatExperience(c, depth + 1))
-    .join("\n");
-  return [head, bullets, children].filter(Boolean).join("\n");
+    .join("\n")
+  return [head, context, bullets, children].filter(Boolean).join("\n")
 }
 
 /**
@@ -42,7 +50,7 @@ function formatExperience(item: ExperienceItem, depth = 0): string {
  */
 const portfolioContext = {
   get bio(): string {
-    const { profile, about } = portfolioData;
+    const { profile, about } = portfolioData
     return [
       `Name: ${profile.fullName}`,
       `Role: ${profile.role}`,
@@ -53,51 +61,51 @@ const portfolioContext = {
         .join(", ")}`,
       `Summary: ${about.resumeSummary}`,
       `Focus areas: ${about.focusAreas.join("; ")}`,
-    ].join("\n");
+    ].join("\n")
   },
 
   get skills(): string {
     return portfolioData.skills.categories
       .map((c) => `- ${c.label}: ${c.items.join(", ")}`)
-      .join("\n");
+      .join("\n")
   },
 
   get experience(): string {
-    return portfolioData.experience.map((e) => formatExperience(e)).join("\n");
+    return portfolioData.experience.map((e) => formatExperience(e)).join("\n")
   },
 
   get projects(): string {
     return portfolioData.projects
       .map((p) => `- ${p.title} (${p.label}): ${p.description}`)
-      .join("\n");
+      .join("\n")
   },
 
   get education(): string {
     const degrees = portfolioData.education
       .map((e) => `- ${e.degree}, ${e.institution} (${e.period})`)
-      .join("\n");
+      .join("\n")
     const certs = portfolioData.certifications
       .map((c) => `- ${c.name} — ${c.org} (${c.year})`)
-      .join("\n");
-    return `${degrees}\n${certs}`;
+      .join("\n")
+    return `${degrees}\n${certs}`
   },
 
   get contact(): string {
-    const { profile, socials } = portfolioData;
+    const { profile, socials } = portfolioData
     return [
       `Email: ${profile.contactEmail}`,
       `GitHub: ${socials.github}`,
       `LinkedIn: ${socials.linkedin}`,
       `Upwork: ${socials.upwork}`,
-    ].join("\n");
+    ].join("\n")
   },
-};
+}
 
 /** The owner's name — used in the guardrail and greetings. */
-export const OWNER_NAME = portfolioData.profile.fullName;
+export const OWNER_NAME = portfolioData.profile.fullName
 
 /** The assistant's display name (single source for UI + system prompt). */
-export const AGENT_NAME = "Jarvis";
+export const AGENT_NAME = "Jarvis"
 
 /**
  * Build the system prompt injected into every chat request. Composes an identity
@@ -106,10 +114,10 @@ export const AGENT_NAME = "Jarvis";
 export function buildSystemPrompt(): string {
   const faq = PLACEHOLDERS.faq.trim()
     ? `\n## Additional Q&A\n${PLACEHOLDERS.faq.trim()}`
-    : "";
+    : ""
   const notes = PLACEHOLDERS.notes.trim()
     ? `\n## Notes\n${PLACEHOLDERS.notes.trim()}`
-    : "";
+    : ""
 
   return `You are ${AGENT_NAME}, the portfolio assistant for ${OWNER_NAME}, embedded on his personal portfolio website. If asked your name, say you are ${AGENT_NAME}. You speak about ${OWNER_NAME} in the third person and help visitors (recruiters, hiring managers, collaborators) learn about him.
 
@@ -137,5 +145,5 @@ ${portfolioContext.projects}
 ${portfolioContext.education}
 
 ## Contact
-${portfolioContext.contact}${faq}${notes}`;
+${portfolioContext.contact}${faq}${notes}`
 }

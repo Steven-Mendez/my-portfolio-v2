@@ -1,149 +1,151 @@
-export const SITE_URL = "https://www.stevenampaiz.com";
-const OG_IMAGE_PATH = "/opengraph-image";
+export const SITE_URL = "https://www.stevenampaiz.com"
+const OG_IMAGE_PATH = "/opengraph-image"
 
 // WERN is the freelancing agency Steven contracts through. Set this once the
 // public URL (site or LinkedIn) is known and it will light up every "WERN" /
 // "via WERN" reference as a link automatically. Empty string = render as text.
-const WERN_URL = "https://www.upwork.com/agencies/wern/";
+const WERN_URL = "https://www.upwork.com/agencies/wern/"
 
 // The UNI degree title appears twice — the resume Education entry and the home
 // Credentials list (the kind:"DEGREE" certification). Single-source it so the
 // two surfaces can't drift apart.
-const UNI_DEGREE = "B.S. in Computer Engineering";
+const UNI_DEGREE = "Bachelor of Engineering (B.Eng.), Computer Engineering"
 
 export interface Profile {
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  role: string;
-  tagline: string;
-  handle: string;
-  avatarUrl: string;
-  contactEmail: string;
+  firstName: string
+  lastName: string
+  fullName: string
+  role: string
+  tagline: string
+  handle: string
+  avatarUrl: string
+  contactEmail: string
   /** "Managua, Nicaragua" — shown in the contact section / footer. */
-  location: string;
+  location: string
   /** "UTC-6" — shown in the footer locale line, hero terminal, and resume header. */
-  timezone: string;
+  timezone: string
 }
 
 export interface About {
-  title: string;
+  title: string
   /** Home-only lead statement for the About card — a short, punchy positioning
    *  line shown above the summary (the resume uses `resumeSummary` only). */
-  headline: string;
+  headline: string
   /** Shared "Professional Summary" — the single positioning paragraph rendered
    *  on BOTH the home About section and the resume (years + quantified
    *  achievements + value, in 3–4 lines). */
-  resumeSummary: string;
+  resumeSummary: string
   /** Home-only "What I focus on" bullets (capability-level, no stack names —
    *  the stack lives in `skills`). */
-  focusAreas: string[];
+  focusAreas: string[]
 }
 
 export interface SkillCategory {
-  label: string;
-  items: string[];
+  label: string
+  items: string[]
 }
 
 export interface Skills {
   /** Curated highlight chips shown on the home About section. */
-  coreStack: string[];
+  coreStack: string[]
   /** Full categorized breakdown shown on the resume. */
-  categories: SkillCategory[];
+  categories: SkillCategory[]
 }
 
 export interface ExperienceItem {
-  company: string;
+  company: string
   /** Public company/product URL, when one exists. */
-  companyUrl?: string;
-  logoPath: string;
-  title: string;
+  companyUrl?: string
+  logoPath: string
+  title: string
   /** Anonymized client — render a neutral mark instead of a real logo. */
-  confidential?: boolean;
+  confidential?: boolean
   /** "Freelance" | "Contract" | "Full-time", etc. */
-  employmentType?: string;
-  period: string;
-  location: string;
+  employmentType?: string
+  period: string
+  location: string
+  /** Contract relationship or other source-confirmed role context. */
+  context?: string
   /** Achievement bullets — the single canonical source for home + resume. */
-  bullets: string[];
-  skillsSummary: string[];
+  bullets: string[]
+  skillsSummary: string[]
   /** Engagements delivered under this entry (e.g. agency → client contracts),
    *  rendered as indented sub-roles beneath the umbrella entry. */
-  children?: ExperienceItem[];
+  children?: ExperienceItem[]
   /** 1–3 letters for the home experience monogram tile (e.g. "W", "EL"). */
-  monogram?: string;
+  monogram?: string
   /** CSS background (gradient/color) for the home experience monogram tile. */
-  accent?: string;
+  accent?: string
 }
 
 export interface Project {
-  title: string;
-  description: string;
-  label: string;
+  title: string
+  description: string
+  label: string
   /** Filter bucket surfaced by the Projects filter (e.g. "AI", "Web", "Data"). */
-  category?: string;
+  category?: string
   /** Card cover. Omit for finished projects so they don't show the
    *  "coming soon" placeholder reserved for in-progress work. */
-  image?: string;
+  image?: string
   /** Links the card to its individual case-study page at /projects/<slug>. */
-  slug?: string;
+  slug?: string
   /** Public live URL, when one exists. */
-  liveUrl?: string;
+  liveUrl?: string
   /** Public source repository, when one exists. */
-  repoUrl?: string;
+  repoUrl?: string
   /** Detailed achievement bullets, shown on the resume. */
-  highlights?: string[];
+  highlights?: string[]
   /** Featured as the resume's "Selected Project". */
-  resumeFeatured?: boolean;
+  resumeFeatured?: boolean
   /** Print-safe title used on the resume instead of the home card title. */
-  resumeTitle?: string;
+  resumeTitle?: string
 }
 
 export interface EducationItem {
-  institution: string;
-  degree: string;
-  period: string;
-  location: string;
+  institution: string
+  degree: string
+  period: string
+  location: string
 }
 
 export interface Credential {
   /** Year awarded (string so it can read "2021" or a range). */
-  year: string;
-  name: string;
-  org: string;
-  kind: "DEGREE" | "COURSE" | "CERTIFICATION";
+  year: string
+  name: string
+  org: string
+  kind: "DEGREE" | "COURSE" | "CERTIFICATION"
   /** Public verification link (e.g. a Credly badge). */
-  href?: string;
+  href?: string
 }
 
 export interface LanguageItem {
-  name: string;
-  level: string;
+  name: string
+  level: string
 }
 
 export interface Seo {
-  title: string;
-  description: string;
-  url: string;
-  image: string;
-  keywords: string[];
-  siteName: string;
-  locale: string;
-  type: string;
+  title: string
+  description: string
+  url: string
+  image: string
+  keywords: string[]
+  siteName: string
+  locale: string
+  type: string
 }
 
 export interface PortfolioData {
-  profile: Profile;
-  socials: { github: string; linkedin: string; upwork: string };
-  about: About;
-  skills: Skills;
-  experience: ExperienceItem[];
-  projects: Project[];
-  education: EducationItem[];
+  profile: Profile
+  socials: { github: string; linkedin: string; upwork: string }
+  about: About
+  skills: Skills
+  experience: ExperienceItem[]
+  projects: Project[]
+  education: EducationItem[]
   /** Courses & certifications, surfaced in the Education & Credentials section. */
-  certifications: Credential[];
-  languages: LanguageItem[];
-  seo: Seo;
+  certifications: Credential[]
+  languages: LanguageItem[]
+  seo: Seo
 }
 
 export const portfolioData = {
@@ -169,24 +171,71 @@ export const portfolioData = {
     title: "About Me",
     headline: "Professional Summary",
     resumeSummary:
-      "Full-stack engineer with 3+ years building and shipping production software end to end — real-time backends, data pipelines, AI features (LLM/RAG), and the web interfaces in front of them. Comfortable owning a feature across the stack and optimizing for performance and reliability under real-world load. Works day-to-day across React/Next.js, Python (FastAPI/Django), and AWS, and is open to experimenting with and picking up new technologies as a problem demands.",
+      "Software engineer with 3+ years of experience building production web applications and backend APIs. Works across Python, React, .NET, and AWS, with experience in SQL optimization, data pipelines, and LLM/RAG integration.",
     focusAreas: [
       "End-to-end delivery — from data and APIs to the UI",
-      "Real-time systems and multi-vendor data pipelines",
-      "AI-powered product features (LLM/RAG)",
+      "Backend APIs, data pipelines, and SQL optimization",
+      "LLM evaluation and retrieval-augmented product features",
     ],
   },
   skills: {
-    coreStack: ["Python", "FastAPI", "Django", "React", "Next.js", "TypeScript", "PostgreSQL", "AWS"],
+    coreStack: [
+      "Python",
+      "FastAPI",
+      "React",
+      "TypeScript",
+      ".NET",
+      "PostgreSQL",
+      "AWS",
+      "LLM/RAG",
+    ],
     categories: [
-      { label: "Languages", items: ["TypeScript / JavaScript", "Python", "C#", "SQL"] },
-      { label: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML5/CSS3"] },
-      { label: "Backend", items: ["FastAPI", "Django", "Flask", "ASP.NET", "REST APIs", "Socket.IO", "Pydantic", "SQLAlchemy"] },
-      { label: "AI & Data", items: ["LLM/RAG integration", "LangChain/LangGraph", "vector databases (pgvector, Qdrant)", "data pipelines", "web scraping"] },
-      { label: "Cloud & DevOps", items: ["AWS", "Docker", "CI/CD", "Git"] },
-      { label: "Databases", items: ["PostgreSQL", "Microsoft SQL Server", "Redis"] },
+      {
+        label: "Languages",
+        items: ["Python", "TypeScript/JavaScript", "C#", "SQL"],
+      },
+      {
+        label: "Backend & Data",
+        items: [
+          "FastAPI",
+          "Django",
+          "Flask",
+          "ASP.NET",
+          "PostgreSQL",
+          "SQL Server",
+          "Redis",
+          "REST APIs",
+        ],
+      },
+      {
+        label: "Frontend",
+        items: ["React", "Angular", "Next.js"],
+      },
+      {
+        label: "Cloud & Tools",
+        items: [
+          "AWS (Lambda, ECS, S3, RDS, SQS, CloudWatch)",
+          "Docker",
+          "Terraform",
+          "CI/CD",
+          "Git",
+        ],
+      },
+      {
+        label: "AI Applications",
+        items: [
+          "LLM/RAG integration",
+          "LangChain",
+          "LangGraph",
+          "pgvector",
+          "Qdrant",
+          "LiveKit",
+        ],
+      },
     ],
   },
+  // Current LinkedIn career facts read and confirmed by Steven on 2026-10-07.
+  // Shared with the CV and chatbot; performance quantities remain self-reported.
   experience: [
     {
       company: "WERN",
@@ -194,13 +243,23 @@ export const portfolioData = {
       logoPath: "/logos/wern_logo.webp",
       monogram: "W",
       accent: "linear-gradient(135deg,#3b5bff,#1e2a78)",
-      title: "Freelance Software Engineer",
-      period: "Dec 2024 - Present",
+      skillsSummary: [
+        "Python",
+        "FastAPI",
+        "React",
+        "Angular",
+        "AWS",
+        "Terraform",
+        "LLM/RAG",
+      ],
+      title: "Full Stack Engineer",
+      employmentType: "Contract",
+      period: "Jan 2025 - Present",
       location: "Remote",
       bullets: [
-        "Delivered contract software engineering for WERN's clients, owning the work from data and APIs through to the interfaces users see.",
+        "Built Python APIs and React/Angular interfaces across 3-5 client codebases, with AWS deployments, Docker/Terraform infrastructure, and LLM/RAG integrations.",
       ],
-      skillsSummary: ["Python", "FastAPI", "Next.js", "React", "TypeScript", "LLMs", "AWS"],
+      context: "Client engagement through WERN:",
       children: [
         {
           company: "Dupely",
@@ -208,65 +267,75 @@ export const portfolioData = {
           logoPath: "/logos/dupely_logo.webp",
           monogram: "D",
           accent: "linear-gradient(135deg,#34d36b,#15a34a)",
-          title: "Backend Engineer",
-          employmentType: "Contract",
-          period: "Dec 2025 - May 2026",
+          skillsSummary: [
+            "Python",
+            "FastAPI",
+            "PostgreSQL",
+            "Redis",
+            "AWS",
+            "Data Pipelines",
+          ],
+          title: "Back End Developer",
+          employmentType: "Contract through WERN",
+          period: "Dec 2025 - Apr 2026",
           location: "Remote",
           bullets: [
-            "Built high-performance REST APIs in Python and FastAPI to serve real-time product data to the browser extension and mobile app.",
-            "Designed and maintained multi-vendor data pipelines ingesting product details, pricing history, and availability from major marketplaces (Amazon, Walmart, eBay) — indexing 5K–10K products during the beta phase — with caching and fallback handling to reduce reliance on third-party providers.",
-            "Delivered real-time backend events over Socket.IO and enrichment APIs (reviews, availability, similarity explanations) for a responsive client experience.",
-            "Worked within a ~10-engineer team, integrating third-party data providers (Bright Data, Oxylabs, Keepa, BlueCart) and managing persistence across PostgreSQL, Redis, and Qdrant on AWS.",
+            "Built FastAPI product and pricing endpoints for browser-extension and mobile clients, with pipelines using official Amazon, Walmart, and eBay APIs.",
+            "Owned PostgreSQL schema design, migrations, and query performance; implemented caching for product data.",
           ],
-          skillsSummary: ["Python", "FastAPI", "AWS", "PostgreSQL", "Redis", "Data Pipelines"],
-        },
-        {
-          company: "E-Learning Platform",
-          logoPath: "/logos/wern_logo.webp",
-          monogram: "EL",
-          accent: "linear-gradient(135deg,#8b6dff,#6d28d9)",
-          confidential: true,
-          title: "Full Stack & AI Engineer",
-          employmentType: "Contract",
-          period: "Dec 2024 - Nov 2025",
-          location: "Remote",
-          bullets: [
-            "Integrated AI into the platform: LLM/RAG retrieval over learning content with vector search (pgvector) and agent/tool orchestration (LangChain/LangGraph) to ground assistant responses.",
-            "Designed and shipped, end to end, a node-and-connector visual configuration tool (Next.js/React/TypeScript) that lets non-technical users configure conversational-agent behavior across scenarios.",
-            "Contributed full-stack to building the platform — Django/Python (FastAPI) services and React/Next.js/TypeScript interfaces.",
-          ],
-          skillsSummary: ["LLMs", "RAG", "LangChain", "Python", "Django", "FastAPI", "Next.js", "React"],
         },
       ],
+    },
+    {
+      company: "US EdTech Client",
+      logoPath: "",
+      monogram: "EL",
+      accent: "linear-gradient(135deg,#8b6dff,#6d28d9)",
+      confidential: true,
+      skillsSummary: ["Python", "React", "LLM Evaluation", "RAG", "pgvector"],
+      title: "Full Stack & AI Engineer (Independent Consultant)",
+      employmentType: "Self-employed",
+      period: "Mar 2025 - Dec 2025",
+      location: "Remote",
+      bullets: [
+        "Built an LLM benchmark and evaluation harness covering 20-50 computer-use tasks; evaluation runs informed shipping decisions.",
+        "Integrated LLM/RAG features into a learning management system using pgvector to retrieve learning content.",
+        "Contributed production frontend and backend features in two-week sprints.",
+      ],
+      context: "Direct client contract, concurrent with WERN.",
     },
     {
       company: "Universidad Nacional de Ingeniería (UNI)",
       logoPath: "/logos/universidad_nacional_de_ingenieria_nicaragua_logo.webp",
       monogram: "UNI",
       accent: "linear-gradient(135deg,#3b82f6,#1e40af)",
-      title: "Systems Analyst",
+      skillsSummary: ["C#", ".NET", "ASP.NET", "React", "SQL Server", "CI/CD"],
+      title: "Full Stack Developer & Systems Analyst (.NET / React)",
       employmentType: "Full-time",
-      period: "Jan 2023 - Dec 2024",
-      location: "Managua, Nicaragua · On-site",
+      period: "Feb 2023 - Dec 2024",
+      location: "Managua, Nicaragua",
       bullets: [
-        "Maintained and modernized the university's mission-critical ASP.NET / SQL Server budget system, used by 400–700 staff across the institution with peaks of 100–200 concurrent users.",
-        "Optimized complex SQL Server queries over a decade of accumulated financial data — cutting a critical report from ~20 minutes to 15–30 seconds, and most heavy queries from ~5 minutes to under 10 seconds.",
-        "Proposed and prototyped a React.js front-end architecture to modernize the legacy UI, improving maintainability and user experience.",
-        "Mentored 5–10 interns, introducing modern development practices and clean-code standards to the team.",
+        "Built a warehouse inventory system end to end with .NET and React.",
+        "Maintained an ASP.NET/SQL Server budget system through two annual budget cycles; reduced its heaviest report’s runtime from 6 minutes to 7-15 seconds.",
+        "Mentored approximately 8 developers.",
       ],
-      skillsSummary: ["C#", "ASP.NET", "SQL Server", "React", "Clean Architecture"],
     },
   ],
   projects: [
     {
       title: "Interview Agent",
       description:
-        "A real-time voice interviewer — one AI plans the interview from your CV and the job offer, a second conducts it by voice over WebRTC, and a third scores you 0–100 with evidence from your own answers.",
+        "A voice interview application with three agents: a planner uses your CV and job description, an interviewer conducts the session through LiveKit, and an evaluator assesses your answers using transcript evidence. Partial interviews receive criterion feedback without a global score or verdict.",
       label: "React · FastAPI · LangGraph · LiveKit · OpenAI",
       category: "AI",
       image: "/projects/covers/interview-agent.webp",
       slug: "interview-agent",
       repoUrl: "https://github.com/Steven-Mendez/interview-agent",
+      resumeFeatured: true,
+      highlights: [
+        "Built a three-agent voice interview application: a planner uses a CV and job description, an interviewer conducts the interview through LiveKit, and an evaluator assesses answers using transcript evidence.",
+        "Implemented a React frontend and FastAPI backend with LangGraph/OpenAI orchestration and PostgreSQL persistence for plans, transcripts, and evaluations.",
+      ],
     },
     {
       title: "Portfolio",
@@ -277,7 +346,7 @@ export const portfolioData = {
       image: "/projects/covers/portfolio.webp",
       slug: "portfolio",
       liveUrl: SITE_URL,
-      resumeFeatured: true,
+      resumeFeatured: false,
       resumeTitle: "Personal Portfolio",
       highlights: [
         "Designed and built a liquid-glass personal site with WebGL/GSAP motion, full SEO and structured data, and CI-enforced accessibility & SEO budgets (Lighthouse CI gated at ≥95); optimized the hero image from 19 MB to 446 KB (~98% smaller).",
@@ -322,12 +391,12 @@ export const portfolioData = {
   ],
   languages: [
     { name: "Spanish", level: "Native" },
-    { name: "English", level: "Professional (B2)" },
+    { name: "English", level: "Full professional proficiency" },
   ],
   seo: {
     title: "Steven Mendez | Full Stack Engineer",
     description:
-      "Steven Mendez is a full-stack engineer who builds and ships production systems end to end — real-time backends, AI/LLM features, and the web interfaces in front of them. Experienced across React/Next.js, Python, and AWS.",
+      "Steven Mendez is a software engineer with 3+ years building production web applications and backend APIs across Python, React, .NET, and AWS, with experience in SQL optimization, data pipelines, and LLM/RAG integration.",
     url: SITE_URL,
     image: OG_IMAGE_PATH,
     keywords: [
@@ -347,4 +416,4 @@ export const portfolioData = {
     locale: "en_US",
     type: "website",
   },
-} satisfies PortfolioData;
+} satisfies PortfolioData

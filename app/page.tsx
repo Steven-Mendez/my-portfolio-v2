@@ -13,6 +13,7 @@ import AboutSection from "@/components/sections/AboutSection"
 import CredentialsSection from "@/components/sections/CredentialsSection"
 import ContactSection from "@/components/sections/ContactSection"
 import SiteBackground from "@/components/SiteBackground"
+import { PortfolioChat } from "@/components/chat/portfolio-chat"
 import HashScroll from "@/components/HashScroll"
 import Footer from "@/components/sections/Footer"
 
@@ -67,6 +68,7 @@ export default function Page() {
 
       {/* Signature animated WebGL backdrop (shared with case-study pages). */}
       <SiteBackground />
+      <PortfolioChat />
 
       {/* FIXED Navbar */}
       <Navbar />

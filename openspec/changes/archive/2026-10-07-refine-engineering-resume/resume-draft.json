@@ -1,0 +1,108 @@
+{
+  "name": "Steven Mendez",
+  "headline": "Software Engineer | Full Stack & Backend",
+  "location": "Managua, Nicaragua",
+  "email": "stevenampaiz@gmail.com",
+  "links": [
+    {
+      "label": "linkedin.com/in/steven-mendez-dev",
+      "url": "https://www.linkedin.com/in/steven-mendez-dev/"
+    },
+    {
+      "label": "github.com/Steven-Mendez",
+      "url": "https://github.com/Steven-Mendez"
+    },
+    {
+      "label": "stevenampaiz.com",
+      "url": "https://www.stevenampaiz.com"
+    }
+  ],
+  "summary": "Software engineer with 3+ years of experience building production web applications and backend APIs. Works across Python, React, .NET, and AWS, with experience in SQL optimization, data pipelines, and LLM/RAG integration.",
+  "experience": [
+    {
+      "company": "WERN",
+      "title": "Full Stack Engineer",
+      "period": "Jan 2025 - Present",
+      "location": "Remote",
+      "type": "Contract",
+      "bullets": [
+        "Built Python APIs and React/Angular interfaces across 3-5 client codebases, with AWS deployments, Docker/Terraform infrastructure, and LLM/RAG integrations."
+      ],
+      "context": "Client engagement through WERN:",
+      "children": [
+        {
+          "company": "Dupely",
+          "title": "Back End Developer",
+          "period": "Dec 2025 - Apr 2026",
+          "type": "Contract through WERN",
+          "bullets": [
+            "Built FastAPI product and pricing endpoints for browser-extension and mobile clients, with pipelines using official Amazon, Walmart, and eBay APIs.",
+            "Owned PostgreSQL schema design, migrations, and query performance; implemented caching for product data."
+          ]
+        }
+      ]
+    },
+    {
+      "company": "US EdTech Client (confidential)",
+      "title": "Full Stack & AI Engineer (Independent Consultant)",
+      "period": "Mar 2025 - Dec 2025",
+      "type": "Self-employed",
+      "context": "Direct client contract, concurrent with WERN.",
+      "bullets": [
+        "Built an LLM benchmark and evaluation harness covering 20-50 computer-use tasks; evaluation runs informed shipping decisions.",
+        "Integrated LLM/RAG features into a learning management system using pgvector to retrieve learning content.",
+        "Contributed production frontend and backend features in two-week sprints."
+      ]
+    },
+    {
+      "company": "Universidad Nacional de Ingeniería (UNI)",
+      "title": "Full Stack Developer & Systems Analyst (.NET / React)",
+      "period": "Feb 2023 - Dec 2024",
+      "location": "Managua, Nicaragua",
+      "type": "Full-time",
+      "bullets": [
+        "Built a warehouse inventory system end to end with .NET and React.",
+        "Maintained an ASP.NET/SQL Server budget system through two annual budget cycles; reduced its heaviest report’s runtime from 6 minutes to 7-15 seconds.",
+        "Mentored approximately 8 developers."
+      ]
+    }
+  ],
+  "project": {
+    "title": "Interview Agent",
+    "url": "https://github.com/Steven-Mendez/interview-agent",
+    "label": "github.com/Steven-Mendez/interview-agent",
+    "bullets": [
+      "Built a three-agent voice interview application: a planner uses a CV and job description, an interviewer conducts the interview through LiveKit, and an evaluator assesses answers using transcript evidence.",
+      "Implemented a React frontend and FastAPI backend with LangGraph/OpenAI orchestration and PostgreSQL persistence for plans, transcripts, and evaluations."
+    ]
+  },
+  "skills": [
+    {
+      "label": "Languages",
+      "items": "Python, TypeScript/JavaScript, C#, SQL"
+    },
+    {
+      "label": "Backend & Data",
+      "items": "FastAPI, Django, Flask, ASP.NET, PostgreSQL, SQL Server, Redis, REST APIs"
+    },
+    {
+      "label": "Frontend",
+      "items": "React, Angular, Next.js"
+    },
+    {
+      "label": "Cloud & Tools",
+      "items": "AWS (Lambda, ECS, S3, RDS, SQS, CloudWatch), Docker, Terraform, CI/CD, Git"
+    },
+    {
+      "label": "AI Applications",
+      "items": "LLM/RAG integration, LangChain, LangGraph, pgvector, Qdrant, LiveKit"
+    }
+  ],
+  "education": {
+    "institution": "Universidad Nacional de Ingeniería",
+    "degree": "Bachelor of Engineering (B.Eng.), Computer Engineering",
+    "period": "Mar 2019 - Dec 2023"
+  },
+  "certifications": "Certified Big Data Consultant; Certified Big Data Professional - Arcitura Education, 2021",
+  "languages": "Spanish: Native | English: Full professional proficiency"
+}

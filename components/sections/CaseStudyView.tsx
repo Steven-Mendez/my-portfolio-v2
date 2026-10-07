@@ -1,5 +1,6 @@
 import Navbar from "@/components/hero/Navbar";
 import SiteBackground from "@/components/SiteBackground";
+import { PortfolioChat } from "@/components/chat/portfolio-chat";
 import {
   CASE_CONTAINER,
   CaseCTA,
@@ -20,6 +21,7 @@ export default function CaseStudyView({ study }: { study: CaseStudy }) {
     <main id="main" className="relative min-h-screen w-full overflow-x-hidden">
       {/* Same signature WebGL backdrop as home, so the page reads as one site. */}
       <SiteBackground />
+      <PortfolioChat />
 
       {/* Same top bar as home (shared component), so navigation feels identical. */}
       <Navbar />
