@@ -92,13 +92,13 @@ export const experience: readonly ExperienceEntry[] = [
     bullets: {
       en: [
         "Built the FastAPI services that serve product and price data to the extension and the app in real time.",
-        "Wrote ingestion pipelines on the official Amazon, Walmart and eBay APIs.",
-        "Owned the PostgreSQL schema, migrations and query tuning, and added Redis caching for product data.",
+        "Built the product, price-history and attribute ingestion pipelines for Amazon, Walmart and eBay: official APIs where available, in-house scraping and providers such as Bright Data and Oxylabs elsewhere.",
+        "Contributed to the PostgreSQL schema, migrations and query tuning, and proposed a Redis cache-aside design for product data.",
       ],
       es: [
         "Construí los servicios FastAPI que entregan productos y precios en tiempo real a la extensión y a la app.",
-        "Escribí pipelines de ingesta sobre las APIs oficiales de Amazon, Walmart y eBay.",
-        "Me encargué del esquema PostgreSQL, las migraciones y el ajuste de consultas, y añadí caché en Redis para los datos de producto.",
+        "Construí los pipelines de ingesta de productos, historial de precios y atributos de Amazon, Walmart y eBay: APIs oficiales cuando existían y, si no, scraping propio y proveedores como Bright Data y Oxylabs.",
+        "Colaboré en el esquema PostgreSQL, las migraciones y el ajuste de consultas, y propuse un diseño de caché en Redis (cache-aside) para los datos de producto.",
       ],
     },
     stack: ["Python", "FastAPI", "PostgreSQL", "Redis", "AWS", "ETL"],
@@ -122,14 +122,12 @@ export const experience: readonly ExperienceEntry[] = [
     },
     bullets: {
       en: [
-        "Built the evaluation harness for the team's LLM benchmarks, covering 20 to 50 computer-use tasks.",
-        "Ran the evals that decided whether model output shipped.",
+        "Built an LLM benchmark and evaluation harness that runs models through 20 to 50 computer-use tasks and scores their output.",
         "Integrated LLM and RAG features into the LMS, retrieving learning content with pgvector.",
         "Shipped front end and backend features in two-week sprints, inside the client's team and production codebase.",
       ],
       es: [
-        "Construí el harness de evaluación para los benchmarks de LLM del equipo, con 20 a 50 tareas de computer use.",
-        "Corrí las evals que decidían si la salida del modelo se publicaba.",
+        "Construí un benchmark y harness de evaluación de LLM que ejecuta 20 a 50 tareas de computer use con los modelos y califica sus resultados.",
         "Integré funcionalidades con LLMs y RAG en el LMS, con pgvector para recuperar el contenido de aprendizaje.",
         "Entregué funcionalidades de front end y backend en sprints de dos semanas, dentro del equipo del cliente y en su código de producción.",
       ],
@@ -160,21 +158,21 @@ export const experience: readonly ExperienceEntry[] = [
     start: "2023-02",
     end: "2024-12",
     summary: {
-      en: "Built and maintained two internal systems for the university where I studied: a new inventory system and a legacy budget system.",
-      es: "Desarrollé y mantuve dos sistemas internos de la universidad donde estudié: un sistema de inventario nuevo y otro de presupuesto heredado.",
+      en: "Maintained the budget and fixed-asset systems of the university where I studied, and built its warehouse and helpdesk systems.",
+      es: "Mantuve los sistemas de presupuesto y activo fijo de la universidad donde estudié, y construí los de bodega y helpdesk.",
     },
     bullets: {
       en: [
-        "Built the warehouse and inventory system end to end: .NET backend, React front end and internal integrations.",
-        "Kept the legacy ASP.NET and SQL Server budget system running through two annual cycles.",
+        "Built the warehouse and helpdesk systems end to end: .NET backend, React front end and internal integrations.",
+        "Maintained and extended the legacy budget (ASP.NET Web Forms) and fixed-asset (ASP.NET MVC) systems, both on SQL Server.",
         "Cut the slowest report from **6 minutes to under 15 seconds** by rewriting its queries and adding indexes.",
-        "Mentored **8** backend developers.",
+        "Mentored **8** backend interns.",
       ],
       es: [
-        "Construí de punta a punta el sistema de almacén e inventario: backend en .NET, front end en React e integraciones internas.",
-        "Mantuve en marcha el sistema de presupuesto heredado (ASP.NET y SQL Server) durante dos ciclos anuales.",
+        "Construí de punta a punta los sistemas de bodega y helpdesk: backend en .NET, front end en React e integraciones internas.",
+        "Mantuve y amplié los sistemas heredados de presupuesto (ASP.NET Web Forms) y activo fijo (ASP.NET MVC), ambos sobre SQL Server.",
         "Reduje el reporte más lento de **6 minutos a menos de 15 segundos** reescribiendo sus consultas y añadiendo índices.",
-        "Fui mentor de **8** desarrolladores backend.",
+        "Fui mentor de **8** pasantes de backend.",
       ],
     },
     stack: ["C#", ".NET", "ASP.NET", "React", "SQL Server", "CI/CD"],
