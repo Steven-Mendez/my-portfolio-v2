@@ -219,6 +219,23 @@ Las dos primeras son propiedades CSS en `:root` (`global.css`), con
 - Kicker de sección: el filete gris solo aparece cuando hay `note`
   (Experience y Education); las demás aperturas quedan "rombo + label".
 
+## SEO
+
+- `BaseLayout` emite title, description, canonical, `hreflang` (en/es/x-default),
+  Open Graph y Twitter (`summary_large_image`). Cada página puede pasar
+  `image`, `imageAlt`, `type` (`article` en los write-ups) y `jsonLd`.
+- `src/data/seo.ts` arma el JSON-LD: `WebSite` + `ProfilePage` + `Person` en la
+  home y `Article` en cada write-up, con `@id` estables que comparten el mismo
+  `Person`.
+- `public/og/<página>-<lang>.jpg`: tarjetas 1200×630 renderizadas con Chrome
+  headless desde una plantilla HTML con Geist y el retrato. Al sumar un
+  write-up hay que generar sus dos tarjetas (`<slug>-en.jpg`, `<slug>-es.jpg`).
+- Íconos: `favicon.ico` (16/32/48), `icon-192.png`, `icon-512.png`,
+  `apple-touch-icon.png` y `site.webmanifest`: monograma "S" sobre el cobalto.
+- `vercel.json`: redirects 308 de las rutas del sitio en Next.js
+  (`/projects/:slug`, `/resume`), cabeceras de seguridad (CSP, HSTS, etc.) y
+  caché inmutable para `/_astro/`.
+
 ## Assets generados (Higgsfield)
 
 - `src/assets/textures/fur.webp`: la piel azul del interior del disco (GPT

@@ -4,6 +4,7 @@ import Footer from "@/components/nav/Footer.astro"
 import Writeup from "@/components/writeup/Writeup.astro"
 import { profile } from "@/data/profile"
 import { projects } from "@/data/projects"
+import { writeupJsonLd } from "@/data/seo"
 import { writeups, type Writeup as WriteupEntry } from "@/data/writeups"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 
@@ -27,6 +28,9 @@ const project = projects.find((p) => p.slug === writeup.slug)!
   lang={lang}
   title={`${project.title} — ${profile.fullName}`}
   description={writeup.description[lang]}
+  image={`/og/${writeup.slug}-${lang}.jpg`}
+  type="article"
+  jsonLd={writeupJsonLd(Astro.site!, lang, Astro.url, project, writeup)}
 >
   <HeroHeader lang={lang} />
   <main id="main">

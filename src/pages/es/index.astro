@@ -10,6 +10,7 @@ import Hero from "../../components/hero/Hero.astro"
 import Footer from "../../components/nav/Footer.astro"
 import HeroHeader from "../../components/hero/HeroHeader.astro"
 import { sectionIndex } from "../../data/sections"
+import { homeJsonLd } from "../../data/seo"
 import { useTranslations } from "../../i18n/utils"
 
 const lang = "es"
@@ -20,6 +21,8 @@ const t = useTranslations(lang)
   lang={lang}
   title={t("meta.title")}
   description={t("meta.description")}
+  imageAlt={t("hero.image.alt")}
+  jsonLd={homeJsonLd(Astro.site!, lang, Astro.url)}
 >
   <HeroHeader lang={lang} />
   <main id="main">
