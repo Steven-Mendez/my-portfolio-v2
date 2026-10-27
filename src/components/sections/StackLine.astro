@@ -1,0 +1,21 @@
+---
+/**
+ * A stack line ("React · FastAPI · ..."). Each name keeps its separator
+ * and stays whole, so a wrapped line never starts or ends on a lone "·".
+ */
+interface Props {
+  names: readonly string[]
+}
+
+const { names } = Astro.props
+---
+
+{names.map((name, i) => (
+  <>
+    <span class="whitespace-nowrap">
+      {name}
+      {i < names.length - 1 && " ·"}
+    </span>
+    {i < names.length - 1 && " "}
+  </>
+))}

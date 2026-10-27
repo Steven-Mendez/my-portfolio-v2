@@ -1,0 +1,414 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — "Bocanada" (Gustavo Cerati, 1999).
+ * Blues sampled from src/assets/hero/steven-bocanada.png with sharp:
+ * field (left/right middle) #0543a4, bottom-left corner #05185b,
+ * top-right corner #061e65, lit smoke #55bdd9.
+ * Contrast (WCAG 2): ice/cobalt 7.3, ice-muted/cobalt 5.3, ice-muted/navy 9.5,
+ * ice-muted/ink 12.0. Red is never used for text, only for small marks.
+ */
+@theme {
+  /* Palette */
+  --color-ink: #04060f; /* fur shadows, page background */
+  --color-navy: #061a5c; /* deep cover blue (photo corners) */
+  --color-cobalt: #0543a4; /* the photo's field, sampled */
+  --color-ice: #d8eaff; /* smoke highlights, primary text */
+  --color-ice-muted: #b3c9e8; /* meta labels (solid, ≥ 5:1 on cobalt) */
+  --color-red: #e8261c; /* the album's red: thin accents only (active-locale rule) */
+  --color-paper: #f2efe9; /* booklet paper (later sections) */
+  --color-paper-ink: #262626; /* booklet text (later sections) */
+  --color-paper-ink-muted: #66645f; /* second tone of a paragraph (5.2:1 on paper) */
+
+  /* Typography (families come from the Fonts API, see astro.config.mjs) */
+  /*
+   * One scale for every section, whatever its layout: display for section
+   * titles, display-sm for the title of an item (a job, a project, a year,
+   * a compact section), statement for the bio, lead for summaries,
+   * descriptions and group labels, body for the rest. Weights: 300 on
+   * display sizes, 350 on statement and lead, 400 on body titles.
+   */
+  /*
+   * Fluid steps interpolate linearly between a 360px and a 1440px viewport:
+   * slope = (max - min) / 1080px; intercept = min - slope * 360px.
+   * The rem intercept keeps every step growing with the browser's text zoom.
+   */
+  --text-display: clamp(2.25rem, 1.5rem + 3.333vw, 4.5rem);
+  --text-display-sm: clamp(1.75rem, 1.5rem + 1.111vw, 2.5rem);
+  /* The section number above every opening's kicker (one size for all six). */
+  --text-mark: clamp(6rem, 14vw, 13rem);
+  --text-statement: clamp(1.375rem, 1.208rem + 0.741vw, 1.875rem);
+  --text-lead: clamp(1.125rem, 1.042rem + 0.37vw, 1.375rem);
+  --text-body: 1.0625rem;
+  --leading-display: 1;
+  --leading-tight: 1.05;
+  --leading-snug: 1.35;
+  --leading-body: 1.5;
+  --text-meta: 0.75rem; /* 12px at every width (legibility floor) */
+  --text-meta--line-height: 1.5;
+  /* Mono glyphs already sit on wide cells, so less added tracking than a grotesk. */
+  --tracking-meta: 0.06em;
+  --tracking-display: -0.035em;
+  --tracking-statement: -0.015em;
+  --tracking-lead: -0.01em;
+  --tracking-body: -0.01em;
+
+  /* Spacing */
+  --spacing-gutter: 1rem; /* 16px mobile side gutter */
+  /* The vertical rhythm every section's list shares: a row's padding, a
+     grid's row gap and a card's inner gap. */
+  --spacing-row: 2.5rem;
+  --spacing-row-lg: 3rem;
+  --spacing-inner: 1.25rem;
+  /* Section rhythm: a section's padding, the joint between two sections
+     that share a tone, and the gap under a section's opening. */
+  --spacing-section: 6rem;
+  --spacing-section-lg: 9rem;
+  --spacing-joint: 4rem;
+  --spacing-joint-lg: 5rem;
+  --spacing-head: 2.5rem;
+  --spacing-head-sm: 1.75rem;
+
+  /* Page measure: past it only the bleeds (hero, fur, paper, smoke) grow;
+     the content stays centred. 100rem = 1600px, so a 1440px screen with
+     its 48px gutters (1344px of content) is untouched. */
+  --container-page: 100rem;
+
+  /* Motion (durations live on :root so reduced motion can zero them) */
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* The content column of a section, the fixed bar and the footer: full
+   width up to the page measure, centred past it. The explicit width keeps
+   it full when its parent is a grid or flex box, where auto margins would
+   otherwise shrink it to its content. */
+@utility shell {
+  width: 100%;
+  max-width: var(--container-page);
+  margin-inline: auto;
+}
+
+/* The single micro-label treatment used everywhere in the hero. */
+@utility meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  line-height: var(--text-meta--line-height);
+  /* The only Geist Mono weight loaded (astro.config.mjs). */
+  font-weight: 500;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--meta-color);
+}
+
+/*
+ * Type roles: one utility per step of the scale. Only `type-display` sets a
+ * colour; elsewhere each component picks `--title-color` or `--text-muted`.
+ */
+@utility type-display {
+  font-size: var(--text-display);
+  font-weight: 300;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--title-color);
+}
+
+@utility type-display-sm {
+  font-size: var(--text-display-sm);
+  font-weight: 300;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+@utility type-statement {
+  font-size: var(--text-statement);
+  font-weight: 350;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-statement);
+  text-wrap: pretty;
+}
+
+@utility type-lead {
+  font-size: var(--text-lead);
+  font-weight: 350;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-lead);
+  text-wrap: pretty;
+}
+
+@utility type-body {
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  text-wrap: pretty;
+}
+
+/* Same voice as meta, but product names keep their real case. */
+@utility meta-name {
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  line-height: var(--text-meta--line-height);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--meta-color);
+}
+
+/* A figure inside muted text: brighter tone only, no weight, no colour. */
+@utility figure {
+  color: var(--title-color);
+  font-weight: inherit;
+  font-variant-numeric: lining-nums proportional-nums;
+}
+
+/*
+ * A list of short facts, each led by a hairline tick. `--tick` scales the
+ * tick (1 by default, so without JS it is simply there).
+ */
+@utility tick-list {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 38rem;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  color: var(--text-muted);
+
+  & > li {
+    --tick: 1;
+    display: grid;
+    grid-template-columns: 0.75rem minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  & > li::before {
+    content: "";
+    height: 1px;
+    margin-top: 0.75em;
+    background-color: currentColor;
+    opacity: 0.5;
+    transform: scaleX(var(--tick, 1));
+    transform-origin: left;
+  }
+}
+
+/*
+ * The booklet's paper. Flips the role colours that the ink sections set on
+ * :root, so the same components (meta labels, rules, bracket links, section
+ * headers) read correctly on either background.
+ */
+@utility tone-paper {
+  background-color: var(--color-paper);
+  color: var(--color-paper-ink);
+  --title-color: var(--color-paper-ink);
+  --meta-color: var(--color-paper-ink);
+  --text-muted: var(--color-paper-ink-muted);
+  --link-color: var(--color-paper-ink);
+  --rule: color-mix(in oklab, var(--color-paper-ink) 20%, transparent);
+}
+
+@layer base {
+  /* Role colours on ink (the default); see `tone-paper` for the flip. */
+  :root {
+    --title-color: var(--color-ice);
+    --meta-color: var(--color-ice-muted);
+    --text-muted: var(--color-ice-muted);
+    --link-color: var(--color-ice);
+    --rule: color-mix(in oklab, var(--color-ice) 12%, transparent);
+    /* Tempo: micro for colour and opacity, interaction for anything that moves. */
+    --duration-micro: 200ms;
+    --duration-interaction: 300ms;
+  }
+
+  /* A fade is not motion, so only the interaction tempo drops to zero. */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --duration-interaction: 0ms;
+    }
+  }
+
+  html {
+    color-scheme: dark;
+    background-color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-ice);
+    outline-offset: 4px;
+  }
+
+  /* Off-screen until focused with the keyboard (markup in BaseLayout). */
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: var(--spacing-gutter);
+    z-index: 50;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-ink);
+    color: var(--color-ice);
+    border: 1px solid var(--rule);
+    transform: translateY(calc(-100% - 1rem));
+    transition: transform var(--duration-interaction) var(--ease-out-soft);
+  }
+
+  .skip-link:focus-visible {
+    transform: none;
+  }
+
+  /*
+   * Hide the hero's text until the intro takes over, so it never flashes in
+   * its final state first. `.motion` is only set by script with motion
+   * allowed, so without JS the hero shows whole. The portrait (the LCP
+   * candidate) is never hidden.
+   */
+  .motion:not(.motion-ready)
+    :is(
+      [data-hero-name-first],
+      [data-hero-name-last],
+      [data-hero-role],
+      [data-hero-fade]
+    ) {
+    visibility: hidden;
+  }
+}
+
+/*
+ * Ruled rows whose hairlines can be drawn: the line is a pseudo-element
+ * scaled by `--draw` (1 by default, so without JS every rule is simply
+ * there). The motion layer tweens the variable from 0 as rows come in.
+ */
+@utility rule-rows {
+  border-top: 1px solid var(--rule);
+
+  & > * {
+    position: relative;
+    /* Explicit, so a tween from 0 has an end value to land on. */
+    --draw: 1;
+  }
+
+  & > *::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background-color: var(--rule);
+    transform: scaleX(var(--draw, 1));
+    transform-origin: left;
+    pointer-events: none;
+  }
+}
+
+/*
+ * The sleeve's red dot grid, as a layer behind a section's content. The
+ * section needs `position: relative; isolation: isolate`. Drifts very
+ * slowly; stands still under reduced motion.
+ */
+@utility dots-layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.28;
+  background-image: radial-gradient(
+    circle,
+    var(--color-red) 0 1px,
+    transparent 1.6px
+  );
+  background-size: 52px 52px;
+  background-position: 26px 26px;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: dots-drift 120s linear infinite;
+  }
+}
+
+/* The booklet's thin red line, drawn from the left (see `data-draw`). */
+@utility red-rule {
+  --draw: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background-color: var(--color-red);
+    transform: scaleX(var(--draw, 1));
+    transform-origin: left;
+  }
+}
+
+@keyframes dots-drift {
+  to {
+    background-position: 78px 78px;
+  }
+}
+
+@layer base {
+  /* Pieces SplitText makes: inline-block so they can be transformed. */
+  .hero-char {
+    display: inline-block;
+    will-change: transform, opacity;
+  }
+
+  /* Section titles: masked chars (or words), split only while they build. */
+  .section-piece {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  /* The mask clips the rise; a little room so accents and descenders fit. */
+  .section-piece-mask {
+    padding-block: 0.15em;
+    margin-block: -0.15em;
+  }
+
+  /* Masked lines keep the paragraph's wrap; the wrapper only clips. */
+  .split-line {
+    display: block;
+  }
+
+  /* The reading line: a red hairline at the top that grows with the scroll. */
+  .scroll-rule {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 40;
+    height: 1px;
+    background-color: var(--color-red);
+    transform: scaleX(0);
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  /* View transitions: the hero portrait and name morph, the rest fades. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 320ms;
+  }
+}
+
+/*
+ * Fixed top bar (HeroHeader + scripts/header.ts): native hash jumps and
+ * reduced-motion navigation land sections just below the docked bar.
+ * `--header-h` is measured by header.ts; the fallback is its usual height.
+ */
+main [id] {
+  scroll-margin-top: var(--header-h, 3.75rem);
+}

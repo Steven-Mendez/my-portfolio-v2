@@ -1,0 +1,577 @@
+---
+/**
+ * Home hero — the Bocanada portrait melting into a cobalt→ink field and the
+ * name split around it in a light grotesk (STEVEN top-left, MENDEZ
+ * bottom-right) with the role on MENDEZ's baseline. From lg the head sits in
+ * front of STEVEN and behind MENDEZ, so the portrait is sandwiched by the
+ * name. It only introduces the person: the base row is a three-cell fact
+ * sheet on the thirds (BASE with the local time, NOW, STATUS or WORKS) plus
+ * the scroll hint.
+ */
+import { Picture } from "astro:assets"
+import heroImage from "@/assets/hero/steven-bocanada.png"
+import Diamond from "@/components/hero/Diamond.astro"
+import { currentEntry } from "@/data/experience"
+import { profile } from "@/data/profile"
+import type { Lang } from "@/i18n/ui"
+import { useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = useTranslations(lang)
+const current = currentEntry()
+---
+
+<section aria-labelledby="hero-title" class="hero">
+  {/*
+    Engineer's grid: hairlines on the thirds and a rule on the bar's bottom
+    edge (y 88 ≈ its desktop height: 32px links + 2 × 28px padding). It
+    sits under the portrait, so the face hides it and it only shows in the
+    empty field. The "+" marks where the thirds cross the bar live in a
+    second layer above the ink fade, which would swallow them; where the
+    thirds meet the fact sheet, the cells draw their own (see .hero-cell).
+  */}
+  <svg class="hero-grid hero-grid-lines" aria-hidden="true" focusable="false">
+    <line x1="33.333%" y1="0" x2="33.333%" y2="100%"></line>
+    <line x1="66.667%" y1="0" x2="66.667%" y2="100%"></line>
+    <line x1="0" y1="88" x2="100%" y2="88"></line>
+  </svg>
+  <svg class="hero-grid hero-grid-marks" aria-hidden="true" focusable="false">
+    <svg x="33.333%" y="88" overflow="visible">
+      <path d="M-5 0H5M0-5V5"></path>
+    </svg>
+    <svg x="66.667%" y="88" overflow="visible">
+      <path d="M-5 0H5M0-5V5"></path>
+    </svg>
+  </svg>
+
+  <div class="hero-portrait" data-hero-portrait transition:name="hero-portrait">
+    {/*
+      The box is 125vw on phones, but its outer ~25% per side is masked and
+      clipped, so "75vw" asks for ≈2× density on real phones (390@3x → 960w)
+      without over-serving the 1.75× Lighthouse/emulated profile (→ 560w).
+      Desktop scales with the hero height (112vh).
+    */}
+    <Picture
+      src={heroImage}
+      alt={t("hero.image.alt")}
+      formats={["avif", "webp"]}
+      fallbackFormat="jpg"
+      widths={[480, 560, 720, 960, 1280, 1600]}
+      sizes="(min-width: 64rem) 112vh, 75vw"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      class="size-full object-cover"
+    />
+  </div>
+
+  <div class="hero-stage">
+    <h1 id="hero-title" class="hero-name">
+      <span class="hero-name-first" data-hero-name-first>
+        {profile.firstName}
+      </span>{" "}
+      <span class="hero-name-last" data-hero-name-last>
+        {profile.lastName}
+      </span>
+    </h1>
+
+    <p class="hero-role" data-hero-role>
+      {t("hero.role")}
+    </p>
+  </div>
+
+  {/*
+    Base row: a fact sheet of BASE (place, local clock, zone), NOW (current
+    job and since when) and STATUS (confirmed availability, with the "now"
+    rhombus) or WORKS (work mode) when there is none. From lg its cells sit
+    on the thirds; on phones BASE takes a row and the scroll hint drops
+    below. The clock is filled by the script below; without JS it stays
+    hidden and the cell still reads "MANAGUA (NI) UTC−6".
+  */}
+  <div class="hero-meta">
+    <dl class="hero-facts">
+      <div class="hero-cell hero-cell--base" data-hero-fade>
+        <dt class="meta">{t("hero.meta.base")}</dt>
+        <dd class="meta hero-value">
+          <span>
+            {profile.city} ({profile.countryCode})
+          </span>
+          <span class="hero-clock" hidden>
+            <span class="sr-only">{t("hero.localTime")}: </span>
+            <time data-tz={profile.timeZoneId} class="tabular-nums"></time>
+          </span>
+          <span>{profile.timezone}</span>
+        </dd>
+      </div>
+      {current && (
+        <div class="hero-cell" data-hero-fade>
+          <dt class="meta">{t("hero.meta.now")}</dt>
+          <dd class="meta hero-value">
+            {current.short} · {t("hero.meta.since")} {current.start.slice(0, 4)}
+          </dd>
+        </div>
+      )}
+      <div class="hero-cell" data-hero-fade>
+        <dt class="meta">
+          {profile.availability ? t("hero.meta.status") : t("hero.meta.mode")}
+        </dt>
+        <dd class="meta hero-value inline-flex items-center gap-[0.6em]">
+          {profile.availability && <Diamond size={9} />}
+          {(profile.availability ?? profile.workMode)[lang]}
+        </dd>
+      </div>
+    </dl>
+
+    <a href="#about" class="hero-scroll meta" data-hero-fade>
+      {t("hero.scroll")}
+      <span aria-hidden="true" class="hero-scroll-arrow">
+        ↓
+      </span>
+    </a>
+  </div>
+</section>
+
+<script>
+  // Live local time for the hero corner. Ticks on the minute, not every
+  // second, and reveals the element only once it has a value. Set up again
+  // after every view transition, since the DOM is swapped.
+  let timer: number | undefined
+
+  function startClock() {
+    window.clearTimeout(timer)
+    const clock = document.querySelector<HTMLElement>(".hero-clock")
+    const time = clock?.querySelector("time")
+    if (!clock || !time || !time.dataset.tz) return
+
+    const format = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+      timeZone: time.dataset.tz,
+    })
+
+    const tick = () => {
+      const now = new Date()
+      time.textContent = format.format(now)
+      time.dateTime = now.toISOString()
+      const untilNextMinute =
+        60_000 - (now.getSeconds() * 1000 + now.getMilliseconds())
+      timer = window.setTimeout(tick, untilNextMinute)
+    }
+
+    tick()
+    clock.hidden = false
+  }
+
+  document.addEventListener("astro:page-load", startClock)
+  document.addEventListener("astro:before-swap", () =>
+    window.clearTimeout(timer)
+  )
+</script>
+
+<style>
+  /*
+   * One continuous field: the photo's own cobalt (sampled) glows behind the
+   * head and falls off to navy, then ink, so the feathered photo edges land
+   * on a matching blue instead of a seam.
+   */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    /* Phones: height follows content, but the first screen is always filled. */
+    min-height: 100svh;
+    /* One fact row: two 18px lines, the dt gap and the cell padding. */
+    --hero-facts-h: 4.5rem;
+    /*
+     * The text edge on lg: the 48px gutter up to the page measure, then the
+     * edge of the centred content, so the name, the first fact and the
+     * scroll hint line up with the fixed bar and the sections past 1600px.
+     * The ground, the thirds and the fact cells stay full bleed. `cqi`
+     * reads the hero's own width (it is the query container), not 100vw,
+     * which would count a classic scrollbar.
+     */
+    --hero-edge: max(3rem, calc((100cqi - var(--container-page)) / 2));
+    container-type: inline-size;
+    background-color: var(--color-ink);
+    background-image: radial-gradient(
+      ellipse 95% 48% at 52% 26%,
+      var(--color-cobalt) 0%,
+      color-mix(in oklab, var(--color-cobalt) 55%, var(--color-navy)) 40%,
+      var(--color-navy) 62%,
+      var(--color-ink) 100%
+    );
+  }
+
+  /* Legibility floor: the bottom of the hero always sinks into ink. */
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    z-index: -1;
+    height: 45%;
+    background: linear-gradient(
+      to top,
+      var(--color-ink) 0%,
+      rgb(4 6 15 / 0.7) 40%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Desktop only (see below): on phones the thirds would cut through text. */
+  .hero-grid {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    fill: none;
+    stroke: var(--color-ice);
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+  }
+
+  /* Hairlines barely there; the small crosses carry the detail. */
+  .hero-grid-lines {
+    z-index: -3;
+    stroke-opacity: 0.07;
+  }
+
+  .hero-grid-marks {
+    stroke-opacity: 0.4;
+  }
+
+  .hero-portrait {
+    position: absolute;
+    z-index: -2;
+    top: 0;
+    left: 50%;
+    width: 125vw;
+    aspect-ratio: 1;
+    /* Head (≈52% across the photo) sits on the viewport's centre. */
+    translate: -52% 0;
+    /*
+     * Motion goes through these variables, never through GSAP's x/y: the
+     * moment GSAP owns `transform` it drops the `translate` above and the
+     * portrait jumps half a screen to the right.
+     */
+    --hero-dx: 0px;
+    --hero-dy: 0px;
+    --hero-sy: 0%;
+    transform: translate(var(--hero-dx), calc(var(--hero-sy) + var(--hero-dy)));
+    mask-image:
+      linear-gradient(
+        to right,
+        transparent 0%,
+        #000 26%,
+        #000 74%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        #000 16%,
+        #000 58%,
+        transparent 92%
+      );
+    mask-composite: intersect;
+  }
+
+  .hero-portrait :global(picture) {
+    display: contents;
+  }
+
+  /* Letters are transformed one by one by the intro; keep them on one line. */
+  .hero-name-first,
+  .hero-name-last {
+    white-space: nowrap;
+  }
+
+  /*
+   * Phones: the stage fills the first screen and name + role sit on its base
+   * (as on desktop); any spare height opens up in the portrait's fade, not
+   * under the text. The top padding keeps the name off the face.
+   */
+  .hero-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 100svh;
+    /*
+     * The top padding is bounded by the height too, so a landscape phone
+     * still gets the name on screen. The bottom clears the two fact rows,
+     * the scroll hint row (≈3.6rem with the base padding) and keeps the
+     * old 2rem air above the sheet's rule.
+     */
+    padding: min(82vw, 58svh) var(--spacing-gutter)
+      calc(2 * var(--hero-facts-h) + 6rem);
+  }
+
+  .hero-name {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(4rem, min(20vw, 28svh), 8rem);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    color: var(--color-ice);
+  }
+
+  .hero-name-last {
+    align-self: flex-end;
+  }
+
+  /* The third voice after the name: same grotesk, smaller, never tiny. */
+  .hero-role {
+    margin-top: 2rem;
+    font-size: clamp(1.25rem, 6vw, 1.75rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--color-ice);
+  }
+
+  /*
+   * The base of the hero, below every text block. Below lg: the fact sheet
+   * in two rows (BASE whole, then NOW | WORKS), the scroll hint centred
+   * underneath.
+   */
+  .hero-meta {
+    position: absolute;
+    inset: auto 0 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "place"
+      "scroll";
+    align-items: center;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+    padding: 0 var(--spacing-gutter) 1.5rem;
+  }
+
+  .hero-facts {
+    grid-area: place;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--rule);
+  }
+
+  .hero-facts dt {
+    margin-bottom: 0.25rem;
+  }
+
+  .hero-cell {
+    padding: 0.75rem 0 1.25rem;
+  }
+
+  .hero-cell--base {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .hero-cell:last-child {
+    border-left: 1px solid var(--rule);
+    padding-left: var(--spacing-inner);
+  }
+
+  /* One line of value per cell; it wraps rather than overflows. */
+  .hero-value {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.6em;
+    color: var(--color-ice);
+  }
+
+  .hero-scroll {
+    grid-area: scroll;
+    justify-self: center;
+    display: inline-flex;
+    gap: 0.6em;
+    padding-block: 0.5rem;
+    transition: color 200ms ease;
+  }
+
+  .hero-scroll:hover,
+  .hero-scroll:focus-visible {
+    color: var(--color-ice);
+  }
+
+  @media (width >= 40rem) {
+    .hero-stage {
+      padding-inline: 1.5rem;
+    }
+
+    .hero-meta {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .hero {
+      min-height: 100dvh;
+      background-image: radial-gradient(
+        ellipse 44% 74% at 50% 40%,
+        var(--color-cobalt) 0%,
+        color-mix(in oklab, var(--color-cobalt) 55%, var(--color-navy)) 45%,
+        var(--color-navy) 70%,
+        var(--color-ink) 100%
+      );
+    }
+
+    .hero-grid {
+      display: block;
+    }
+
+    .hero-portrait {
+      /*
+       * Centre the subject, not the box: the head's silhouette spans
+       * x 650–1390 of the 1932px source (centre ≈ 53%), so translate -53%.
+       * 112% of the hero height; the overflow below is clipped and faded.
+       */
+      left: 50%;
+      width: auto;
+      height: 112%;
+      translate: -53% 0;
+      mask-image:
+        linear-gradient(
+          to right,
+          transparent 0%,
+          #000 28%,
+          #000 72%,
+          transparent 100%
+        ),
+        linear-gradient(
+          to bottom,
+          transparent 0%,
+          #000 13%,
+          #000 62%,
+          transparent 89%
+        );
+    }
+
+    /* Everything shares one cell; position comes from alignment alone. */
+    .hero-stage {
+      min-height: 100dvh;
+      display: grid;
+      grid-template: 1fr / 1fr;
+      padding: 7rem var(--hero-edge) calc(var(--hero-facts-h) + 1.5rem);
+    }
+
+    .hero-stage > * {
+      grid-area: 1 / 1;
+    }
+
+    /*
+     * The sandwich: STEVEN drops under the portrait (z -2) but stays above
+     * the hairlines (z -3, earlier in the DOM). Nothing between it and
+     * .hero (isolation) forms a stacking context, so the negative z-index
+     * resolves against the hero. Only here: on phones the name sits inside
+     * the ink fade (::after, z -1), which would dim it.
+     */
+    .hero-name-first {
+      position: relative;
+      z-index: -3;
+    }
+
+    /*
+     * The role shares MENDEZ's baseline: both are grid items aligned by
+     * their last baseline (the h1 keeps full height so STEVEN stays on top).
+     */
+    .hero-name {
+      align-self: last baseline;
+      justify-content: space-between;
+      height: 100%;
+      margin: 0;
+      padding-top: 6vh;
+      font-size: clamp(4rem, min(11vw, 22svh), 11rem);
+      pointer-events: none;
+    }
+
+    .hero-role {
+      align-self: last baseline;
+      justify-self: start;
+      margin: 0;
+      font-size: clamp(1.5rem, 2.6vw, 2.75rem);
+    }
+
+    /*
+     * One row of three cells on the hero's thirds: full-bleed, so cells 2
+     * and 3 start exactly on the 33.333% and 66.667% hairlines. The scroll
+     * hint leaves the flow for the bottom-right corner.
+     */
+    .hero-meta {
+      grid-template-columns: 1fr;
+      grid-template-areas: "place";
+      padding: 0;
+    }
+
+    .hero-facts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-cell,
+    .hero-cell--base,
+    .hero-cell:last-child {
+      grid-column: auto;
+      padding: 0.75rem var(--spacing-inner) 1.25rem;
+      border-bottom: 0;
+    }
+
+    .hero-cell:first-child {
+      padding-left: var(--hero-edge);
+    }
+
+    /* The thirds carry on as cell borders, with a "+" where they meet the rule. */
+    .hero-cell + .hero-cell {
+      position: relative;
+      border-left: 1px solid var(--rule);
+    }
+
+    .hero-cell + .hero-cell::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      width: 10px;
+      height: 10px;
+      background:
+        linear-gradient(var(--color-ice), var(--color-ice)) center / 10px 1px
+          no-repeat,
+        linear-gradient(var(--color-ice), var(--color-ice)) center / 1px 10px
+          no-repeat;
+      opacity: 0.4;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      right: var(--hero-edge);
+      bottom: 1.25rem;
+    }
+  }
+
+  /*
+   * The intro (portrait, letters, meta) lives in the motion layer
+   * (src/scripts/motion.ts); only the ambient nudge is CSS.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    /* A slow nudge, not a bounce. */
+    .hero-scroll-arrow {
+      animation: hero-nudge 2.4s ease-in-out infinite;
+    }
+  }
+
+  @keyframes hero-nudge {
+    50% {
+      translate: 0 3px;
+    }
+  }
+</style>

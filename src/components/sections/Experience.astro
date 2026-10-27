@@ -1,0 +1,290 @@
+---
+/**
+ * Experience — the turn back from the booklet to the sleeve. The section
+ * header sits low on a full-bleed strip of the album's blue fur (red dot
+ * grid over it, parallax under it), and the fur fades into ink where the
+ * list begins. Each job is a ruled row: company, role and period on the
+ * left; one summary line, a few bullets and the stack on the right.
+ * Client work done through an agency is its own row; its terms line names
+ * the agency.
+ */
+import { Picture } from "astro:assets"
+import fur from "@/assets/textures/fur.webp"
+import Diamond from "@/components/hero/Diamond.astro"
+import SectionHeading from "./SectionHeading.astro"
+import StackLine from "./StackLine.astro"
+import { careerSpan, experience } from "@/data/experience"
+import { formatDuration, formatMonth } from "@/i18n/dates"
+import type { Lang } from "@/i18n/ui"
+import { count, emphasis, useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  index: string
+}
+
+const { lang, index } = Astro.props
+const t = useTranslations(lang)
+
+// Kicker note: how many roles and over which years ("3 roles · 2023–present").
+const span = careerSpan()
+const note = `${count(experience.length, t("section.note.role"), t("section.note.roles"))} · ${span.startYear}–${span.current ? t("experience.present") : span.endYear}`
+---
+
+<section id="experience" aria-labelledby="experience-title" class="experience">
+  <div class="fur px-gutter sm:px-6 lg:px-12">
+    <div class="fur-plate" data-parallax="12">
+      <Picture
+        src={fur}
+        alt=""
+        formats={["avif", "webp"]}
+        fallbackFormat="jpg"
+        quality={35}
+        widths={[720, 1080, 1600, 2200]}
+        sizes="100vw"
+        loading="lazy"
+        decoding="async"
+        class="size-full object-cover"
+      />
+    </div>
+    <div class="dots-layer fur-dots" aria-hidden="true"></div>
+
+    <div class="shell grid lg:grid-cols-12 lg:gap-x-6">
+      <SectionHeading
+        titleId="experience-title"
+        title={t("experience.title")}
+        label={t("nav.experience")}
+        index={index}
+        note={note}
+      />
+    </div>
+  </div>
+
+  <div class="experience-body px-gutter pb-section sm:px-6 lg:px-12 lg:pb-section-lg">
+    <div class="dots-layer" aria-hidden="true"></div>
+    <ol class="entries shell rule-rows" data-reveal="rows">
+      {experience.map((job) => (
+        <li class="entry">
+          <div class="entry-head">
+            <h3 class="entry-company type-display-sm" data-build>
+              {job.companyUrl ? (
+                <a
+                  href={job.companyUrl}
+                  target="_blank"
+                  rel="noopener"
+                  class="entry-link"
+                >
+                  {job.company[lang]}
+                  <span class="sr-only"> {t("nav.newTab")}</span>
+                </a>
+              ) : (
+                job.company[lang]
+              )}
+            </h3>
+            <p class="entry-role type-lead" data-build>
+              {job.role[lang]}
+            </p>
+            {/* The red rhombus marks the role held now. */}
+            <p class="meta entry-period tabular-nums" data-build>
+              {!job.end && (
+                <>
+                  <Diamond size={7} />
+                  <span class="sr-only">{t("experience.current")}: </span>
+                </>
+              )}
+              <span>
+                <time datetime={job.start}>{formatMonth(job.start, lang)}</time>
+                <span aria-hidden="true"> – </span>
+                {job.end ? (
+                  <time datetime={job.end}>{formatMonth(job.end, lang)}</time>
+                ) : (
+                  t("experience.present")
+                )}
+                <span class="entry-duration">
+                  {" "}
+                  · {formatDuration(job.start, job.end, lang)}
+                </span>
+              </span>
+            </p>
+            <p class="meta entry-terms" data-build>
+              {job.terms[lang]}
+            </p>
+          </div>
+
+          <div class="entry-body">
+            <p class="entry-summary type-lead" data-build>
+              {job.summary[lang]}
+            </p>
+            <ul class="entry-bullets tick-list" data-build="ticks">
+              {job.bullets[lang].map((bullet) => (
+                <li>
+                  {/* One span: the li is a grid, so loose text nodes would each take a cell. */}
+                  <span>
+                    {emphasis(bullet).map((part) =>
+                      part.strong ? (
+                        <strong class="figure">{part.text}</strong>
+                      ) : (
+                        part.text
+                      )
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p class="meta-name entry-stack" data-build>
+              <StackLine names={job.stack} />
+            </p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .experience {
+    background-color: var(--color-ink);
+    color: var(--color-ice);
+  }
+
+  /* The fur strip: the header sits at its foot, like a title on a sleeve. */
+  .fur {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    display: grid;
+    align-items: end;
+    min-height: 62svh;
+    padding-top: 6rem;
+    padding-bottom: 1rem;
+  }
+
+  /* Taller than the strip, so the parallax never shows its edges. */
+  .fur-plate {
+    position: absolute;
+    inset: -14% 0;
+    z-index: -2;
+  }
+
+  .fur-plate :global(picture) {
+    display: contents;
+  }
+
+  /* Legibility: ink closes in on the lower half where the header sits. */
+  .fur::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to bottom,
+      rgb(4 6 15 / 0.35),
+      transparent 28%,
+      rgb(4 6 15 / 0.45) 70%,
+      var(--color-ink)
+    );
+    pointer-events: none;
+  }
+
+  .fur-dots {
+    z-index: -1;
+    opacity: 0.55;
+  }
+
+  .experience-body {
+    position: relative;
+    isolation: isolate;
+    padding-top: 3rem;
+  }
+
+  .entry {
+    display: grid;
+    gap: var(--spacing-inner);
+    padding-block: var(--spacing-row);
+  }
+
+  /* Durations come from the shared tempo, so reduced motion zeroes them. */
+  .entry-company,
+  .entry-summary {
+    transition:
+      translate var(--duration-interaction) var(--ease-out-soft),
+      color var(--duration-micro) ease;
+  }
+
+  /* Hover or keyboard focus: the company steps forward a touch. */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .entry:is(:hover, :focus-within) .entry-company {
+      translate: 0.4rem 0;
+    }
+  }
+
+  .entry-company {
+    color: var(--title-color);
+  }
+
+  .entry-link {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% /
+      100% 1px;
+    transition: opacity var(--duration-micro) ease;
+  }
+
+  .entry-link:hover,
+  .entry-link:focus-visible {
+    opacity: 0.7;
+  }
+
+  .entry-role {
+    margin-top: 0.75rem;
+    color: var(--title-color);
+  }
+
+  .entry-period {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .entry-terms {
+    margin-top: 0.25rem;
+    color: var(--text-muted);
+  }
+
+  .entry-summary {
+    max-width: 38rem;
+    color: var(--title-color);
+  }
+
+  .entry-bullets {
+    margin-top: var(--spacing-inner);
+  }
+
+  .entry-stack {
+    margin-top: var(--spacing-inner);
+  }
+
+  @media (width >= 64rem) {
+    .fur {
+      min-height: 72vh;
+    }
+
+    .entry {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 1.5rem;
+      padding-block: var(--spacing-row-lg);
+    }
+
+    /* The head stays put while the longer right column scrolls past. */
+    .entry-head {
+      grid-column: 1 / span 4;
+      position: sticky;
+      top: calc(var(--header-h, 3.75rem) + 2rem);
+      align-self: start;
+    }
+
+    .entry-body {
+      grid-column: 6 / span 7;
+    }
+  }
+</style>

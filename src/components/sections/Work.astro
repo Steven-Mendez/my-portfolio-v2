@@ -1,0 +1,273 @@
+---
+/**
+ * Selected work — the back cover's track list. One ruled row per project:
+ * the rhombus and a two-digit index, the title set large, the year at the
+ * end of the line like a running time. The body reads in four steps: a
+ * one-sentence summary in ice, the ticked lines on how it was built in
+ * muted, the "Built with" stack line, and the bracketed links in one row
+ * under it, set a step larger than the meta so they read as actions, not
+ * as another line of metadata. The summary is a sibling of the body, not
+ * part of it, so the grid can place it; the DOM keeps the reading order
+ * (title, year, summary, ticks, stack, links) that the motion builds in.
+ * On lg the row is a table line that uses the whole width: the title with
+ * the summary hanging under it (past the index) in columns 1–5, the proof
+ * (ticks, stack, links) in columns 6–11 like every other section's body,
+ * and the year alone on the edge, flush right. Below lg the year ends the
+ * title line and the summary and the body, links included, hang under the
+ * title and close the row. No screenshots here: the booklet's back cover
+ * has no product shots either. They live in each project's write-up
+ * (`/work/<slug>/`), which the first link of the row opens.
+ */
+import BracketLink from "@/components/hero/BracketLink.astro"
+import StackLine from "./StackLine.astro"
+import Diamond from "@/components/hero/Diamond.astro"
+import SectionHeading from "./SectionHeading.astro"
+import { projects } from "@/data/projects"
+import { getWriteup, writeupPath } from "@/data/writeups"
+import type { Lang } from "@/i18n/ui"
+import { getLocalizedPath, useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  index: string
+}
+
+const { lang, index } = Astro.props
+const t = useTranslations(lang)
+---
+
+<section
+  id="work"
+  aria-labelledby="work-title"
+  class="work px-gutter py-section sm:px-6 lg:px-12 lg:py-section-lg"
+>
+  <div class="dots-layer" aria-hidden="true"></div>
+  <div class="shell grid gap-y-row-lg lg:grid-cols-12 lg:gap-x-6">
+    <SectionHeading
+      titleId="work-title"
+      title={t("work.title")}
+      label={t("nav.work")}
+      index={index}
+    />
+
+    <ol class="tracks rule-rows lg:col-span-12" data-reveal="rows">
+      {projects.map((project, i) => (
+        <li class="track">
+          <div class="track-head">
+            <p class="meta track-no tabular-nums" aria-hidden="true" data-build>
+              <Diamond size={9} />
+              {String(i + 1).padStart(2, "0")}
+            </p>
+            <h3 class="track-title type-display-sm" data-build>
+              {project.title}
+            </h3>
+          </div>
+          <p class="meta track-year tabular-nums" data-build="right">
+            {project.year}
+          </p>
+
+          <p class="track-summary type-lead" data-build>
+            {project.summary[lang]}
+          </p>
+
+          <div class="track-body">
+            <ul class="tick-list track-built" data-build="ticks">
+              {project.built[lang].map((line) => (
+                <li>{line}</li>
+              ))}
+            </ul>
+            <p class="meta track-stack" data-build>
+              <span>{t("work.stack")}</span>
+              <span aria-hidden="true"> — </span>
+              <span class="meta-name">
+                <StackLine names={project.stack} />
+              </span>
+            </p>
+            {(getWriteup(project.slug) ||
+              project.repoUrl ||
+              project.liveUrl) && (
+              <ul
+                class="track-links"
+                aria-label={`${t("work.links")}: ${project.title}`}
+                data-build
+              >
+                {getWriteup(project.slug) && (
+                  <li>
+                    <BracketLink
+                      href={getLocalizedPath(lang, writeupPath(project.slug))}
+                      icon="→"
+                    >
+                      {t("work.read")}
+                      <span class="sr-only"> · {project.title}</span>
+                    </BracketLink>
+                  </li>
+                )}
+                {project.repoUrl && (
+                  <li>
+                    <BracketLink
+                      href={project.repoUrl}
+                      external
+                      me={false}
+                      newTabLabel={t("nav.newTab")}
+                    >
+                      {t("work.code")}
+                      <span class="sr-only"> · {project.title}</span>
+                    </BracketLink>
+                  </li>
+                )}
+                {project.liveUrl && (
+                  <li>
+                    <BracketLink
+                      href={project.liveUrl}
+                      external
+                      me={false}
+                      newTabLabel={t("nav.newTab")}
+                    >
+                      {t("work.live")}
+                      <span class="sr-only"> · {project.title}</span>
+                    </BracketLink>
+                  </li>
+                )}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .work {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-ink);
+  }
+
+  .track {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--spacing-inner) 1rem;
+    padding-block: var(--spacing-row);
+  }
+
+  /* Index and title on one baseline; the year ends the line. */
+  .track-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .track-year {
+    align-self: baseline;
+    padding-top: 0.4em;
+  }
+
+  .track-summary,
+  .track-body {
+    grid-column: 1 / -1;
+  }
+
+  /* The last line of the body, flush left with its text. */
+  .track-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.5rem;
+    /* Below lg the 44px targets would widen the gap above; pull it back. */
+    margin-block: -0.5rem;
+  }
+
+  /* A step above the meta, so they read as the row's actions. */
+  .track-links :global(.bracket-link) {
+    font-size: var(--text-body);
+    letter-spacing: 0.04em;
+  }
+
+  .track-no {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 3rem;
+  }
+
+  .track-title {
+    color: var(--title-color);
+  }
+
+  .track-body {
+    display: grid;
+    gap: var(--spacing-inner);
+  }
+
+  /* The summary is the row's first read, so it sits in ice. */
+  .track-summary {
+    max-width: 38rem;
+    color: var(--title-color);
+  }
+
+  /* Below lg the links are touch targets: 44px tall at least. */
+  @media (width < 64rem) {
+    .track-links :global(.bracket-link) {
+      min-height: 2.75rem;
+      align-items: center;
+    }
+  }
+
+  /* From sm the summary and body hang under the title, past the index. */
+  @media (width >= 40rem) {
+    .track-summary,
+    .track-body {
+      margin-left: 4rem;
+    }
+  }
+
+  /* On lg the row becomes a table line across the 12 columns. */
+  @media (width >= 64rem) {
+    .track {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 1.5rem;
+      row-gap: 0;
+      padding-block: var(--spacing-row-lg);
+    }
+
+    .track {
+      /* Extra height of the proof goes under the summary, never between
+         the title and the summary. */
+      grid-template-rows: auto 1fr;
+    }
+
+    .track-head {
+      grid-column: 1 / span 5;
+      grid-row: 1;
+    }
+
+    /* Under the title, still past the index (the sm hang carries over). */
+    .track-summary {
+      grid-column: 1 / span 5;
+      grid-row: 2;
+      align-self: start;
+      margin-top: var(--spacing-inner);
+    }
+
+    .track-body {
+      grid-column: 6 / span 6;
+      grid-row: 1 / span 2;
+      align-self: start;
+      margin-left: 0;
+      /* Its first line sits on the title's cap height, not above it. */
+      padding-top: 0.35rem;
+    }
+
+    /* The edge: the year alone, flush right on the title line. */
+    .track-year {
+      grid-column: 12 / span 1;
+      grid-row: 1;
+      align-self: start;
+      justify-self: end;
+    }
+
+    .track-links {
+      margin-block: 0;
+    }
+  }
+</style>

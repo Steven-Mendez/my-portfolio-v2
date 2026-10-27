@@ -1,0 +1,143 @@
+---
+/**
+ * Education — a short page of the booklet, right after Stack, set like
+ * About: the compact header sticks on the left and the credentials are
+ * cards on the right, each opened by a heavy top rule. Every card is a
+ * peer, the degree included: kind and period (a year, or a range for the
+ * degree) in meta over the name. Verification links sit at the foot of
+ * their card.
+ */
+import BracketLink from "@/components/hero/BracketLink.astro"
+import SectionHeading from "./SectionHeading.astro"
+import { credentialYear, education, educationSpan } from "@/data/education"
+import type { Lang } from "@/i18n/ui"
+import { count, fill, useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  index: string
+}
+
+const { lang, index } = Astro.props
+const t = useTranslations(lang)
+
+const span = educationSpan()
+const note = `${count(education.length, t("section.note.credential"), t("section.note.credentials"))} · ${span.startYear}–${span.endYear}`
+---
+
+<section
+  id="education"
+  aria-labelledby="education-title"
+  class="tone-paper px-gutter pb-section sm:px-6 lg:px-12 lg:pb-section-lg"
+>
+  <div class="education-inner shell grid gap-y-row-lg pt-joint lg:grid-cols-12 lg:gap-x-6 lg:pt-joint-lg">
+    <SectionHeading
+      titleId="education-title"
+      title={t("education.title")}
+      label={t("nav.education")}
+      index={index}
+      note={note}
+      layout="aside"
+    />
+
+    <ol
+      class="credentials lg:col-span-7 lg:col-start-6 lg:row-start-1"
+      data-reveal="items"
+    >
+      {education.map((item) => (
+        <li class="credential">
+          <p class="meta credential-meta">
+            <span>{t(`education.kind.${item.kind}`)}</span>
+            <span class="credential-period tabular-nums">
+              {item.start && (
+                <>
+                  <time datetime={item.start}>{item.start.slice(0, 4)}</time>
+                  <span aria-hidden="true">–</span>
+                </>
+              )}
+              <time datetime={item.end}>{credentialYear(item)}</time>
+            </span>
+          </p>
+          <div class="credential-body">
+            <h3 class="credential-name type-lead">{item.name[lang]}</h3>
+            <p class="meta mt-1.5">{item.org}</p>
+            {item.detail && (
+              <p class="credential-detail type-body">{item.detail[lang]}</p>
+            )}
+          </div>
+          {item.href && (
+            <div class="credential-link">
+              <BracketLink
+                href={item.href}
+                external
+                me={false}
+                newTabLabel={t("nav.newTab")}
+              >
+                {item.platform
+                  ? fill(t("education.verifyOn"), { platform: item.platform })
+                  : t("education.verify")}
+                {/* Two cards link to the same site: name each link. */}
+                <span class="sr-only">: {item.name[lang]}</span>
+              </BracketLink>
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  /* A hairline, not a colour change, separates it from Stack. */
+  .education-inner {
+    border-top: 1px solid var(--rule);
+  }
+
+  .credentials {
+    display: grid;
+    gap: var(--spacing-row) 1.5rem;
+  }
+
+  /* The card: a solid ink rule on top. */
+  .credential {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-inner);
+    padding-top: var(--spacing-inner);
+    border-top: 1px solid var(--title-color);
+  }
+
+  .credential-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  /* A range ("2019–2023") stays on one line, like a single year. */
+  .credential-period {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .credential-name {
+    color: var(--title-color);
+  }
+
+  .credential-detail {
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+  }
+
+  /* Pinned to the foot of the card, so links line up across the row. */
+  .credential-link {
+    margin-top: auto;
+    margin-bottom: -0.5rem;
+  }
+
+  @media (width >= 40rem) {
+    .credentials {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

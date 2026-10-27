@@ -1,0 +1,290 @@
+---
+/**
+ * Quiet top bar laid over the hero: "Home" on the left; the section links
+ * in the middle (from lg up); the résumé, contact and language switch on
+ * the right, all in the same micro-label style. The name never appears
+ * here; it belongs to the hero.
+ *
+ * Below lg the middle holds a chapter button ("02 —— EXPERIENCE") that
+ * opens the section index as a native popover, so it opens, closes on Esc
+ * and on an outside tap, and its anchors work without JS. The panel lives
+ * inside the header but renders in the top layer, above the reading line.
+ *
+ * Its items sit on the page measure (`shell`), so past 1600px they line
+ * up with the sections' content while the ground stays full width.
+ *
+ * It is fixed, so navigation is always at hand. Over the hero it is bare;
+ * once the page scrolls (`data-docked`, set by `scripts/header.ts`) it
+ * tightens and gets a translucent ground and a hairline in the tone of the
+ * section under it: ink by default, paper over the paper sections
+ * (`data-on-paper`, same script), so the bar reads as part of the section
+ * rather than a band laid over it. The same script marks the link of the
+ * section in view with `aria-current="true"`.
+ */
+import BracketLink from "./BracketLink.astro"
+import Diamond from "./Diamond.astro"
+import LocaleSwitch from "@/components/nav/LocaleSwitch.astro"
+import { profile } from "@/data/profile"
+import { sections } from "@/data/sections"
+import type { Lang } from "@/i18n/ui"
+import {
+  getLocalizedPath,
+  isHomePath,
+  sectionHref,
+  useTranslations,
+} from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = useTranslations(lang)
+
+const homePath = getLocalizedPath(lang)
+const isHome = isHomePath(Astro.url, lang)
+// On the home page the links are bare hashes; on a write-up they lead home.
+const href = (hash: `#${string}`) => sectionHref(Astro.url, lang, hash)
+
+// Contact keeps its bracketed spot on the right; the rest go in the middle.
+const middle = sections.filter((section) => section.href !== "#contact")
+const resume = profile.resume[lang]
+---
+
+<header
+  class="site-header fixed inset-x-0 top-0 z-30 px-gutter py-4 sm:px-6 lg:px-12 lg:py-7"
+  data-site-header
+>
+  {/* The bar's ground runs edge to edge; its items keep the page measure. */}
+  <div class="shell flex items-center justify-between gap-3 sm:gap-4">
+    <a
+      href={homePath}
+      aria-current={isHome ? "page" : undefined}
+      class:list={[
+        "meta block py-2 transition-colors hover:text-ice",
+        isHome && "text-ice",
+      ]}
+    >
+      {t("nav.home")}
+    </a>
+
+    <nav aria-label={t("nav.sections")} class="hidden lg:block">
+      <ul class="flex items-center gap-5 lg:gap-7">
+        {middle.map((section) => (
+          <li>
+            <a
+              href={href(section.href)}
+              class="nav-link meta block py-2 transition-colors hover:text-ice"
+              data-nav-link
+            >
+              <span class="nav-label">{t(section.label)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    {/* Below lg: the section in view, and the door to the full index. */}
+    <button
+      type="button"
+      class="nav-chapter meta inline-flex min-h-11 min-w-0 items-center gap-2 whitespace-nowrap sm:gap-3 lg:hidden"
+      popovertarget="section-index"
+      data-nav-chapter
+    >
+      <span class="sr-only">{t("nav.sections")}: </span>
+      <span data-chapter-index class="tabular-nums">
+        —
+      </span>
+      <span class="nav-chapter-sep" aria-hidden="true"></span>
+      <span data-chapter-label class="truncate">
+        {t("nav.index")}
+      </span>
+    </button>
+
+    <div class="flex shrink-0 items-center gap-3 sm:gap-8">
+      <BracketLink
+        href={resume.href}
+        hreflang={resume.hreflang}
+        download="Steven-Mendez-CV.pdf"
+        icon="↓"
+      >
+        {t("nav.resume")}
+        <span class="sr-only">{t("nav.resume.file")}</span>
+      </BracketLink>
+      {/* No room at phone width; Contact stays one tap away in the index. */}
+      <BracketLink href={href("#contact")} class="max-sm:hidden" data-nav-link>
+        {t("nav.contact")}
+      </BracketLink>
+      <LocaleSwitch lang={lang} />
+    </div>
+  </div>
+
+  {/* Top layer once open, so its place in the header does not clip it. */}
+  <nav
+    id="section-index"
+    popover
+    aria-label={t("nav.sections")}
+    class="section-index-panel"
+  >
+    <ul class="rule-rows">
+      {sections.map((section) => (
+        <li>
+          <a
+            href={href(section.href)}
+            data-nav-link
+            data-index={section.index}
+            class="panel-link grid min-h-11 grid-cols-[2.5rem_1fr_auto] items-baseline py-[var(--spacing-inner)]"
+          >
+            <span class="meta tabular-nums">{section.index}</span>
+            <span class="panel-label type-display-sm uppercase">
+              {t(section.label)}
+            </span>
+            <span class="panel-mark" aria-hidden="true">
+              <Diamond size={7} />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    /* Docked padding; header.ts reads it to publish the docked height. */
+    --header-pad-docked: 0.5rem;
+    border-bottom: 1px solid transparent;
+    transition:
+      padding 300ms var(--ease-out-soft),
+      background-color 300ms var(--ease-out-soft),
+      border-color 300ms var(--ease-out-soft);
+  }
+
+  .site-header[data-docked] {
+    padding-block: var(--header-pad-docked);
+    background-color: color-mix(in oklab, var(--color-ink) 72%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom-color: var(--rule);
+  }
+
+  /* Over paper: the booklet's own tones, so the bar belongs to the page. */
+  .site-header[data-docked][data-on-paper] {
+    --meta-color: var(--color-paper-ink-muted);
+    --link-color: var(--color-paper-ink);
+    background-color: color-mix(in oklab, var(--color-paper) 80%, transparent);
+    border-bottom-color: color-mix(
+      in oklab,
+      var(--color-paper-ink) 20%,
+      transparent
+    );
+  }
+
+  .site-header[data-docked][data-on-paper] :global(.text-ice),
+  .site-header[data-docked][data-on-paper] :global(a:hover),
+  .site-header[data-docked][data-on-paper] .nav-link[aria-current="true"] {
+    color: var(--color-paper-ink);
+  }
+
+  /* The section in view: full ice and the bracket link's underline. */
+  .nav-label {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0
+      1px;
+    transition: background-size 300ms var(--ease-out-soft);
+  }
+
+  .nav-link[aria-current="true"] {
+    color: var(--color-ice);
+  }
+
+  .nav-link[aria-current="true"] .nav-label,
+  .nav-link:focus-visible .nav-label,
+  .site-header :global(.bracket-link[aria-current="true"] .bracket-label) {
+    background-size: 100% 1px;
+  }
+
+  /* ── Chapter button and section index (below lg) ── */
+  .nav-chapter {
+    transition: color var(--duration-micro) ease;
+  }
+
+  .nav-chapter:hover {
+    color: var(--link-color);
+  }
+
+  /* Phone widths are tight (Home, chapter, CV, EN/ES): a shorter rule there. */
+  .nav-chapter-sep {
+    flex-shrink: 0;
+    width: 12px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+
+  .section-index-panel {
+    position: fixed;
+    inset: var(--header-h, 3.75rem) 0 auto;
+    margin: 0;
+    width: 100%;
+    max-height: calc(100dvh - var(--header-h, 3.75rem));
+    overflow: auto;
+    padding: var(--spacing-inner) var(--spacing-gutter) var(--spacing-row);
+    background: var(--color-ink);
+    color: var(--color-ice);
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* Over a paper section (header.ts adds the class on open). */
+  .section-index-panel.tone-paper {
+    background: var(--color-paper);
+    color: var(--color-paper-ink);
+  }
+
+  @media (min-width: 40rem) {
+    .nav-chapter-sep {
+      width: 28px;
+    }
+
+    .section-index-panel {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  .panel-label {
+    color: var(--title-color);
+  }
+
+  /* The rhombus marks "you are here", nothing else. */
+  .panel-mark {
+    visibility: hidden;
+  }
+
+  .panel-link[aria-current="true"] .panel-mark {
+    visibility: visible;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .section-index-panel {
+      transition:
+        opacity 240ms var(--ease-out-soft),
+        translate 240ms var(--ease-out-soft),
+        display 240ms allow-discrete,
+        overlay 240ms allow-discrete;
+    }
+
+    @starting-style {
+      .section-index-panel:popover-open {
+        opacity: 0;
+        translate: 0 -8px;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header,
+    .nav-label {
+      transition: none;
+    }
+  }
+</style>

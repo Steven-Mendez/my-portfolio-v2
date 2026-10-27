@@ -1,0 +1,24 @@
+---
+/**
+ * The sleeve's red rhombus (taller than wide), drawn as SVG so it renders
+ * identically everywhere. Decorative: always aria-hidden.
+ */
+interface Props {
+  /** Height in px; width follows the 2:3 rhombus ratio. */
+  size?: number
+  class?: string
+}
+
+const { size = 12, class: className } = Astro.props
+---
+
+<svg
+  class:list={["shrink-0 fill-red", className]}
+  width={(size * 2) / 3}
+  height={size}
+  viewBox="0 0 8 12"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M4 0 8 6 4 12 0 6Z"></path>
+</svg>

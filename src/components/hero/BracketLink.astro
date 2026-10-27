@@ -1,0 +1,93 @@
+---
+/**
+ * Tiny uppercase link set in brackets: "[ VIEW WORK ↗ ]". The brackets and
+ * the arrow are decorative; external links open in a new tab and say so to
+ * screen readers. Arrow convention: ↗ external, ↓ download, → email.
+ */
+import type { HTMLAttributes } from "astro/types"
+import Arrow from "./Arrow.astro"
+
+interface Props extends HTMLAttributes<"a"> {
+  href: string
+  external?: boolean
+  /** Screen-reader hint appended to external links. */
+  newTabLabel?: string
+  /** External link to a profile of Steven's (rel="me"); false for third-party pages. */
+  me?: boolean
+  /** Trailing arrow; defaults to ↗ on external links, none otherwise. */
+  icon?: "↗" | "↓" | "→" | null
+}
+
+// Glyph in the API (it reads well at the call site), SVG on the page.
+const arrowDir = { "↗": "external", "↓": "download", "→": "email" } as const
+
+const {
+  href,
+  external = false,
+  newTabLabel,
+  me = true,
+  icon = external ? "↗" : null,
+  class: className,
+  ...rest
+} = Astro.props
+---
+
+<a
+  href={href}
+  class:list={["bracket-link meta inline-flex gap-[0.6em] py-2", className]}
+  data-arrow={icon ? arrowDir[icon] : undefined}
+  {...(external
+    ? { target: "_blank", rel: me ? "me noopener" : "noopener" }
+    : {})}
+  {...rest}
+>
+  <span aria-hidden="true">[</span>
+  <span class="bracket-label">
+    <slot />
+    {external && newTabLabel && <span class="sr-only"> {newTabLabel}</span>}
+  </span>
+  {icon && (
+    <span class="bracket-icon" aria-hidden="true">
+      <Arrow dir={arrowDir[icon]} />
+    </span>
+  )}
+  <span aria-hidden="true">]</span>
+</a>
+
+<style>
+  .bracket-link {
+    color: var(--link-color);
+    transition: color var(--duration-micro) ease;
+  }
+
+  .bracket-label {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0
+      1px;
+    transition: background-size var(--duration-interaction) var(--ease-out-soft);
+  }
+
+  .bracket-link:is(:hover, :focus-visible) .bracket-label {
+    background-size: 100% 1px;
+  }
+
+  /* The arrow nudges toward where the link goes; it stays put under reduced motion. */
+  .bracket-icon {
+    display: inline-flex;
+    align-items: center;
+    transition: translate var(--duration-interaction) var(--ease-out-soft);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bracket-link:is(:hover, :focus-visible) .bracket-icon {
+      translate: 0.12em -0.12em;
+    }
+
+    .bracket-link[download]:is(:hover, :focus-visible) .bracket-icon {
+      translate: 0 0.12em;
+    }
+
+    .bracket-link[data-arrow="email"]:is(:hover, :focus-visible) .bracket-icon {
+      translate: 0.12em 0;
+    }
+  }
+</style>

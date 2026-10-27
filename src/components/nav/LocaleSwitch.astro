@@ -1,0 +1,44 @@
+---
+/**
+ * "EN / ES" switch to the current page in each locale. Shared by the top bar
+ * and the footer; the active locale gets the thin red rule (a mark, not text).
+ */
+import { languages, type Lang } from "@/i18n/ui"
+import { getAlternatePath, locales, useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  class?: string
+}
+
+const { lang, class: className } = Astro.props
+const t = useTranslations(lang)
+---
+
+<nav aria-label={t("nav.language")} class={className}>
+  <ul class="meta flex items-center gap-2">
+    {locales.map((locale, index) => {
+      const current = locale === lang
+      return (
+        <>
+          {index > 0 && <li aria-hidden="true">/</li>}
+          <li>
+            <a
+              href={getAlternatePath(Astro.url, locale)}
+              hreflang={locale}
+              lang={locale}
+              aria-current={current ? "page" : undefined}
+              class:list={[
+                "block px-1 py-2 decoration-red decoration-1 underline-offset-[5px] transition-colors hover:text-ice",
+                current && "text-ice underline",
+              ]}
+            >
+              {locale}
+              <span class="sr-only">({languages[locale]})</span>
+            </a>
+          </li>
+        </>
+      )
+    })}
+  </ul>
+</nav>

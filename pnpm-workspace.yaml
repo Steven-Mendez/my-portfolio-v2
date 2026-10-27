@@ -1,24 +1,21 @@
-# Supply-chain hardening (react-doctor: require-pnpm-hardening).
+# Supply-chain hardening (same policy as ../v2).
 # Delay installs of freshly published versions so a malicious release has time to
 # be caught and unpublished, and never accept weakened trust signals on update.
 minimumReleaseAge: 10080
 trustPolicy: no-downgrade
 
-# Allowlist for the trust policy. Both are dev-only transitive deps of the ESLint
-# toolchain (via eslint-config-next), never shipped in the app bundle. They trip
-# `no-downgrade` because their older lines predate the provenance/CI trust signals
-# that newer majors gained — a known false positive, not a real takeover.
-trustPolicyExclude:
-  - 'eslint-import-resolver-typescript@3.10.1'
-  - 'semver@6.3.1'
-
 # pnpm 11 requires an explicit build-script decision for every dependency that
-# ships one (strictDepBuilds defaults to true), otherwise `pnpm dev`/`build` abort
-# with ERR_PNPM_IGNORED_BUILDS. This `allowBuilds` map replaces the old
-# `onlyBuiltDependencies` array (and the dead "pnpm" field in package.json).
-#   sharp / unrs-resolver  -> native binaries Next.js & the resolver need: build.
-#   msw                    -> pulled in only by the shadcn CLI, unused at runtime: skip.
+# ships one (strictDepBuilds). Native binaries Astro needs at build time.
 allowBuilds:
   sharp: true
-  unrs-resolver: true
-  msw: false
+  esbuild: true
+
+# Allowlist for the trust policy. Dev-only transitive dep of @astrojs/check
+# (file watcher for `astro check --watch`), published Dec 2024, never shipped in
+# the bundle. Trips `no-downgrade` because an earlier release carried provenance
+# and this one does not: a known false positive, not a takeover.
+trustPolicyExclude:
+  - "chokidar@4.0.3"
+  # Legacy semver lines pulled in by lighthouse (@lhci/cli), dev-only. Same false
+  # positive as above: the old majors predate npm provenance.
+  - semver

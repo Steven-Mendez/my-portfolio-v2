@@ -1,0 +1,35 @@
+---
+import About from "../../components/sections/About.astro"
+import Contact from "../../components/sections/Contact.astro"
+import Education from "../../components/sections/Education.astro"
+import Experience from "../../components/sections/Experience.astro"
+import Stack from "../../components/sections/Stack.astro"
+import Work from "../../components/sections/Work.astro"
+import BaseLayout from "../../layouts/BaseLayout.astro"
+import Hero from "../../components/hero/Hero.astro"
+import Footer from "../../components/nav/Footer.astro"
+import HeroHeader from "../../components/hero/HeroHeader.astro"
+import { sectionIndex } from "../../data/sections"
+import { useTranslations } from "../../i18n/utils"
+
+const lang = "es"
+const t = useTranslations(lang)
+---
+
+<BaseLayout
+  lang={lang}
+  title={t("meta.title")}
+  description={t("meta.description")}
+>
+  <HeroHeader lang={lang} />
+  <main id="main">
+    <Hero lang={lang} />
+    <About lang={lang} index={sectionIndex("#about")} />
+    <Experience lang={lang} index={sectionIndex("#experience")} />
+    <Work lang={lang} index={sectionIndex("#work")} />
+    <Stack lang={lang} index={sectionIndex("#stack")} />
+    <Education lang={lang} index={sectionIndex("#education")} />
+    <Contact lang={lang} index={sectionIndex("#contact")} />
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>

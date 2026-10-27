@@ -1,0 +1,45 @@
+---
+/**
+ * Link arrow drawn as an inline SVG, so ↗ ↓ → share one size and stroke
+ * (Geist Mono has no ↗; a fallback font drew it smaller and raised).
+ * Sized in em, so it follows the text it sits next to. Decorative only.
+ */
+interface Props {
+  dir: "external" | "download" | "email"
+  class?: string
+}
+
+const { dir, class: className } = Astro.props
+
+// 12×12 box: shaft plus a two-stroke head, one path per direction.
+const paths = {
+  external: "M3 9 9 3M4.5 3H9v4.5",
+  download: "M6 2v8M2.75 6.75 6 10l3.25-3.25",
+  email: "M2 6h8M6.75 2.75 10 6l-3.25 3.25",
+} as const
+---
+
+<svg
+  class:list={["arrow", className]}
+  viewBox="0 0 12 12"
+  width="1em"
+  height="1em"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.25"
+  stroke-linecap="square"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={paths[dir]}></path>
+</svg>
+
+<style>
+  .arrow {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    vertical-align: -0.05em;
+    flex: none;
+  }
+</style>

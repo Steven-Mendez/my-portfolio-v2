@@ -1,7 +1,5 @@
 dist/
+.astro/
 node_modules/
-.next/
-.turbo/
-coverage/
+.lighthouseci/
 pnpm-lock.yaml
-.pnpm-store/

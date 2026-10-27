@@ -1,0 +1,98 @@
+---
+/**
+ * About — the turn from the hero's sleeve to the booklet: paper, dark text.
+ * Two columns on lg: the compact section header sticks on the left while
+ * the bio reads on the right, in two tones (bright lead, muted
+ * continuation). Experience turns back to the sleeve after it.
+ */
+import SectionHeading from "./SectionHeading.astro"
+import { careerSpan, fullYearsSince } from "@/data/experience"
+import { profile } from "@/data/profile"
+import type { Lang } from "@/i18n/ui"
+import { useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  index: string
+}
+
+const { lang, index } = Astro.props
+const t = useTranslations(lang)
+
+// The count comes from data, so the bio never goes stale: full years
+// elapsed since the career's first start, recomputed on every build.
+const years = fullYearsSince(careerSpan().start)
+
+// Small counts read better as words; past that, digits.
+const words: Record<Lang, readonly string[]> = {
+  en: [
+    "zero",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+    "ten",
+  ],
+  es: [
+    "cero",
+    "uno",
+    "dos",
+    "tres",
+    "cuatro",
+    "cinco",
+    "seis",
+    "siete",
+    "ocho",
+    "nueve",
+    "diez",
+  ],
+}
+const yearsText = words[lang][years] ?? String(years)
+
+const lead = t("about.body.1")
+  .replace("{codingSince}", String(profile.codingSince))
+  .replace("{years}", yearsText)
+---
+
+<section
+  id="about"
+  aria-labelledby="about-title"
+  class="tone-paper px-gutter py-section sm:px-6 lg:px-12 lg:py-section-lg"
+>
+  <div class="shell grid gap-y-row-lg lg:grid-cols-12 lg:gap-x-6">
+    <SectionHeading
+      titleId="about-title"
+      title={t("about.title")}
+      label={t("nav.about")}
+      index={index}
+      layout="aside"
+    />
+
+    <div class="lg:col-span-7 lg:col-start-6 lg:row-start-1">
+      <div class="about-body type-statement space-y-7">
+        <p class="about-lead" data-reveal="lines">
+          {lead}
+        </p>
+        <p data-reveal="lines">{t("about.body.2")}</p>
+        <p data-reveal="lines">{t("about.body.3")}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Two tones: the lead in full ink, the rest a step back. */
+  .about-body {
+    max-width: 40rem;
+    color: var(--text-muted);
+  }
+
+  .about-lead {
+    color: var(--title-color);
+  }
+</style>

@@ -1,0 +1,413 @@
+---
+/**
+ * Contact — back on ink after the booklet. A contact sheet, not a plea:
+ * the channels as ruled rows (email, CV, GitHub, LinkedIn), label left,
+ * value in the middle, arrow right, like the credits page. Each whole row
+ * is the link. No form, no pitch.
+ */
+import { Picture } from "astro:assets"
+import smoke from "@/assets/textures/smoke.webp"
+import Arrow from "@/components/hero/Arrow.astro"
+import SectionHeading from "./SectionHeading.astro"
+import { profile } from "@/data/profile"
+import { formatMonth } from "@/i18n/dates"
+import type { Lang } from "@/i18n/ui"
+import { fill, useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  index: string
+}
+
+const { lang, index } = Astro.props
+const t = useTranslations(lang)
+const resume = profile.resume[lang]
+
+// Arrow convention: → email, ↓ download, ↗ external. `kind` picks the
+// arrow and the direction it nudges on hover.
+type Row = {
+  label: string
+  text: string
+  href: string
+  kind: "email" | "download" | "external"
+  /** Extra attributes for the link (download, hreflang, target, rel). */
+  attrs?: Record<string, string>
+  /** Muted note after the value. */
+  aside?: string
+}
+
+const rows: Row[] = [
+  {
+    label: t("contact.email"),
+    text: profile.email,
+    href: `mailto:${profile.email}`,
+    kind: "email",
+  },
+  {
+    label: t("contact.cv"),
+    text: t("contact.cv.value"),
+    href: resume.href,
+    kind: "download",
+    attrs: { download: "Steven-Mendez-CV.pdf", hreflang: resume.hreflang },
+    aside: fill(t("contact.cv.updated"), {
+      date: formatMonth(resume.updated, lang),
+    }),
+  },
+  {
+    label: "GitHub",
+    text: profile.socials.github.replace(/^https:\/\//, ""),
+    href: profile.socials.github,
+    kind: "external",
+    attrs: { target: "_blank", rel: "me noopener" },
+  },
+  {
+    label: "LinkedIn",
+    text: profile.socials.linkedin.replace(/^https:\/\//, ""),
+    href: profile.socials.linkedin,
+    kind: "external",
+    attrs: { target: "_blank", rel: "me noopener" },
+  },
+]
+---
+
+<section
+  id="contact"
+  aria-labelledby="contact-title"
+  class="contact px-gutter pt-section pb-44 sm:px-6 lg:px-12 lg:pt-section-lg lg:pb-64"
+>
+  {/* The last breath of smoke: a ribbon across the base, screened over the ink. */}
+  <div class="contact-smoke" aria-hidden="true">
+    <div data-parallax="10">
+      <Picture
+        src={smoke}
+        alt=""
+        formats={["avif", "webp"]}
+        fallbackFormat="jpg"
+        widths={[960, 1600, 2400]}
+        sizes="(min-width: 64rem) 100vw, 140vw"
+        loading="lazy"
+        decoding="async"
+        class="size-full object-cover"
+      />
+    </div>
+  </div>
+  <div class="dots-layer" aria-hidden="true"></div>
+  <div class="shell grid gap-y-row-lg lg:grid-cols-12 lg:gap-x-6">
+    <SectionHeading
+      titleId="contact-title"
+      title={t("contact.title")}
+      label={t("nav.contact")}
+      index={index}
+    />
+
+    <dl
+      class="contact-rows rule-rows lg:col-span-7 lg:col-start-6"
+      data-reveal="rows"
+    >
+      {rows.map((row) => (
+        <div class="contact-row type-body">
+          <dt class="meta" data-build>
+            {row.label}
+          </dt>
+          {/*
+            The arrow lives inside the dd (a dl group may only hold dt and
+            dd); the value wraps in its own span so each builds on its own.
+          */}
+          <dd class="contact-cell">
+            <span class="contact-value" data-build>
+              {/* The link's ::before covers the whole row, so any tap on it follows the link. */}
+              <a href={row.href} class="contact-link" {...row.attrs}>
+                {row.kind === "download" && (
+                  <span class="sr-only">{row.label}: </span>
+                )}
+                {row.text}
+                {row.kind === "external" && (
+                  <span class="sr-only"> {t("nav.newTab")}</span>
+                )}
+              </a>
+              {row.aside && <span class="meta contact-aside">{row.aside}</span>}
+              {row.kind === "email" && (
+                <>
+                  <button
+                    type="button"
+                    class="contact-copy meta"
+                    data-copy={profile.email}
+                    data-copied-label={t("contact.copied")}
+                    data-copied-sr={t("contact.copied.sr")}
+                    hidden
+                  >
+                    <span aria-hidden="true">[</span>{" "}
+                    <span data-copy-label>{t("contact.copy")}</span>{" "}
+                    <span aria-hidden="true">]</span>
+                  </button>
+                  <span class="sr-only" aria-live="polite" data-copy-status />
+                </>
+              )}
+            </span>
+            <span
+              class="contact-arrow meta"
+              aria-hidden="true"
+              data-arrow={row.kind}
+              data-build="right"
+            >
+              <Arrow dir={row.kind} />
+            </span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<script>
+  // Copy-to-clipboard for the email. Progressive: the button stays hidden
+  // without JS or without the Clipboard API. Re-wired on every page-load,
+  // since view transitions swap in fresh markup.
+  const RESET_MS = 2000
+
+  function initCopy() {
+    if (!navigator.clipboard?.writeText) return
+
+    for (const button of document.querySelectorAll<HTMLButtonElement>(
+      "[data-copy]"
+    )) {
+      const label = button.querySelector<HTMLElement>("[data-copy-label]")
+      const status =
+        button.parentElement?.querySelector<HTMLElement>("[data-copy-status]")
+      const idle = label?.textContent ?? ""
+      let timer: number | undefined
+
+      button.hidden = false
+      button.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(button.dataset.copy ?? "")
+        } catch {
+          return // Permission denied or insecure context: nothing to confirm.
+        }
+        if (label) label.textContent = button.dataset.copiedLabel ?? idle
+        if (status) status.textContent = button.dataset.copiedSr ?? ""
+        window.clearTimeout(timer)
+        timer = window.setTimeout(() => {
+          if (label) label.textContent = idle
+          if (status) status.textContent = ""
+        }, RESET_MS)
+      })
+    }
+  }
+
+  document.addEventListener("astro:page-load", initCopy)
+</script>
+
+<style>
+  .contact {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    background-color: var(--color-ink);
+  }
+
+  /*
+   * The ribbon runs across the base of the section, in the padding below
+   * the rows (never behind them), and bleeds off the bottom; `screen`
+   * keeps only the smoke. Phones get it wider than the viewport and dimmer.
+   */
+  .contact-smoke {
+    position: absolute;
+    inset: auto -25% -8% -25%;
+    z-index: -1;
+    height: 42%;
+    opacity: 0.6;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 25%,
+      #000 80%,
+      transparent
+    );
+  }
+
+  @media (width >= 64rem) {
+    .contact-smoke {
+      inset: auto 0 -14% 0;
+      height: 52%;
+      opacity: 0.85;
+    }
+  }
+
+  .contact-smoke > div {
+    height: 100%;
+  }
+
+  .contact-smoke :global(picture) {
+    display: contents;
+  }
+
+  /*
+   * Phones: label over value, so long URLs never wrap mid-word; the arrow
+   * sits in the top-right corner and the value keeps clear of it.
+   */
+  .contact-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+    min-height: 3.5rem;
+    padding-block: 1rem;
+    color: var(--title-color);
+  }
+
+  .contact-row dt {
+    padding-top: 0.3em;
+  }
+
+  .contact-cell {
+    min-width: 0;
+    padding-right: 1.5rem;
+  }
+
+  .contact-value {
+    display: block;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* The row is the hit area; the label and the arrow never catch the tap. */
+  .contact-row dt,
+  .contact-arrow {
+    pointer-events: none;
+  }
+
+  .contact-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .contact-link {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0
+      1px;
+    transition: background-size var(--duration-interaction) var(--ease-out-soft);
+  }
+
+  .contact-row:has(.contact-link:hover, .contact-link:focus-visible)
+    .contact-link {
+    background-size: 100% 1px;
+  }
+
+  /* The focus ring wraps the whole row, the same area a pointer can hit. */
+  .contact-link:focus-visible {
+    outline: none;
+  }
+
+  .contact-row:has(.contact-link:focus-visible) {
+    outline: 1px solid var(--color-ice);
+    outline-offset: 4px;
+  }
+
+  .contact-aside {
+    margin-left: 0.5em;
+  }
+
+  /* Separator drawn by CSS, silent to screen readers. */
+  .contact-aside::before {
+    content: "·" / "";
+    margin-right: 0.5em;
+  }
+
+  .contact-arrow {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+    padding-top: 0.3em;
+    transition:
+      translate var(--duration-interaction) var(--ease-out-soft),
+      color var(--duration-micro) ease;
+  }
+
+  .contact-row:has(.contact-link:hover, .contact-link:focus-visible)
+    .contact-arrow {
+    color: var(--title-color);
+  }
+
+  /* The arrow nudges toward where the link goes; it stays put under reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .contact-row:has(.contact-link:hover, .contact-link:focus-visible)
+      .contact-arrow[data-arrow="external"] {
+      translate: 0.15em -0.15em;
+    }
+
+    .contact-row:has(.contact-link:hover, .contact-link:focus-visible)
+      .contact-arrow[data-arrow="download"] {
+      translate: 0 0.15em;
+    }
+
+    .contact-row:has(.contact-link:hover, .contact-link:focus-visible)
+      .contact-arrow[data-arrow="email"] {
+      translate: 0.15em 0;
+    }
+  }
+
+  /* Above the row's hit area, so a click copies instead of opening mail. */
+  .contact-copy {
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin: 0.25rem 0 0;
+    padding-block: 0.5rem;
+    color: var(--meta-color);
+    transition: color var(--duration-micro) ease;
+  }
+
+  .contact-copy[hidden] {
+    display: none;
+  }
+
+  .contact-copy:hover,
+  .contact-copy:focus-visible {
+    color: var(--title-color);
+  }
+
+  /* From sm: label, value and arrow on one line. */
+  @media (width >= 40rem) {
+    .contact-row {
+      grid-template-columns: 8rem minmax(0, 1fr);
+      column-gap: 1.5rem;
+      align-items: start;
+      min-height: 4rem;
+    }
+
+    /*
+     * Value and arrow share the second column; the arrow keeps to the right.
+     * On the value's baseline: the email line is taller (the inline copy
+     * button), so a top-aligned arrow sat ~3px high there.
+     */
+    .contact-cell {
+      display: flex;
+      align-items: baseline;
+      column-gap: 1.5rem;
+      padding-right: 0;
+    }
+
+    .contact-value {
+      flex: 1;
+    }
+
+    .contact-arrow {
+      position: static;
+      padding-top: 0;
+    }
+
+    .contact-copy:not([hidden]) {
+      display: inline;
+      margin: 0 0 0 0.75em;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .contact-row {
+      grid-template-columns: 11rem minmax(0, 1fr);
+    }
+  }
+</style>

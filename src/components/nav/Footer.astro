@@ -1,0 +1,188 @@
+---
+/**
+ * Closing bar: link columns in the same bracketed micro-labels as the hero,
+ * then a © line with "back to top", and the name once more as a watermark
+ * cut off by the bottom edge. Navigation only; no portfolio content here.
+ */
+import BracketLink from "@/components/hero/BracketLink.astro"
+import Diamond from "@/components/hero/Diamond.astro"
+import LocaleSwitch from "./LocaleSwitch.astro"
+import { profile } from "@/data/profile"
+import { sections } from "@/data/sections"
+import type { Lang } from "@/i18n/ui"
+import { getLocalizedPath, sectionHref, useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = useTranslations(lang)
+
+// Build year; the site is static, so it moves forward on each deploy.
+const year = new Date().getFullYear()
+
+const links = [
+  { label: t("nav.home"), href: getLocalizedPath(lang) },
+  ...sections.map((section) => ({
+    label: t(section.label),
+    // Bare hashes on the home page; from a write-up they lead home.
+    href: sectionHref(Astro.url, lang, section.href),
+  })),
+]
+
+const socials = [
+  { label: "GitHub", href: profile.socials.github },
+  { label: "LinkedIn", href: profile.socials.linkedin },
+]
+
+// The record the visual language quotes, led by the line from "Beautiful"
+// that doubles as the site's epigraph. A credit, not a player: it never
+// autoplays and loads nothing; the link opens the official upload.
+const soundtrack = {
+  line: "Mereces lo que sueñas",
+  track: "Beautiful",
+  title: "Bocanada",
+  artist: "Gustavo Cerati",
+  year: 1999,
+  href: "https://www.youtube.com/watch?v=r4iEq-IXqfw",
+}
+const gloss = t("footer.soundtrack.gloss")
+---
+
+<footer
+  aria-labelledby="footer-title"
+  class="footer px-gutter pt-20 sm:px-6 lg:px-12 lg:pt-28"
+>
+  <div class="shell">
+    <h2
+      id="footer-title"
+      class="meta flex items-center gap-2.5 text-ice"
+      data-reveal
+    >
+      <Diamond size={9} />
+      {t("footer.label")}
+    </h2>
+
+    <div
+      class="mt-10 grid grid-cols-2 gap-x-6 gap-y-10 lg:mt-14 lg:grid-cols-[repeat(3,minmax(0,1fr))_auto]"
+      data-reveal="items"
+    >
+      <nav aria-labelledby="footer-sections">
+        <p id="footer-sections" class="meta mb-3">
+          {t("footer.nav.label")}
+        </p>
+        <ul>
+          {links.map((link) => (
+            <li>
+              <BracketLink href={link.href}>{link.label}</BracketLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div>
+        <p id="footer-social" class="meta mb-3">
+          {t("footer.social.label")}
+        </p>
+        <ul aria-labelledby="footer-social">
+          {socials.map((social) => (
+            <li>
+              <BracketLink
+                href={social.href}
+                external
+                newTabLabel={t("nav.newTab")}
+              >
+                {social.label}
+              </BracketLink>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <p class="meta mb-1" aria-hidden="true">
+          {t("nav.language")}
+        </p>
+        <LocaleSwitch lang={lang} class="-ml-1" />
+      </div>
+    </div>
+
+    <div class="meta mt-16 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-ice/10 pt-3 lg:mt-24">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <p class="tabular-nums">© {year}</p>
+        <a
+          href={soundtrack.href}
+          target="_blank"
+          rel="noopener"
+          class="footer-soundtrack inline-flex items-center gap-[0.6em] py-2 transition-colors hover:text-ice"
+        >
+          <span aria-hidden="true">♪</span>
+          <span class="sr-only">{t("footer.soundtrack")}: </span>
+          <span>
+            <span lang="es" class="text-ice">
+              “{soundtrack.line}”
+            </span>
+            {gloss && ` (${gloss})`}
+            {" · "}
+            {soundtrack.track}, {soundtrack.title} · {soundtrack.artist},{" "}
+            <span class="tabular-nums">{soundtrack.year}</span>
+            <span class="sr-only"> {t("nav.newTab")}</span>
+          </span>
+        </a>
+      </div>
+      <a
+        href="#top"
+        class="inline-flex gap-[0.6em] py-2 transition-colors hover:text-ice"
+      >
+        {t("footer.backToTop")}
+        <span aria-hidden="true">↑</span>
+      </a>
+    </div>
+  </div>
+
+  {/* Watermark: the name in the hero's grotesk, barely there, cut at the base. */}
+  <p aria-hidden="true" class="footer-mark" data-footer-mark>
+    {profile.fullName}
+  </p>
+</footer>
+
+<style>
+  /* A hairline marks where Contact ends and the navigation begins. */
+  .footer {
+    overflow: clip;
+    background-color: var(--color-ink);
+    border-top: 1px solid color-mix(in oklab, var(--color-ice) 10%, transparent);
+  }
+
+  /*
+   * The mark is its own clipping box: 0.62em tall on a 0.9 line, so the
+   * bottom quarter of the caps is cut by the footer's edge. It replaces the
+   * footer's bottom padding. 12vw fits "STEVEN MENDEZ" inside the gutters.
+   */
+  .footer-mark {
+    height: 0.62em;
+    margin-top: 2.5rem;
+    overflow: clip;
+    font-size: clamp(3rem, 12vw, 14rem);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: color-mix(in oklab, var(--color-ice) 6%, transparent);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  @media (width >= 64rem) {
+    .footer-mark {
+      margin-top: 3rem;
+    }
+  }
+
+  /* The note sits a hair above the baseline of the small caps; nudge it. */
+  .footer-soundtrack > [aria-hidden] {
+    translate: 0 -0.06em;
+  }
+</style>

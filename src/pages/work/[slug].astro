@@ -1,0 +1,36 @@
+---
+import HeroHeader from "@/components/hero/HeroHeader.astro"
+import Footer from "@/components/nav/Footer.astro"
+import Writeup from "@/components/writeup/Writeup.astro"
+import { profile } from "@/data/profile"
+import { projects } from "@/data/projects"
+import { writeups, type Writeup as WriteupEntry } from "@/data/writeups"
+import BaseLayout from "@/layouts/BaseLayout.astro"
+
+export function getStaticPaths() {
+  return writeups.map((writeup) => ({
+    params: { slug: writeup.slug },
+    props: { writeup },
+  }))
+}
+
+interface Props {
+  writeup: WriteupEntry
+}
+
+const lang = "en"
+const { writeup } = Astro.props
+const project = projects.find((p) => p.slug === writeup.slug)!
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${project.title} — ${profile.fullName}`}
+  description={writeup.description[lang]}
+>
+  <HeroHeader lang={lang} />
+  <main id="main">
+    <Writeup lang={lang} writeup={writeup} />
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>

@@ -1,0 +1,100 @@
+---
+import { Font } from "astro:assets"
+import { ClientRouter } from "astro:transitions"
+import "../styles/global.css"
+import { defaultLang, type Lang } from "@/i18n/ui"
+import { getAlternateUrl, locales, useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  title: string
+  description: string
+}
+
+const { lang, title, description } = Astro.props
+const t = useTranslations(lang)
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+
+const ogLocales: Record<Lang, string> = { en: "en_US", es: "es_LA" }
+const alternates = locales.map((locale) => ({
+  hreflang: locale,
+  href: getAlternateUrl(Astro.url, locale),
+}))
+const xDefault = getAlternateUrl(Astro.url, defaultLang)
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#04060f" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    {alternates.map((alternate) => (
+      <link
+        rel="alternate"
+        hreflang={alternate.hreflang}
+        href={alternate.href}
+      />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Font cssVariable="--font-geist" preload />
+    {/* Every micro-label above the fold is set in the mono, so preload it too. */}
+    <Font cssVariable="--font-geist-mono" preload />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={ogLocales[lang]} />
+    {locales
+      .filter((locale) => locale !== lang)
+      .map((locale) => (
+        <meta property="og:locale:alternate" content={ogLocales[locale]} />
+      ))}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta name="twitter:card" content="summary" />
+    {/*
+      Pre-hides the hero text (see `.motion` in global.css) before first
+      paint, so the intro never flashes the final state first. motion.ts adds
+      `motion-ready` once the intro owns the text; the timeout is the
+      fallback if it never runs. Re-armed after each view-transition swap.
+    */}
+    <script is:inline>
+      ;(function () {
+        const d = document.documentElement
+        let t
+        function on() {
+          if (matchMedia("(prefers-reduced-motion: reduce)").matches) return
+          d.classList.add("motion")
+          d.classList.remove("motion-ready")
+          clearTimeout(t)
+          t = setTimeout(function () {
+            d.classList.add("motion-ready")
+          }, 1200)
+        }
+        on()
+        document.addEventListener("astro:after-swap", on)
+      })()
+    </script>
+    {/* Client-side navigation between locales with a view transition. */}
+    <ClientRouter />
+  </head>
+  <body id="top" class="min-h-dvh bg-ink font-sans text-ice antialiased">
+    <a href="#main" class="skip-link meta">
+      <span aria-hidden="true">[</span> {t("nav.skip")}
+      <span aria-hidden="true">]</span>
+    </a>
+    <div class="scroll-rule" aria-hidden="true" data-progress></div>
+    <slot />
+    <script>
+      import "@/scripts/motion"
+      import "@/scripts/scroll"
+      import "@/scripts/header"
+    </script>
+  </body>
+</html>

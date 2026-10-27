@@ -1,0 +1,285 @@
+---
+/**
+ * Section opening — the page turn of the booklet. A full row of the
+ * 12-column section grid, with the content in the rows below it:
+ *
+ *   watermark  the index, very large and very faint (from sm)
+ *   kicker     diamond + short mono label ——— note ............... index
+ *   title      large light uppercase display (the h2)
+ *   intro      one muted sentence under it (optional; unused today)
+ *   rule       the red hairline with the diamond, drawn on scroll
+ *
+ * Every opening has the same anatomy, top to bottom: number, kicker,
+ * title, rule. From sm the number is the watermark, in flow above the
+ * kicker at one size (--text-mark), left-aligned; on phones it is the small
+ * index at the end of the kicker row. number → kicker, kicker → title and
+ * title → rule are all --spacing-head, in both layouts and at every width.
+ *
+ * Two layouts. `full` (default) spans the 12 columns and the content goes
+ * in the rows below. `aside` takes the first four columns on lg and sticks
+ * while the content beside it scrolls; there (lg only) its title steps down
+ * to --text-display-sm, because "Certificaciones" is wider than four, or
+ * five, columns at the display size. Below lg it is the full layout.
+ *
+ * `note` is one real fact about the section ("3 roles · 2023–present"),
+ * set at the end of a grey hairline that only exists with it (a second
+ * row on phones).
+ * The kicker is aria-hidden, so the note is repeated as sr-only text after
+ * the h2. Only Experience and Education pass one.
+ *
+ * `as` picks the heading level: h2 in the page's sections (default), h1
+ * when the opening is a page's own (a write-up).
+ *
+ * Motion hooks: data-section-kicker / -label / -line / -note / -title /
+ * -index / -intro, data-draw. The motion layer builds the header in as it enters.
+ */
+import Diamond from "@/components/hero/Diamond.astro"
+
+interface Props {
+  /** id of the h2, referenced by the section's aria-labelledby. */
+  titleId: string
+  title: string
+  /** Short mono label in the kicker row (the nav name). */
+  label: string
+  /** One real fact in the kicker, e.g. "3 roles · 2023–present". */
+  note?: string
+  /** One muted sentence under the title. No section uses it today. */
+  intro?: string
+  /** Two-digit position in the page, "01", "02", ... */
+  index: string
+  layout?: "full" | "aside"
+  as?: "h1" | "h2"
+}
+
+const {
+  titleId,
+  title,
+  label,
+  note,
+  intro,
+  index,
+  layout = "full",
+  as: Heading = "h2",
+} = Astro.props
+const aside = layout === "aside"
+---
+
+<header
+  class:list={[
+    "section-head",
+    aside
+      ? "section-head--aside lg:col-span-4 lg:row-start-1"
+      : "lg:col-span-12",
+  ]}
+>
+  {/* From sm: the number, above the kicker. */}
+  <span class="section-watermark" aria-hidden="true" data-section-index>
+    {index}
+  </span>
+
+  <p
+    class:list={["section-kicker meta", note && "section-kicker--note"]}
+    aria-hidden="true"
+    data-section-kicker
+  >
+    <span class="section-kicker-label flex items-center gap-2.5">
+      <Diamond size={9} />
+      <span data-section-label>{label}</span>
+    </span>
+    {/* The hairline leads to the note, so it only appears with one. */}
+    {note && <span class="section-kicker-line" data-section-line />}
+    {note && (
+      <span class="section-note tabular-nums" data-section-note>
+        {note}
+      </span>
+    )}
+    {/* Phones only: from sm the big watermark carries the number. */}
+    <span class="section-index tabular-nums" data-section-index>
+      {index}
+    </span>
+  </p>
+
+  <Heading id={titleId} class="section-display type-display" data-section-title>
+    {title}
+  </Heading>
+  {/* The kicker is hidden from assistive tech; the fact is not. */}
+  {note && <p class="sr-only">{note}</p>}
+
+  {intro && (
+    <p class="section-intro type-lead" data-section-intro>
+      {intro}
+    </p>
+  )}
+
+  <p class="red-rule section-rule" aria-hidden="true" data-draw>
+    <Diamond size={9} />
+  </p>
+</header>
+
+<style>
+  .section-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    /* The rhythm lives in margins (--spacing-head), not in a row gap. */
+    row-gap: 0;
+  }
+
+  /*
+   * Kicker: label and index; with a note, a grey hairline joins them and
+   * the note drops to a second row on phones. Without a note the grid
+   * keeps a single row and an empty middle track.
+   */
+  .section-kicker {
+    display: grid;
+    grid-template-columns: auto minmax(1.5rem, 1fr) auto;
+    grid-template-rows: auto;
+    grid-template-areas: "label . index";
+    align-items: center;
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+    color: var(--title-color);
+  }
+
+  .section-kicker--note {
+    grid-template-areas:
+      "label line index"
+      "note note note";
+  }
+
+  .section-kicker-label {
+    grid-area: label;
+  }
+
+  /* Structure, not reading: --rule, never red. */
+  .section-kicker-line {
+    grid-area: line;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section-note {
+    grid-area: note;
+    justify-self: start;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .section-index {
+    grid-area: index;
+  }
+
+  .section-display {
+    margin-top: var(--spacing-head);
+  }
+
+  .section-intro {
+    max-width: 36rem;
+    margin-top: var(--spacing-head-sm);
+    color: var(--text-muted);
+  }
+
+  /*
+   * The quiet mark: the index, huge and barely there, in flow above the
+   * kicker. Its 0.8em line box drifts ±8% (motion layer): ~0.07em at most,
+   * well inside the --spacing-head below it.
+   */
+  .section-watermark {
+    display: none;
+    justify-self: start;
+    margin-bottom: var(--spacing-head);
+    margin-left: -0.06em;
+    font-family: var(--font-mono);
+    font-size: var(--text-mark);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    color: var(--title-color);
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  :global(.tone-paper) .section-watermark {
+    opacity: 0.09;
+  }
+
+  .section-rule {
+    margin-top: var(--spacing-head);
+  }
+
+  @media (width >= 40rem) {
+    .section-index {
+      display: none;
+    }
+
+    .section-watermark {
+      display: block;
+    }
+
+    /* One row: the note takes the index's place at the end of the line. */
+    .section-kicker {
+      grid-template-columns: auto minmax(1.5rem, 1fr);
+      grid-template-areas: "label .";
+    }
+
+    .section-kicker--note {
+      grid-template-columns: auto minmax(1.5rem, 1fr) auto;
+      grid-template-areas: "label line note";
+    }
+
+    .section-note {
+      justify-self: end;
+    }
+
+    /* The aside is too narrow for one row (~293px at 1024): note below. */
+    .section-head--aside .section-kicker--note {
+      grid-template-columns: auto minmax(1.5rem, 1fr);
+      grid-template-areas:
+        "label line"
+        "note note";
+    }
+
+    .section-head--aside .section-note {
+      justify-self: start;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .section-head {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 1.5rem;
+    }
+
+    .section-watermark,
+    .section-kicker,
+    .section-rule {
+      grid-column: 1 / -1;
+    }
+
+    .section-display {
+      grid-column: 1 / span 8;
+    }
+
+    .section-intro {
+      grid-column: 1 / span 6;
+    }
+
+    /* Compact variant: a sticky column beside the content. */
+    .section-head--aside {
+      grid-template-columns: minmax(0, 1fr);
+      align-self: start;
+      position: sticky;
+      top: calc(var(--header-h, 3.75rem) + 2.5rem);
+    }
+
+    .section-head--aside > * {
+      grid-column: 1;
+    }
+
+    /* Four columns: the title steps down one size; below lg it is full. */
+    .section-head--aside .section-display {
+      font-size: var(--text-display-sm);
+    }
+  }
+</style>

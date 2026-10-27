@@ -1,0 +1,461 @@
+---
+/**
+ * A project's write-up: the booklet's inner pages for one track of the
+ * Work list. On ink, the same opening as a section (number, kicker, title,
+ * rule) with the Work nav name as the kicker, the project's name as the h1,
+ * the lead as its intro and the reading time as the note; under the rule, a
+ * spec row like the hero's fact sheet: year, role, stack and links. Then,
+ * on paper, numbered chapters: on lg the number and heading stick in the
+ * first four columns while the chapter's blocks read in the seven beside
+ * them. Screenshots are plates: hairline frame, mono caption, numbered in
+ * reading order across the page. The last row, back on ink, points to the
+ * neighbouring write-up and back to the list.
+ *
+ * Motion hooks are the shared ones: data-reveal on blocks, `items` on
+ * lists, `rows` + data-build on the spec sheets, data-draw on the rule.
+ */
+import { Picture } from "astro:assets"
+import BracketLink from "@/components/hero/BracketLink.astro"
+import Diamond from "@/components/hero/Diamond.astro"
+import SectionHeading from "@/components/sections/SectionHeading.astro"
+import StackLine from "@/components/sections/StackLine.astro"
+import { projects } from "@/data/projects"
+import {
+  readingMinutes,
+  writeupPath,
+  writeups,
+  type Block,
+  type Writeup,
+} from "@/data/writeups"
+import { formatMonth } from "@/i18n/dates"
+import type { Lang } from "@/i18n/ui"
+import { emphasis, fill, getLocalizedPath, useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  writeup: Writeup
+}
+
+const { lang, writeup } = Astro.props
+const t = useTranslations(lang)
+
+const position = projects.findIndex((p) => p.slug === writeup.slug)
+if (position < 0) throw new Error(`No project for write-up: ${writeup.slug}`)
+const project = projects[position]!
+// The track number in the Work list, so the watermark matches the list.
+const index = String(position + 1).padStart(2, "0")
+const two = (n: number) => String(n).padStart(2, "0")
+
+const note = fill(t("writeup.readingTime"), {
+  min: readingMinutes(writeup, lang),
+})
+const updated = fill(t("writeup.updated"), {
+  date: formatMonth(writeup.updated, lang),
+})
+
+// Figures are numbered across the page in reading order.
+const figures = new Map<Block, number>()
+for (const chapter of writeup.chapters)
+  for (const block of chapter.blocks)
+    if (block.type === "figure") figures.set(block, figures.size + 1)
+
+// Neighbours in the order of the Work list.
+const order = projects
+  .map((p) => p.slug)
+  .filter((slug) => writeups.some((w) => w.slug === slug))
+const at = order.indexOf(writeup.slug)
+const neighbour = (slug: string | undefined) =>
+  slug
+    ? {
+        title: projects.find((p) => p.slug === slug)!.title,
+        href: getLocalizedPath(lang, writeupPath(slug)),
+      }
+    : undefined
+const previous = neighbour(order[at - 1])
+const next = neighbour(order[at + 1])
+const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
+---
+
+<article class="writeup" aria-labelledby="writeup-title">
+  <header class="writeup-open px-gutter pt-40 pb-section sm:px-6 lg:px-12 lg:pt-48 lg:pb-section-lg">
+    <div class="dots-layer" aria-hidden="true"></div>
+    <div class="shell grid gap-y-row-lg lg:grid-cols-12 lg:gap-x-6">
+      <SectionHeading
+        as="h1"
+        titleId="writeup-title"
+        title={project.title}
+        label={t("nav.work")}
+        note={note}
+        intro={writeup.lead[lang]}
+        index={index}
+      />
+
+      {/* The spec row: the facts of the project, in the hero's cells. */}
+      <dl class="writeup-spec lg:col-span-12" data-reveal="items">
+        <div class="spec-cell">
+          <dt class="meta">{t("writeup.year")}</dt>
+          <dd class="meta-name tabular-nums">{project.year}</dd>
+        </div>
+        <div class="spec-cell">
+          <dt class="meta">{t("writeup.role")}</dt>
+          <dd class="meta-name">{writeup.role[lang]}</dd>
+        </div>
+        <div class="spec-cell">
+          <dt class="meta">{t("work.stack")}</dt>
+          <dd class="meta-name">
+            <StackLine names={project.stack} />
+          </dd>
+        </div>
+        {(project.repoUrl || project.liveUrl) && (
+          <div class="spec-cell">
+            <dt class="meta">{t("work.links")}</dt>
+            <dd class="spec-links">
+              {project.repoUrl && (
+                <BracketLink
+                  href={project.repoUrl}
+                  external
+                  me={false}
+                  newTabLabel={t("nav.newTab")}
+                >
+                  {t("work.code")}
+                </BracketLink>
+              )}
+              {project.liveUrl && (
+                <BracketLink
+                  href={project.liveUrl}
+                  external
+                  me={false}
+                  newTabLabel={t("nav.newTab")}
+                >
+                  {t("work.live")}
+                </BracketLink>
+              )}
+            </dd>
+          </div>
+        )}
+      </dl>
+    </div>
+  </header>
+
+  <div class="writeup-body tone-paper px-gutter py-section sm:px-6 lg:px-12 lg:py-section-lg">
+    <div class="shell">
+      {writeup.chapters.map((chapter, c) => (
+        <section
+          class="chapter grid gap-y-row lg:grid-cols-12 lg:gap-x-6"
+          aria-labelledby={`chapter-${c + 1}`}
+        >
+          <header class="chapter-head lg:col-span-4">
+            <p
+              class="meta flex items-center gap-2.5 tabular-nums"
+              aria-hidden="true"
+              data-reveal
+            >
+              <Diamond size={9} />
+              {two(c + 1)}
+            </p>
+            <h2
+              id={`chapter-${c + 1}`}
+              class="chapter-title type-display-sm"
+              data-reveal
+            >
+              {chapter.heading[lang]}
+            </h2>
+          </header>
+
+          <div class="chapter-body lg:col-span-7 lg:col-start-6">
+            {chapter.blocks.map((block, b) => {
+              if (block.type === "p")
+                return (
+                  <p
+                    class:list={[
+                      "chapter-p",
+                      b === 0 ? "chapter-lead type-lead" : "type-body",
+                    ]}
+                    data-reveal
+                  >
+                    {emphasis(block.text[lang]).map((part) =>
+                      part.strong ? <strong>{part.text}</strong> : part.text
+                    )}
+                  </p>
+                )
+              // Each item's text sits in one span, so the tick's grid sees a single cell.
+              if (block.type === "list")
+                return (
+                  <ul class="tick-list chapter-list" data-reveal="items">
+                    {block.items[lang].map((item) => (
+                      <li>
+                        <span>
+                          {emphasis(item).map((part) =>
+                            part.strong ? (
+                              <strong>{part.text}</strong>
+                            ) : (
+                              part.text
+                            )
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )
+              if (block.type === "figure")
+                return (
+                  <figure class="plate" data-reveal>
+                    <Picture
+                      src={block.image}
+                      alt={block.alt[lang]}
+                      formats={["avif", "webp"]}
+                      fallbackFormat="jpg"
+                      widths={[720, 1080, 1440]}
+                      sizes="(min-width: 64rem) min(56vw, 56rem), calc(100vw - 2rem)"
+                      loading="lazy"
+                      decoding="async"
+                      class="plate-img"
+                    />
+                    <figcaption class="plate-caption">
+                      <span class="meta tabular-nums">
+                        {t("writeup.figure")} {two(figures.get(block) ?? 0)}
+                      </span>
+                      <span class="meta-name">{block.caption[lang]}</span>
+                    </figcaption>
+                  </figure>
+                )
+              return (
+                <dl class="sheet rule-rows" data-reveal="rows">
+                  {block.rows.map((row) => (
+                    <div class="sheet-row">
+                      <dt class="meta-name sheet-name" data-build>
+                        {row.name}
+                      </dt>
+                      <dd class="type-body sheet-why" data-build>
+                        {row.why[lang]}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              )
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+
+  {/* Back on ink: where this entry sits in the list. */}
+  <nav
+    class="writeup-nav px-gutter py-section sm:px-6 lg:px-12 lg:py-section-lg"
+    aria-label={t("nav.work")}
+  >
+    <div class="shell">
+      <p class="meta writeup-updated" data-reveal>
+        {updated}
+      </p>
+      <ul class="writeup-nav-row" data-reveal="items">
+        <li>
+          <BracketLink href={allWork}>{t("writeup.all")}</BracketLink>
+        </li>
+        {previous && (
+          <li>
+            <BracketLink href={previous.href}>
+              {t("writeup.previous")}: {previous.title}
+            </BracketLink>
+          </li>
+        )}
+        {next && (
+          <li class="writeup-nav-next">
+            <BracketLink href={next.href} icon="→">
+              {t("writeup.next")}: {next.title}
+            </BracketLink>
+          </li>
+        )}
+      </ul>
+    </div>
+  </nav>
+</article>
+
+<style>
+  .writeup-open,
+  .writeup-nav {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-ink);
+  }
+
+  /* ── Spec row ── */
+  .writeup-spec {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-row) 1.5rem;
+  }
+
+  .spec-cell {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+
+  .spec-cell dd {
+    color: var(--title-color);
+    text-wrap: pretty;
+  }
+
+  .spec-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.5rem;
+    margin-block: -0.5rem;
+  }
+
+  @media (width >= 64rem) {
+    .writeup-spec {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* ── Chapters ── */
+  .chapter {
+    padding-block: var(--spacing-row);
+    border-top: 1px solid var(--rule);
+  }
+
+  .chapter:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .chapter-head {
+    display: grid;
+    gap: var(--spacing-inner);
+    align-content: start;
+  }
+
+  .chapter-title {
+    color: var(--title-color);
+  }
+
+  .chapter-body {
+    display: grid;
+    gap: var(--spacing-inner);
+  }
+
+  .chapter-p {
+    max-width: 40rem;
+  }
+
+  .chapter-lead {
+    color: var(--title-color);
+  }
+
+  .chapter-p strong {
+    font-weight: 500;
+    color: var(--title-color);
+  }
+
+  .chapter-list {
+    max-width: 40rem;
+  }
+
+  .chapter-list strong {
+    font-weight: 500;
+    color: var(--title-color);
+  }
+
+  /* ── Plates ── */
+  .plate {
+    display: grid;
+    gap: 0.75rem;
+    margin-block: 0.75rem;
+  }
+
+  .plate :global(.plate-img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+  }
+
+  .plate-caption {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0 1rem;
+    align-items: baseline;
+    color: var(--text-muted);
+  }
+
+  .plate-caption .meta {
+    color: var(--title-color);
+  }
+
+  /* ── Spec sheets ── */
+  .sheet {
+    margin-block: 0.75rem;
+  }
+
+  .sheet-row {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: var(--spacing-inner);
+  }
+
+  .sheet-name {
+    color: var(--title-color);
+  }
+
+  .sheet-why {
+    color: var(--text-muted);
+    max-width: 40rem;
+  }
+
+  @media (width >= 40rem) {
+    .sheet-row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      gap: 0 1.5rem;
+    }
+
+    .sheet-name {
+      padding-top: 0.2em;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .chapter {
+      padding-block: var(--spacing-row-lg);
+    }
+
+    .chapter-head {
+      position: sticky;
+      top: calc(var(--header-h, 3.75rem) + 2.5rem);
+      align-self: start;
+    }
+  }
+
+  /* ── Closing nav ── */
+  .writeup-updated {
+    margin-bottom: var(--spacing-inner);
+  }
+
+  .writeup-nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    padding-top: var(--spacing-inner);
+    border-top: 1px solid var(--rule);
+  }
+
+  .writeup-nav-row :global(.bracket-link) {
+    font-size: var(--text-body);
+    letter-spacing: 0.04em;
+  }
+
+  .writeup-nav-next {
+    margin-left: auto;
+  }
+
+  /* Below lg the links are touch targets: 44px tall at least. */
+  @media (width < 64rem) {
+    .writeup-nav-row :global(.bracket-link),
+    .spec-links :global(.bracket-link) {
+      min-height: 2.75rem;
+      align-items: center;
+    }
+  }
+</style>

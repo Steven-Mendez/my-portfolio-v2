@@ -1,0 +1,119 @@
+---
+/**
+ * Stack — back on the booklet's paper after Work. The groups are numbered
+ * tracks (the "01 / 02 / 03" row of the references): a diamond and index
+ * over each label, a hairline under that head, and the tools listed below
+ * as a tracklist, one name per row. Three across on lg. No bars, no
+ * percentages.
+ */
+import Diamond from "@/components/hero/Diamond.astro"
+import SectionHeading from "./SectionHeading.astro"
+import { stack } from "@/data/skills"
+import type { Lang } from "@/i18n/ui"
+import { useTranslations } from "@/i18n/utils"
+
+interface Props {
+  lang: Lang
+  index: string
+}
+
+const { lang, index } = Astro.props
+const t = useTranslations(lang)
+---
+
+<section
+  id="stack"
+  aria-labelledby="stack-title"
+  class="stack tone-paper px-gutter pt-section pb-joint sm:px-6 lg:px-12 lg:pt-section-lg lg:pb-joint-lg"
+>
+  <div class="shell grid gap-y-row-lg lg:grid-cols-12 lg:gap-x-6">
+    <SectionHeading
+      titleId="stack-title"
+      title={t("stack.title")}
+      label={t("nav.stack")}
+      index={index}
+    />
+
+    <ol class="stack-groups lg:col-span-12" data-reveal="items">
+      {stack.map((group, i) => (
+        <li class="stack-group">
+          <div class="stack-head">
+            <p class="meta stack-no tabular-nums" aria-hidden="true">
+              <Diamond size={9} />
+              {String(i + 1).padStart(2, "0")}
+            </p>
+            <h3 class="stack-label type-lead">{group.label[lang]}</h3>
+          </div>
+          <ul class="stack-items type-body">
+            {group.items.map((tool) => (
+              <li class="stack-tool">{tool.name}</li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ol>
+
+    <p class="stack-note type-body lg:col-span-5" data-reveal>
+      {t("stack.note")}
+    </p>
+  </div>
+</section>
+
+<style>
+  .stack-groups {
+    display: grid;
+    gap: var(--spacing-row) 1.5rem;
+  }
+
+  .stack-head {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .stack-no {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .stack-label {
+    margin-top: 1rem;
+    color: var(--title-color);
+  }
+
+  .stack-items {
+    display: grid;
+    gap: 0;
+    margin-top: var(--spacing-inner);
+  }
+
+  .stack-tool {
+    padding-block: 0.375rem;
+    color: var(--title-color);
+    overflow-wrap: break-word;
+  }
+
+  .stack-note {
+    max-width: 30rem;
+    color: var(--text-muted);
+  }
+
+  @media (width < 40rem) {
+    .stack-tool {
+      padding-block: 0.3rem;
+    }
+  }
+
+  @media (width >= 40rem) {
+    .stack-groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width >= 64rem) {
+    .stack-groups {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      row-gap: var(--spacing-row-lg);
+    }
+  }
+</style>
