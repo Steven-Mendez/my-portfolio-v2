@@ -63,9 +63,9 @@
   /* Section rhythm: a section's padding, the joint between two sections
      that share a tone, and the gap under a section's opening. */
   --spacing-section: 6rem;
-  --spacing-section-lg: 9rem;
+  --spacing-section-lg: 6rem;
   --spacing-joint: 4rem;
-  --spacing-joint-lg: 5rem;
+  --spacing-joint-lg: 4rem;
   --spacing-head: 2.5rem;
   --spacing-head-sm: 1.75rem;
 

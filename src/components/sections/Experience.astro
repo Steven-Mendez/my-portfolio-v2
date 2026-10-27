@@ -265,8 +265,10 @@ const note = `${count(experience.length, t("section.note.role"), t("section.note
   }
 
   @media (width >= 64rem) {
+    /* Shorter on desktop: the strip frames the title, it is not a screen. */
     .fur {
-      min-height: 72vh;
+      min-height: 44vh;
+      padding-top: 4rem;
     }
 
     .entry {
@@ -284,7 +286,11 @@ const note = `${count(experience.length, t("section.note.role"), t("section.note
     }
 
     .entry-body {
-      grid-column: 6 / span 7;
+      grid-column: 5 / span 8;
+    }
+
+    .entry-summary {
+      max-width: 46rem;
     }
   }
 </style>

@@ -116,4 +116,11 @@ const t = useTranslations(lang)
       row-gap: var(--spacing-row-lg);
     }
   }
+
+  /* Wide screens: the six groups in one row, half the height. */
+  @media (width >= 80rem) {
+    .stack-groups {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
 </style>

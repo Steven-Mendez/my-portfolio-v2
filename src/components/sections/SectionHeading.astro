@@ -195,13 +195,13 @@ const aside = layout === "aside"
     line-height: 0.8;
     letter-spacing: -0.04em;
     color: var(--title-color);
-    opacity: 0.07;
+    opacity: 0.16;
     pointer-events: none;
     user-select: none;
   }
 
   :global(.tone-paper) .section-watermark {
-    opacity: 0.09;
+    opacity: 0.18;
   }
 
   .section-rule {
@@ -251,18 +251,42 @@ const aside = layout === "aside"
       column-gap: 1.5rem;
     }
 
-    .section-watermark,
-    .section-kicker,
-    .section-rule {
-      grid-column: 1 / -1;
+    /*
+     * The horizontal room pays for the vertical: the number leaves its own
+     * row and stands in the last four columns, beside the kicker and the
+     * title, its foot on the title's line. The opening is then about half
+     * as tall.
+     */
+    .section-watermark {
+      grid-column: 9 / -1;
+      grid-row: 1 / span 2;
+      justify-self: end;
+      align-self: end;
+      margin-bottom: 0;
+      margin-left: 0;
+      margin-right: -0.04em;
+    }
+
+    .section-kicker {
+      grid-column: 1 / span 8;
+      grid-row: 1;
+      align-self: start;
     }
 
     .section-display {
       grid-column: 1 / span 8;
+      grid-row: 2;
+      align-self: end;
     }
 
     .section-intro {
       grid-column: 1 / span 6;
+      grid-row: 3;
+    }
+
+    .section-rule {
+      grid-column: 1 / -1;
+      grid-row: 4;
     }
 
     /* Compact variant: a sticky column beside the content. */
@@ -273,8 +297,18 @@ const aside = layout === "aside"
       top: calc(var(--header-h, 3.75rem) + 2.5rem);
     }
 
+    /* One column: back to the stacked order, the number above the kicker. */
     .section-head--aside > * {
       grid-column: 1;
+      grid-row: auto;
+    }
+
+    .section-head--aside .section-watermark {
+      justify-self: start;
+      align-self: auto;
+      margin-bottom: var(--spacing-head);
+      margin-left: -0.06em;
+      margin-right: 0;
     }
 
     /* Four columns: the title steps down one size; below lg it is full. */
