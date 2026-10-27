@@ -30,8 +30,8 @@ export interface Profile {
   timezone: string
   /** IANA zone for the live local clock in the hero. */
   timeZoneId: string
-  /** Year of the first lines of code (hobby, before any job). */
-  codingSince: number
+  /** Age at the first lines of code (hobby, before any job). */
+  codingAge: number
   resume: Localized<Resume>
   /** PENDIENTE DE STEVEN: undefined until he confirms; the hero then shows workMode. */
   availability?: Localized<string>
@@ -70,7 +70,7 @@ export const profile: Profile = {
   // U+2212 MINUS SIGN.
   timezone: "UTC−6",
   timeZoneId: "America/Managua",
-  codingSince: 2015,
+  codingAge: 10,
   resume,
   workMode: { en: "Remote", es: "Remoto" },
 }

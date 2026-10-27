@@ -42,21 +42,19 @@ export const experience: readonly ExperienceEntry[] = [
     terms: { en: "Contract · Remote", es: "Contrato · Remoto" },
     start: "2025-01",
     summary: {
-      en: "Build front ends, backends, cloud infrastructure and generative AI features for the clients of WERN, a development agency.",
-      es: "Construyo front ends, backends, infraestructura en la nube y funcionalidades de IA generativa para los clientes de WERN, una agencia de desarrollo.",
+      en: "Development agency; client projects end to end, among them Dupely (below); now on WERN's internal products.",
+      es: "Agencia de desarrollo; proyectos de clientes de punta a punta, entre ellos Dupely (abajo); hoy en sus productos internos.",
     },
     bullets: {
       en: [
-        "Build Python services and REST APIs with FastAPI, Django and Flask across 3 to 5 client codebases.",
-        "Build the React and Angular front ends that sit on top of those services.",
-        "Deploy to AWS (Lambda, ECS, S3, RDS, SQS) and define the infrastructure with Docker, Terraform and CI.",
-        "Add LLM and RAG features to client products, with vector search on pgvector and Qdrant.",
+        "Took features from first endpoint to production across client codebases by building Python REST APIs (FastAPI, Django, Flask) and the React/Angular interfaces on top of them.",
+        "Ran client workloads on AWS (Lambda, ECS, S3, RDS, SQS, CloudWatch) with the infrastructure defined in Docker and Terraform and CI pipelines handling deployment.",
+        "Added LLM and RAG features to client products with vector retrieval on pgvector and Qdrant.",
       ],
       es: [
-        "Desarrollo servicios en Python y APIs REST con FastAPI, Django y Flask en 3 a 5 bases de código de clientes.",
-        "Construyo las interfaces en React y Angular que consumen esos servicios.",
-        "Despliego en AWS (Lambda, ECS, S3, RDS, SQS) y defino la infraestructura con Docker, Terraform y CI.",
-        "Integro funcionalidades con LLMs y RAG en productos de clientes, con búsqueda vectorial en pgvector y Qdrant.",
+        "Llevé funcionalidades del primer endpoint a producción en varios codebases de clientes construyendo APIs REST en Python (FastAPI, Django, Flask) y sus interfaces en React/Angular.",
+        "Diseñé y operé la infraestructura en AWS (Lambda, ECS, S3, RDS, SQS, CloudWatch) de los proyectos de clientes, definida en Docker y Terraform, con despliegues por pipelines de CI.",
+        "Añadí funcionalidades LLM y RAG a productos de clientes con recuperación vectorial sobre pgvector y Qdrant.",
       ],
     },
     stack: [
@@ -86,19 +84,19 @@ export const experience: readonly ExperienceEntry[] = [
     start: "2025-12",
     end: "2026-04",
     summary: {
-      en: "Built the backend behind the beta of Dupely, a startup whose shopping assistant (browser extension and mobile app) flags price inflation.",
-      es: "Construí el backend de la beta de Dupely, una startup cuyo asistente de compras (extensión de navegador y app móvil) detecta la inflación de precios.",
+      en: "Shopping-assistant startup (browser extension and mobile app) that flags price inflation and better-value alternatives.",
+      es: "Startup de asistente de compras (extensión y app móvil) que detecta inflación de precios y mejores alternativas.",
     },
     bullets: {
       en: [
-        "Built the FastAPI services that serve product and price data to the extension and the app in real time.",
-        "Built the product, price-history and attribute ingestion pipelines for Amazon, Walmart and eBay: official APIs where available, in-house scraping and providers such as Bright Data and Oxylabs elsewhere.",
-        "Contributed to the PostgreSQL schema, migrations and query tuning, and proposed a Redis cache-aside design for product data.",
+        "Built the backend the beta launched on: FastAPI services serving product and pricing data in real time.",
+        "Built the product, pricing-history, and attribute ingestion pipelines for Amazon, Walmart, and eBay: official APIs where available, in-house scraping and providers such as Bright Data and Oxylabs elsewhere.",
+        "Contributed to the PostgreSQL schema, migrations, and product-lookup query performance; proposed a Redis cache-aside design for product data.",
       ],
       es: [
-        "Construí los servicios FastAPI que entregan productos y precios en tiempo real a la extensión y a la app.",
+        "Construí el backend con el que se lanzó la beta: servicios FastAPI que sirven productos y precios en tiempo real.",
         "Construí los pipelines de ingesta de productos, historial de precios y atributos de Amazon, Walmart y eBay: APIs oficiales cuando existían y, si no, scraping propio y proveedores como Bright Data y Oxylabs.",
-        "Colaboré en el esquema PostgreSQL, las migraciones y el ajuste de consultas, y propuse un diseño de caché en Redis (cache-aside) para los datos de producto.",
+        "Colaboré en el esquema de PostgreSQL, las migraciones y el rendimiento de las consultas de búsqueda; propuse un diseño de caché en Redis (cache-aside) para datos de productos.",
       ],
     },
     stack: ["Python", "FastAPI", "PostgreSQL", "Redis", "AWS", "ETL"],
@@ -117,19 +115,19 @@ export const experience: readonly ExperienceEntry[] = [
     start: "2025-03",
     end: "2025-12",
     summary: {
-      en: "Worked directly with a US EdTech company, alongside WERN, on its LLM evaluation and AI features. The name is under NDA.",
-      es: "Trabajé por contrato directo con una EdTech de EE. UU., en paralelo a WERN, en la evaluación de LLMs y funcionalidades de IA. El nombre está bajo NDA.",
+      en: "Direct contract held alongside WERN with their authorization. The company's name is under NDA.",
+      es: "Contrato directo en paralelo a WERN y con su autorización. El nombre de la empresa está bajo NDA.",
     },
     bullets: {
       en: [
-        "Built an LLM benchmark and evaluation harness that runs models through 20 to 50 computer-use tasks and scores their output.",
-        "Integrated LLM and RAG features into the LMS, retrieving learning content with pgvector.",
-        "Shipped front end and backend features in two-week sprints, inside the client's team and production codebase.",
+        "Built an LLM benchmark and evaluation harness that runs models through 20-50 computer-use tasks and scores their output.",
+        "Delivered Generative AI features and LMS integrations on LLMs and RAG, retrieving learning content with pgvector, from the user interface to the services behind it.",
+        "Shipped full-stack features into the client's production codebase on two-week sprints inside their engineering team.",
       ],
       es: [
-        "Construí un benchmark y harness de evaluación de LLM que ejecuta 20 a 50 tareas de computer use con los modelos y califica sus resultados.",
-        "Integré funcionalidades con LLMs y RAG en el LMS, con pgvector para recuperar el contenido de aprendizaje.",
-        "Entregué funcionalidades de front end y backend en sprints de dos semanas, dentro del equipo del cliente y en su código de producción.",
+        "Construí un benchmark y harness de evaluación de LLM que ejecuta 20-50 tareas de computer-use con los modelos y califica sus resultados.",
+        "Entregué funcionalidades de IA generativa e integraciones con el LMS sobre LLM y RAG, recuperando contenido de aprendizaje con pgvector, desde la interfaz hasta los servicios.",
+        "Entregué funcionalidades full stack en el código de producción del cliente en sprints de dos semanas.",
       ],
     },
     stack: [
@@ -158,21 +156,21 @@ export const experience: readonly ExperienceEntry[] = [
     start: "2023-02",
     end: "2024-12",
     summary: {
-      en: "Maintained the budget and fixed-asset systems of the university where I studied, and built its warehouse and helpdesk systems.",
-      es: "Mantuve los sistemas de presupuesto y activo fijo de la universidad donde estudié, y construí los de bodega y helpdesk.",
+      en: "Responsible for the university's budget and fixed-asset systems; also built its warehouse and helpdesk systems.",
+      es: "Responsable de los sistemas de presupuesto y activo fijo; construí los de bodega y helpdesk.",
     },
     bullets: {
       en: [
-        "Built the warehouse and helpdesk systems end to end: .NET backend, React front end and internal integrations.",
-        "Maintained and extended the legacy budget (ASP.NET Web Forms) and fixed-asset (ASP.NET MVC) systems, both on SQL Server.",
-        "Cut the slowest report from **6 minutes to under 15 seconds** by rewriting its queries and adding indexes.",
-        "Mentored **8** backend interns.",
+        "Maintained and extended two legacy ASP.NET / SQL Server systems, budget (Web Forms) and fixed assets (MVC); cut the budget system's heaviest report from **6 minutes to 7-15 seconds** by rewriting and indexing queries.",
+        "Built the warehouse and helpdesk systems end to end: .NET backend, React front end, integrations.",
+        "Restored CI/CD after the on-premise servers were renewed, rotating credentials and repointing deployments.",
+        "Mentored **8** interns on backend fundamentals and Git.",
       ],
       es: [
-        "Construí de punta a punta los sistemas de bodega y helpdesk: backend en .NET, front end en React e integraciones internas.",
-        "Mantuve y amplié los sistemas heredados de presupuesto (ASP.NET Web Forms) y activo fijo (ASP.NET MVC), ambos sobre SQL Server.",
-        "Reduje el reporte más lento de **6 minutos a menos de 15 segundos** reescribiendo sus consultas y añadiendo índices.",
-        "Fui mentor de **8** pasantes de backend.",
+        "Mantuve y amplié dos sistemas heredados en ASP.NET / SQL Server, presupuesto (Web Forms) y activo fijo (MVC); reduje el reporte más pesado del presupuesto de **6 minutos a 7-15 segundos** optimizando consultas.",
+        "Construí de punta a punta los sistemas de bodega y helpdesk: backend .NET, front end React e integraciones.",
+        "Restauré el CI/CD tras la renovación de los servidores on-premise: roté credenciales y reapunté despliegues.",
+        "Mentoré a **8** pasantes en fundamentos de backend y Git.",
       ],
     },
     stack: ["C#", ".NET", "ASP.NET", "React", "SQL Server", "CI/CD"],
@@ -184,12 +182,15 @@ export function currentEntry(): ExperienceEntry | undefined {
   return experience.find((entry) => entry.end === undefined)
 }
 
+/** Full months elapsed since a "YYYY-MM" month, as of `now` (build time). */
+export function fullMonthsSince(yearMonth: string, now = new Date()): number {
+  const [year, month] = yearMonth.split("-").map(Number) as [number, number]
+  return (now.getFullYear() - year) * 12 + (now.getMonth() + 1 - month)
+}
+
 /** Full years elapsed since a "YYYY-MM" month, as of `now` (build time). */
 export function fullYearsSince(yearMonth: string, now = new Date()): number {
-  const [year, month] = yearMonth.split("-").map(Number) as [number, number]
-  let years = now.getFullYear() - year
-  if (now.getMonth() + 1 < month) years -= 1
-  return years
+  return Math.floor(fullMonthsSince(yearMonth, now) / 12)
 }
 
 /**

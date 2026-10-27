@@ -2,11 +2,11 @@
 /**
  * About — the turn from the hero's sleeve to the booklet: paper, dark text.
  * Two columns on lg: the compact section header sticks on the left while
- * the bio reads on the right, in two tones (bright lead, muted
- * continuation). Experience turns back to the sleeve after it.
+ * the bio reads on the right in one tone. Experience turns back to the
+ * sleeve after it.
  */
 import SectionHeading from "./SectionHeading.astro"
-import { careerSpan, fullYearsSince } from "@/data/experience"
+import { careerSpan, fullMonthsSince } from "@/data/experience"
 import { profile } from "@/data/profile"
 import type { Lang } from "@/i18n/ui"
 import { useTranslations } from "@/i18n/utils"
@@ -19,9 +19,12 @@ interface Props {
 const { lang, index } = Astro.props
 const t = useTranslations(lang)
 
-// The count comes from data, so the bio never goes stale: full years
-// elapsed since the career's first start, recomputed on every build.
-const years = fullYearsSince(careerSpan().start)
+// The count comes from data, so the bio never goes stale: months elapsed
+// since the career's first start, recomputed on every build. Past the half
+// year it rounds up ("casi cuatro años"), before it it floors ("más de tres").
+const months = fullMonthsSince(careerSpan().start)
+const roundUp = months % 12 >= 6
+const years = Math.floor(months / 12) + (roundUp ? 1 : 0)
 
 // Small counts read better as words; past that, digits.
 const words: Record<Lang, readonly string[]> = {
@@ -53,10 +56,17 @@ const words: Record<Lang, readonly string[]> = {
   ],
 }
 const yearsText = words[lang][years] ?? String(years)
+const tenure = {
+  en: `${roundUp ? "almost" : "more than"} ${yearsText} years`,
+  es: `${roundUp ? "casi" : "más de"} ${yearsText} años`,
+}[lang]
 
 const lead = t("about.body.1")
-  .replace("{codingSince}", String(profile.codingSince))
-  .replace("{years}", yearsText)
+  .replace(
+    "{codingAge}",
+    words[lang][profile.codingAge] ?? String(profile.codingAge)
+  )
+  .replace("{tenure}", tenure)
 ---
 
 <section
@@ -75,9 +85,7 @@ const lead = t("about.body.1")
 
     <div class="lg:col-span-8 lg:col-start-5 lg:row-start-1">
       <div class="about-body type-statement space-y-7">
-        <p class="about-lead" data-reveal="lines">
-          {lead}
-        </p>
+        <p data-reveal="lines">{lead}</p>
         <p data-reveal="lines">{t("about.body.2")}</p>
         <p data-reveal="lines">{t("about.body.3")}</p>
       </div>
@@ -86,13 +94,8 @@ const lead = t("about.body.1")
 </section>
 
 <style>
-  /* Two tones: the lead in full ink, the rest a step back. */
   .about-body {
     max-width: 48rem;
-    color: var(--text-muted);
-  }
-
-  .about-lead {
     color: var(--title-color);
   }
 </style>

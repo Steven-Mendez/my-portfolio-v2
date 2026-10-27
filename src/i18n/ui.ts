@@ -41,17 +41,16 @@ export const ui = {
     "hero.meta.since": "since",
     "hero.image.alt":
       "Steven Mendez in profile against a cobalt blue backdrop, blue smoke rising, in the style of Cerati's Bocanada cover",
-    // Bio: facts from LinkedIn (2026-10-24). body.1 is the bright lead,
-    // body.2 and body.3 the muted continuation (current role, then
-    // languages). `{codingSince}` and `{years}` are filled by About from the
+    // Bio: facts from LinkedIn (2026-10-24). body.1 is the lead, body.2 and
+    // body.3 the continuation (current role, then languages). `{codingAge}` and `{tenure}` are filled by About from the
     // profile and the earliest job's start date, so the count never goes stale.
     "about.title": "Who I am",
     "about.body.1":
-      "Hi, I'm Steven, a full stack engineer in Managua, Nicaragua. I've been writing code since {codingSince}, more than {years} years of it professionally, and I like to own a product end to end: the backend, the web, mobile or desktop app on top of it, and the cloud it runs on.",
+      "Hi, I'm Steven, a full stack engineer in Managua, Nicaragua. I started programming when I was {codingAge} and have been doing it professionally for {tenure}.",
     "about.body.2":
-      "Currently, I'm a full stack engineer at WERN, a development agency, where I build Python APIs, React and Angular front ends, and LLM and RAG features for its clients.",
+      "Today I'm a full stack engineer at WERN, a development agency: Python APIs, React and Angular front ends, AWS infrastructure, and LLM and RAG features, first for its clients and now on its own products.",
     "about.body.3":
-      "I speak Spanish natively and English at B2, and I'm learning Japanese.",
+      "Spanish is my first language, I speak English at B2, and I'm learning Japanese.",
     "stack.title": "What I build with",
     // One muted line under the rows.
     "stack.note": "Not a closed list. I learn whatever the project needs.",
@@ -133,17 +132,16 @@ export const ui = {
     "hero.meta.since": "desde",
     "hero.image.alt":
       "Steven Mendez de perfil sobre un fondo azul cobalto, con humo azul que sube, al estilo de la portada de Bocanada de Cerati",
-    // Bio: facts from LinkedIn (2026-10-24). body.1 is the bright lead,
-    // body.2 and body.3 the muted continuation (current role, then
-    // languages). `{codingSince}` and `{years}` are filled by About from the
+    // Bio: facts from LinkedIn (2026-10-24). body.1 is the lead, body.2 and
+    // body.3 the continuation (current role, then languages). `{codingAge}` and `{tenure}` are filled by About from the
     // profile and the earliest job's start date, so the count never goes stale.
     "about.title": "Quién soy",
     "about.body.1":
-      "Hola, soy Steven, ingeniero full stack en Managua, Nicaragua. Escribo código desde {codingSince} y llevo más de {years} años haciéndolo de forma profesional. Me gusta llevar un producto de punta a punta: el backend, la app web, móvil o de escritorio que va encima y la nube donde corre.",
+      "Hola, soy Steven, ingeniero full stack en Managua, Nicaragua. Empecé a programar a los {codingAge} y llevo {tenure} haciéndolo de forma profesional.",
     "about.body.2":
-      "Hoy trabajo como ingeniero full stack en WERN, una agencia de desarrollo, donde construyo APIs en Python, interfaces en React y Angular y funcionalidades con LLMs y RAG para sus clientes.",
+      "Hoy trabajo como ingeniero full stack en WERN, una agencia de desarrollo: APIs en Python, interfaces en React y Angular, infraestructura en AWS y funcionalidades con LLMs y RAG, primero para sus clientes y hoy en sus productos internos.",
     "about.body.3":
-      "Hablo español como lengua materna e inglés a nivel B2, y estoy aprendiendo japonés.",
+      "Mi lengua materna es el español, hablo inglés a nivel B2 y estoy aprendiendo japonés.",
     "stack.title": "Con qué construyo",
     // One muted line under the rows.
     "stack.note":
