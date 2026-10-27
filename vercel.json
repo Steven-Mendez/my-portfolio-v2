@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/projects/:slug",
+      "destination": "/work/:slug/",
+      "permanent": true
+    },
+    {
+      "source": "/resume",
+      "destination": "/steven-mendez-cv-en.pdf",
+      "permanent": true
+    }
+  ]
+}
