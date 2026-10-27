@@ -35,7 +35,7 @@ export type Block =
     }
   | {
       type: "clip"
-      /** Public path without extension: `<src>.webm`, `<src>.mp4`, `<src>.jpg`. */
+      /** Public path without extension: `<src>.webm`, `<src>.mp4`, `<src>.webp`. */
       src: string
       width: number
       height: number
