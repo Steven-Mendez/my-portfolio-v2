@@ -31,7 +31,10 @@
             "minScore": 0.95
           }
         ],
-        "network-dependency-tree-insight": "off"
+        "network-dependency-tree-insight": "off",
+        "forced-reflow-insight": "warn",
+        "unused-javascript": "warn",
+        "image-delivery-insight": "warn"
       }
     },
     "upload": {
