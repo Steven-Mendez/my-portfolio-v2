@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # lighthouse ci reports
 .lighthouseci/
+
+# local https certificates
+certificates/
