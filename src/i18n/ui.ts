@@ -48,7 +48,7 @@ export const ui = {
     "about.body.1":
       "Hi, I'm Steven, a full stack engineer in Managua, Nicaragua. I started programming when I was {codingAge} and have been doing it professionally for {tenure}.",
     "about.body.2":
-      "Today I'm a full stack engineer at WERN, a development agency: Python APIs, React and Angular front ends, AWS infrastructure, and LLM and RAG features, first for its clients and now on its own products.",
+      "Today I'm a full stack engineer at WERN, a development agency: Python APIs, React front ends, AWS infrastructure, and LLM and RAG features, first for its clients and now on its own products.",
     "about.body.3":
       "Spanish is my first language, I speak English at B2, and I'm learning Japanese.",
     "stack.title": "What I build with",
@@ -139,7 +139,7 @@ export const ui = {
     "about.body.1":
       "Hola, soy Steven, ingeniero full stack en Managua, Nicaragua. Empecé a programar a los {codingAge} y llevo {tenure} haciéndolo de forma profesional.",
     "about.body.2":
-      "Hoy trabajo como ingeniero full stack en WERN, una agencia de desarrollo: APIs en Python, interfaces en React y Angular, infraestructura en AWS y funcionalidades con LLMs y RAG, primero para sus clientes y hoy en sus productos internos.",
+      "Hoy trabajo como ingeniero full stack en WERN, una agencia de desarrollo: APIs en Python, interfaces en React, infraestructura en AWS y funcionalidades con LLMs y RAG, primero para sus clientes y hoy en sus productos internos.",
     "about.body.3":
       "Mi lengua materna es el español, hablo inglés a nivel B2 y estoy aprendiendo japonés.",
     "stack.title": "Con qué construyo",

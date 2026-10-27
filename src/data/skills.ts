@@ -37,12 +37,7 @@ export const stack: readonly StackGroup[] = [
   },
   {
     label: { en: "Frontend", es: "Frontend" },
-    items: [
-      { name: "React" },
-      { name: "Angular" },
-      { name: "Next.js" },
-      { name: "Astro" },
-    ],
+    items: [{ name: "React" }, { name: "Next.js" }, { name: "Astro" }],
   },
   {
     label: { en: "Cloud & tooling", es: "Nube y herramientas" },

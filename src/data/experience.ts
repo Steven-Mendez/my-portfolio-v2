@@ -47,12 +47,12 @@ export const experience: readonly ExperienceEntry[] = [
     },
     bullets: {
       en: [
-        "Took features from first endpoint to production across client codebases by building Python REST APIs (FastAPI, Django, Flask) and the React/Angular interfaces on top of them.",
+        "Took features from first endpoint to production across client codebases by building Python REST APIs (FastAPI, Django, Flask) and the React interfaces on top of them.",
         "Ran client workloads on AWS (Lambda, ECS, S3, RDS, SQS, CloudWatch) with the infrastructure defined in Docker and Terraform and CI pipelines handling deployment.",
         "Added LLM and RAG features to client products with vector retrieval on pgvector and Qdrant.",
       ],
       es: [
-        "Llevé funcionalidades del primer endpoint a producción en varios codebases de clientes construyendo APIs REST en Python (FastAPI, Django, Flask) y sus interfaces en React/Angular.",
+        "Llevé funcionalidades del primer endpoint a producción en varios codebases de clientes construyendo APIs REST en Python (FastAPI, Django, Flask) y sus interfaces en React.",
         "Diseñé y operé la infraestructura en AWS (Lambda, ECS, S3, RDS, SQS, CloudWatch) de los proyectos de clientes, definida en Docker y Terraform, con despliegues por pipelines de CI.",
         "Añadí funcionalidades LLM y RAG a productos de clientes con recuperación vectorial sobre pgvector y Qdrant.",
       ],
@@ -63,7 +63,6 @@ export const experience: readonly ExperienceEntry[] = [
       "Django",
       "Flask",
       "React",
-      "Angular",
       "AWS",
       "Docker",
       "Terraform",
