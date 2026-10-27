@@ -8,7 +8,9 @@
  * never go missing in one of them.
  *
  * Blocks: `p` (a paragraph; `**bold**` is allowed), `list` (ticked facts),
- * `figure` (a screenshot with its caption; numbered per page in reading
+ * `figure` (a screenshot with its caption), `clip` (a short silent loop
+ * recorded from the app, served from `public/` as WebM and MP4 with a
+ * poster; figures and clips share one numbering per page in reading
  * order) and `sheet` (ruled rows of name → why, the stack as a spec sheet).
  * The first `p` of a chapter is set as its lead.
  */
@@ -17,12 +19,7 @@ import type { Lang } from "@/i18n/ui"
 import type { Localized } from "./localized"
 
 import iaHome from "@/assets/work/interview-agent/home.jpg"
-import iaNew from "@/assets/work/interview-agent/new-interview.jpg"
 import iaSettings from "@/assets/work/interview-agent/settings.jpg"
-import iaOverview from "@/assets/work/interview-agent/overview.jpg"
-import iaImprove from "@/assets/work/interview-agent/improve.jpg"
-import iaTopics from "@/assets/work/interview-agent/topics.jpg"
-import iaTranscript from "@/assets/work/interview-agent/transcript.jpg"
 import pfHero from "@/assets/work/portfolio/hero.jpg"
 import pfExperience from "@/assets/work/portfolio/experience.jpg"
 import pfWork from "@/assets/work/portfolio/work.jpg"
@@ -33,6 +30,15 @@ export type Block =
   | {
       type: "figure"
       image: ImageMetadata
+      alt: Localized<string>
+      caption: Localized<string>
+    }
+  | {
+      type: "clip"
+      /** Public path without extension: `<src>.webm`, `<src>.mp4`, `<src>.jpg`. */
+      src: string
+      width: number
+      height: number
       alt: Localized<string>
       caption: Localized<string>
     }
@@ -119,11 +125,13 @@ export const writeups: readonly Writeup[] = [
             },
           },
           {
-            type: "figure",
-            image: iaNew,
+            type: "clip",
+            src: "/work/interview-agent/new-interview",
+            width: 1512,
+            height: 806,
             alt: {
-              en: "The New interview form: a PDF upload box for the CV and a text area for the job offer, with four steps across the top",
-              es: "El formulario de nueva entrevista: una caja para subir el CV en PDF y un área de texto para la oferta, con cuatro pasos arriba",
+              en: "Screen recording: from the home screen to the New interview form, with the job offer being typed in next to the CV upload box",
+              es: "Grabación de pantalla: de la pantalla de inicio al formulario de nueva entrevista, con la oferta escribiéndose junto a la caja para subir el CV",
             },
             caption: {
               en: "Step one of four: a CV and a job offer. Nothing else is needed to plan the interview.",
@@ -157,51 +165,17 @@ export const writeups: readonly Writeup[] = [
             },
           },
           {
-            type: "figure",
-            image: iaOverview,
+            type: "clip",
+            src: "/work/interview-agent/results",
+            width: 1512,
+            height: 806,
             alt: {
-              en: "The overview tab of an evaluated interview: how it ended, a Limited role coverage badge and the list of requirements the session left out",
-              es: "La pestaña de resumen de una entrevista evaluada: cómo terminó, una etiqueta de cobertura limitada y la lista de requisitos que la sesión dejó fuera",
+              en: "Screen recording of an evaluated interview: the overview with its Limited role coverage note, the Improve your answers cards, the topics tab with one topic opened, and the transcript",
+              es: "Grabación de pantalla de una entrevista evaluada: el resumen con su nota de cobertura limitada, las tarjetas de Mejora tus respuestas, la pestaña de temas con un tema abierto y la transcripción",
             },
             caption: {
-              en: "The overview of a real session I ran against a job offer for an AI engineer. Three essential requirements were never reached, so there is no overall score.",
-              es: "El resumen de una sesión real que hice con una oferta de ingeniero de IA. Tres requisitos esenciales no se tocaron, así que no hay nota global.",
-            },
-          },
-          {
-            type: "figure",
-            image: iaImprove,
-            alt: {
-              en: "Two cards under Improve your answers, each with the question, what I said and a stronger version I could say",
-              es: "Dos tarjetas bajo Mejora tus respuestas, cada una con la pregunta, lo que dije y una versión más fuerte que podría decir",
-            },
-            caption: {
-              en: "“You said” and “You could say”: the rewrite keeps my facts and only changes how I told them.",
-              es: "«Dijiste» y «Podrías decir»: la reescritura conserva mis hechos y solo cambia cómo los conté.",
-            },
-          },
-          {
-            type: "figure",
-            image: iaTopics,
-            alt: {
-              en: "The topics tab with one topic expanded: its verdict, three quotes from the transcript and a Try this next box",
-              es: "La pestaña de temas con un tema abierto: su veredicto, tres citas de la transcripción y una caja de qué intentar después",
-            },
-            caption: {
-              en: "A topic opened: the verdict, the quotes it rests on and one concrete thing to try next time.",
-              es: "Un tema abierto: el veredicto, las citas en que se apoya y una cosa concreta que intentar la próxima vez.",
-            },
-          },
-          {
-            type: "figure",
-            image: iaTranscript,
-            alt: {
-              en: "The transcript tab: the interviewer's questions and my answers in order, each with its time",
-              es: "La pestaña de transcripción: las preguntas del entrevistador y mis respuestas en orden, cada una con su hora",
-            },
-            caption: {
-              en: "The transcript, turn by turn, with the interviewer's follow-ups.",
-              es: "La transcripción, turno a turno, con las repreguntas del entrevistador.",
+              en: "A real session against an AI engineer offer: the overview and the rewrites, a topic with the quotes it rests on, and the transcript. Three essential requirements were never reached, so there is no overall score.",
+              es: "Una sesión real con una oferta de ingeniero de IA: el resumen y las reescrituras, un tema con las citas en que se apoya y la transcripción. Tres requisitos esenciales no se tocaron, así que no hay nota global.",
             },
           },
           {
@@ -251,7 +225,7 @@ export const writeups: readonly Writeup[] = [
         ],
       },
       {
-        heading: { en: "What it's made of", es: "De qué está hecho" },
+        heading: { en: "What it's made of", es: "Con qué lo construí" },
         blocks: [
           {
             type: "p",
@@ -516,7 +490,7 @@ export const writeups: readonly Writeup[] = [
       {
         heading: {
           en: "What it's made of, and why",
-          es: "De qué está hecho, y por qué",
+          es: "Con qué lo construí, y por qué",
         },
         blocks: [
           {
@@ -610,7 +584,8 @@ export function readingMinutes(writeup: Writeup, lang: Lang): number {
     for (const block of chapter.blocks) {
       if (block.type === "p") texts.push(block.text[lang])
       else if (block.type === "list") texts.push(...block.items[lang])
-      else if (block.type === "figure") texts.push(block.caption[lang])
+      else if (block.type === "figure" || block.type === "clip")
+        texts.push(block.caption[lang])
       else for (const row of block.rows) texts.push(row.name, row.why[lang])
     }
   }

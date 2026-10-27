@@ -1,15 +1,14 @@
 ---
 /**
- * A project's write-up: the booklet's inner pages for one track of the
- * Work list. On ink, the same opening as a section (number, kicker, title,
- * rule) with the Work nav name as the kicker, the project's name as the h1,
- * the lead as its intro and the reading time as the note; under the rule, a
- * spec row like the hero's fact sheet: year, role, stack and links. Then,
- * on paper, numbered chapters: on lg the number and heading stick in the
- * first four columns while the chapter's blocks read in the seven beside
- * them. Screenshots are plates: hairline frame, mono caption, numbered in
- * reading order across the page. The last row, back on ink, points to the
- * neighbouring write-up and back to the list.
+ * A project's write-up, laid out like a blog post. On ink, a centred
+ * masthead: kicker (Work, track number, reading time), the project's name
+ * as the h1, the lead, and under a hairline the spec row (year, role,
+ * stack, links). Then, on paper, one centred 42rem reading column: each
+ * chapter's number and heading sit in the column above its blocks.
+ * Screenshots are plates that step out to 60rem; on lg a run of plates
+ * sits in pairs. Plates are numbered in reading order across the page.
+ * The last row, back on ink, points to the neighbouring write-up and back
+ * to the list.
  *
  * Motion hooks are the shared ones: data-reveal on blocks, `items` on
  * lists, `rows` + data-build on the spec sheets, data-draw on the rule.
@@ -17,7 +16,6 @@
 import { Picture } from "astro:assets"
 import BracketLink from "@/components/hero/BracketLink.astro"
 import Diamond from "@/components/hero/Diamond.astro"
-import SectionHeading from "@/components/sections/SectionHeading.astro"
 import StackLine from "@/components/sections/StackLine.astro"
 import { projects } from "@/data/projects"
 import {
@@ -57,7 +55,8 @@ const updated = fill(t("writeup.updated"), {
 const figures = new Map<Block, number>()
 for (const chapter of writeup.chapters)
   for (const block of chapter.blocks)
-    if (block.type === "figure") figures.set(block, figures.size + 1)
+    if (block.type === "figure" || block.type === "clip")
+      figures.set(block, figures.size + 1)
 
 // Neighbours in the order of the Work list.
 const order = projects
@@ -77,21 +76,27 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
 ---
 
 <article class="writeup" aria-labelledby="writeup-title">
-  <header class="writeup-open px-gutter pt-40 pb-section sm:px-6 lg:px-12 lg:pt-48 lg:pb-section-lg">
+  <header class="writeup-open px-gutter pt-36 pb-section sm:px-6 lg:px-12 lg:pt-40">
     <div class="dots-layer" aria-hidden="true"></div>
-    <div class="shell grid gap-y-row-lg lg:grid-cols-12 lg:gap-x-6">
-      <SectionHeading
-        as="h1"
-        titleId="writeup-title"
-        title={project.title}
-        label={t("nav.work")}
-        note={note}
-        intro={writeup.lead[lang]}
-        index={index}
-      />
+    <div class="shell writeup-masthead">
+      {/* An article's masthead: what it is and how long, the title, the lead. */}
+      <p class="meta writeup-kicker" data-reveal>
+        <Diamond size={9} />
+        <span>
+          {t("nav.work")} {index}
+        </span>
+        <span aria-hidden="true">·</span>
+        <span>{note}</span>
+      </p>
+      <h1 id="writeup-title" class="writeup-title type-display" data-reveal>
+        {project.title}
+      </h1>
+      <p class="writeup-lead type-lead" data-reveal>
+        {writeup.lead[lang]}
+      </p>
 
       {/* The spec row: the facts of the project, in the hero's cells. */}
-      <dl class="writeup-spec lg:col-span-12" data-reveal="items">
+      <dl class="writeup-spec" data-reveal="items">
         <div class="spec-cell">
           <dt class="meta">{t("writeup.year")}</dt>
           <dd class="meta-name tabular-nums">{project.year}</dd>
@@ -138,105 +143,148 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
   </header>
 
   <div class="writeup-body tone-paper px-gutter py-section sm:px-6 lg:px-12 lg:py-section-lg">
-    <div class="shell">
-      {writeup.chapters.map((chapter, c) => (
-        <section
-          class="chapter grid gap-y-row lg:grid-cols-12 lg:gap-x-6"
-          aria-labelledby={`chapter-${c + 1}`}
-        >
-          <header class="chapter-head lg:col-span-4">
-            <p
-              class="meta flex items-center gap-2.5 tabular-nums"
-              aria-hidden="true"
-              data-reveal
-            >
-              <Diamond size={9} />
-              {two(c + 1)}
-            </p>
-            <h2
-              id={`chapter-${c + 1}`}
-              class="chapter-title type-display-sm"
-              data-reveal
-            >
-              {chapter.heading[lang]}
-            </h2>
-          </header>
+    <div class="shell writeup-layout">
+      {/* On lg, the chapters as a sticky index beside the reading column. */}
+      <nav class="writeup-toc" aria-label={t("writeup.toc")}>
+        <p class="meta writeup-toc-label">{t("writeup.toc")}</p>
+        <ol class="writeup-toc-list">
+          {writeup.chapters.map((chapter, c) => (
+            <li>
+              <a
+                href={`#chapter-${c + 1}`}
+                class="writeup-toc-link"
+                data-toc-link
+              >
+                {chapter.heading[lang]}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
 
-          <div class="chapter-body lg:col-span-7 lg:col-start-6">
-            {chapter.blocks.map((block, b) => {
-              if (block.type === "p")
-                return (
-                  <p
-                    class:list={[
-                      "chapter-p",
-                      b === 0 ? "chapter-lead type-lead" : "type-body",
-                    ]}
-                    data-reveal
-                  >
-                    {emphasis(block.text[lang]).map((part) =>
-                      part.strong ? <strong>{part.text}</strong> : part.text
-                    )}
-                  </p>
-                )
-              // Each item's text sits in one span, so the tick's grid sees a single cell.
-              if (block.type === "list")
-                return (
-                  <ul class="tick-list chapter-list" data-reveal="items">
-                    {block.items[lang].map((item) => (
-                      <li>
-                        <span>
-                          {emphasis(item).map((part) =>
-                            part.strong ? (
-                              <strong>{part.text}</strong>
-                            ) : (
-                              part.text
-                            )
-                          )}
+      <div class="writeup-main">
+        {writeup.chapters.map((chapter, c) => (
+          <section class="chapter" aria-labelledby={`chapter-${c + 1}`}>
+            <header class="chapter-head">
+              <p
+                class="meta flex items-center gap-2.5 tabular-nums"
+                aria-hidden="true"
+                data-reveal
+              >
+                <Diamond size={9} />
+                {two(c + 1)}
+              </p>
+              <h2
+                id={`chapter-${c + 1}`}
+                class="chapter-title type-display-sm"
+                data-reveal
+              >
+                {chapter.heading[lang]}
+              </h2>
+            </header>
+
+            <div class="chapter-body">
+              {chapter.blocks.map((block, b) => {
+                if (block.type === "p")
+                  return (
+                    <p
+                      class:list={[
+                        "chapter-p",
+                        b === 0 ? "chapter-lead type-lead" : "type-body",
+                      ]}
+                      data-reveal
+                    >
+                      {emphasis(block.text[lang]).map((part) =>
+                        part.strong ? <strong>{part.text}</strong> : part.text
+                      )}
+                    </p>
+                  )
+                // Each item's text sits in one span, so the tick's grid sees a single cell.
+                if (block.type === "list")
+                  return (
+                    <ul class="tick-list chapter-list" data-reveal="items">
+                      {block.items[lang].map((item) => (
+                        <li>
+                          <span>
+                            {emphasis(item).map((part) =>
+                              part.strong ? (
+                                <strong>{part.text}</strong>
+                              ) : (
+                                part.text
+                              )
+                            )}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                if (block.type === "figure")
+                  return (
+                    <figure class="plate" data-reveal>
+                      <Picture
+                        src={block.image}
+                        alt={block.alt[lang]}
+                        formats={["avif", "webp"]}
+                        fallbackFormat="jpg"
+                        widths={[720, 1080, 1440]}
+                        sizes="(min-width: 64rem) 42rem, calc(100vw - 2rem)"
+                        loading="lazy"
+                        decoding="async"
+                        class="plate-img"
+                      />
+                      <figcaption class="plate-caption">
+                        <span class="meta tabular-nums">
+                          {t("writeup.figure")} {two(figures.get(block) ?? 0)}
                         </span>
-                      </li>
-                    ))}
-                  </ul>
-                )
-              if (block.type === "figure")
+                        <span class="meta-name">{block.caption[lang]}</span>
+                      </figcaption>
+                    </figure>
+                  )
+                if (block.type === "clip")
+                  return (
+                    <figure class="plate" data-reveal>
+                      <video
+                        class="plate-img plate-clip"
+                        width={block.width}
+                        height={block.height}
+                        poster={`${block.src}.jpg`}
+                        aria-label={block.alt[lang]}
+                        muted
+                        loop
+                        playsinline
+                        preload="none"
+                        data-clip
+                      >
+                        <source src={`${block.src}.webm`} type="video/webm" />
+                        <source src={`${block.src}.mp4`} type="video/mp4" />
+                      </video>
+                      <figcaption class="plate-caption">
+                        <span class="meta tabular-nums">
+                          {t("writeup.figure")} {two(figures.get(block) ?? 0)}
+                        </span>
+                        <span class="meta-name">{block.caption[lang]}</span>
+                      </figcaption>
+                    </figure>
+                  )
                 return (
-                  <figure class="plate" data-reveal>
-                    <Picture
-                      src={block.image}
-                      alt={block.alt[lang]}
-                      formats={["avif", "webp"]}
-                      fallbackFormat="jpg"
-                      widths={[720, 1080, 1440]}
-                      sizes="(min-width: 64rem) min(56vw, 56rem), calc(100vw - 2rem)"
-                      loading="lazy"
-                      decoding="async"
-                      class="plate-img"
-                    />
-                    <figcaption class="plate-caption">
-                      <span class="meta tabular-nums">
-                        {t("writeup.figure")} {two(figures.get(block) ?? 0)}
-                      </span>
-                      <span class="meta-name">{block.caption[lang]}</span>
-                    </figcaption>
-                  </figure>
+                  <dl class="sheet rule-rows" data-reveal="rows">
+                    {block.rows.map((row) => (
+                      <div class="sheet-row">
+                        <dt class="meta-name sheet-name" data-build>
+                          {row.name}
+                        </dt>
+                        <dd class="type-body sheet-why" data-build>
+                          {row.why[lang]}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
                 )
-              return (
-                <dl class="sheet rule-rows" data-reveal="rows">
-                  {block.rows.map((row) => (
-                    <div class="sheet-row">
-                      <dt class="meta-name sheet-name" data-build>
-                        {row.name}
-                      </dt>
-                      <dd class="type-body sheet-why" data-build>
-                        {row.why[lang]}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              )
-            })}
-          </div>
-        </section>
-      ))}
+              })}
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   </div>
 
@@ -272,6 +320,57 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
   </nav>
 </article>
 
+<script>
+  // The index marks the chapter being read: the last one whose top has
+  // passed the upper third of the screen.
+  function initToc() {
+    const links = [
+      ...document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"),
+    ]
+    if (!links.length) return
+    const chapters = links
+      .map((a) => document.querySelector(a.hash)?.closest("section"))
+      .filter((el): el is HTMLElement => !!el)
+    const update = () => {
+      const line = innerHeight / 3
+      let current = 0
+      chapters.forEach((ch, i) => {
+        if (ch.getBoundingClientRect().top <= line) current = i
+      })
+      links.forEach((a, i) => a.toggleAttribute("aria-current", i === current))
+      links[current]?.setAttribute("aria-current", "true")
+    }
+    update()
+    addEventListener("scroll", update, { passive: true })
+  }
+
+  // Clips loop like GIFs, but only load and play while on screen. With
+  // reduced motion they stay on their poster, with controls to play them.
+  function initClips() {
+    const clips = [
+      ...document.querySelectorAll<HTMLVideoElement>("[data-clip]"),
+    ]
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      for (const v of clips) v.controls = true
+      return
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const { target, isIntersecting } of entries) {
+          const v = target as HTMLVideoElement
+          if (isIntersecting) v.play().catch(() => {})
+          else v.pause()
+        }
+      },
+      { threshold: 0.25 }
+    )
+    for (const v of clips) io.observe(v)
+  }
+
+  initToc()
+  initClips()
+</script>
+
 <style>
   .writeup-open,
   .writeup-nav {
@@ -280,11 +379,47 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     background-color: var(--color-ink);
   }
 
+  /* ── Masthead: centred, like an article's opening ── */
+  .writeup-masthead {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .writeup-kicker {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    color: var(--title-color);
+  }
+
+  .writeup-title {
+    max-width: 52rem;
+    margin-top: var(--spacing-head-sm);
+    color: var(--title-color);
+    text-wrap: balance;
+  }
+
+  .writeup-lead {
+    max-width: 38rem;
+    margin-top: var(--spacing-inner);
+    color: var(--text-muted);
+    text-wrap: balance;
+  }
+
   /* ── Spec row ── */
   .writeup-spec {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--spacing-row) 1.5rem;
+    width: 100%;
+    max-width: 60rem;
+    margin-top: var(--spacing-row-lg);
+    padding-top: var(--spacing-inner);
+    border-top: 1px solid var(--rule);
+    text-align: left;
   }
 
   .spec-cell {
@@ -311,21 +446,22 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     }
   }
 
-  /* ── Chapters ── */
-  .chapter {
-    padding-block: var(--spacing-row);
-    border-top: 1px solid var(--rule);
-  }
-
-  .chapter:first-child {
-    padding-top: 0;
-    border-top: 0;
+  /*
+   * ── Chapters: one reading column ──
+   * Text, headings, lists and sheets share a centred 42rem column; plates
+   * step out to 60rem. On lg a run of plates sits in pairs across that
+   * wider measure instead of one under another.
+   */
+  .chapter + .chapter {
+    margin-top: var(--spacing-row-lg);
   }
 
   .chapter-head {
     display: grid;
-    gap: var(--spacing-inner);
-    align-content: start;
+    gap: 0.75rem;
+    max-width: 42rem;
+    margin-inline: auto;
+    margin-bottom: var(--spacing-inner);
   }
 
   .chapter-title {
@@ -334,11 +470,19 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
 
   .chapter-body {
     display: grid;
-    gap: var(--spacing-inner);
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--spacing-inner);
   }
 
-  .chapter-p {
-    max-width: 40rem;
+  .chapter-body > * {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: 42rem;
+  }
+
+  .chapter-body > .plate {
+    max-width: none;
   }
 
   .chapter-lead {
@@ -350,10 +494,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     color: var(--title-color);
   }
 
-  .chapter-list {
-    max-width: 40rem;
-  }
-
   .chapter-list strong {
     font-weight: 500;
     color: var(--title-color);
@@ -363,7 +503,8 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
   .plate {
     display: grid;
     gap: 0.75rem;
-    margin-block: 0.75rem;
+    align-content: start;
+    margin-block: 1rem;
   }
 
   .plate :global(.plate-img) {
@@ -402,7 +543,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
 
   .sheet-why {
     color: var(--text-muted);
-    max-width: 40rem;
   }
 
   @media (width >= 40rem) {
@@ -417,15 +557,84 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
   }
 
   @media (width >= 64rem) {
-    .chapter {
-      padding-block: var(--spacing-row-lg);
+    .chapter + .chapter {
+      margin-top: var(--spacing-section);
     }
 
-    .chapter-head {
+    .chapter-body {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1.5rem;
+    }
+
+    .chapter-body > .plate:has(+ .plate),
+    .chapter-body > .plate + .plate {
+      grid-column: auto;
+    }
+  }
+
+  /*
+   * ── Index + reading column ──
+   * Below lg the index is hidden and the column fills the shell. On lg the
+   * shell is three tracks: the sticky index, the 42rem column, and an
+   * empty track as wide as the first, so the column stays centred.
+   */
+  .writeup-toc {
+    display: none;
+  }
+
+  @media (width >= 64rem) {
+    .writeup-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 42rem) minmax(0, 1fr);
+      column-gap: 3rem;
+    }
+
+    .writeup-main {
+      grid-column: 2;
+    }
+
+    .writeup-toc {
+      display: block;
+      grid-column: 1;
+      grid-row: 1;
+      align-self: start;
       position: sticky;
       top: calc(var(--header-h, 3.75rem) + 2.5rem);
-      align-self: start;
+      max-width: 15rem;
     }
+  }
+
+  .writeup-toc-label {
+    color: var(--text-muted);
+  }
+
+  .writeup-toc-list {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 1rem;
+  }
+
+  .writeup-toc-link {
+    display: block;
+    padding-block: 0.3rem;
+    font-size: 0.875rem;
+    line-height: 1.35;
+    color: var(--text-muted);
+    transition: color var(--duration-micro, 0.15s) ease;
+  }
+
+  .writeup-toc-link:hover,
+  .writeup-toc-link:focus-visible,
+  .writeup-toc-link[aria-current="true"] {
+    color: var(--title-color);
+  }
+
+  .chapter {
+    scroll-margin-top: calc(var(--header-h, 3.75rem) + 2rem);
+  }
+
+  .plate-clip {
+    background: var(--color-ink);
   }
 
   /* ── Closing nav ── */
