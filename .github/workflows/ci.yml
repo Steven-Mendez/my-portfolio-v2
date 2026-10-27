@@ -33,6 +33,9 @@ jobs:
       - name: Format
         run: pnpm format:check
 
+      - name: Images
+        run: pnpm check:images
+
       - name: Typecheck
         run: pnpm check
 
