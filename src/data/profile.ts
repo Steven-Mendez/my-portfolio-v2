@@ -10,6 +10,8 @@ export interface Resume {
   href: string
   /** Language of the PDF itself, which may differ from the page's. */
   hreflang: Lang
+  /** Name the browser saves the file as (`download` attribute). */
+  fileName: string
   /** "YYYY-MM" */
   updated: string
 }
@@ -37,12 +39,20 @@ export interface Profile {
   workMode: Localized<string>
 }
 
-// One English PDF for now (PENDIENTE DE STEVEN: a Spanish CV). The ES entry
-// points at it too, and the UI strings say it is in English.
-const resumeEn: Resume = {
-  href: "/steven-mendez-cv-en.pdf",
-  hreflang: "en",
-  updated: "2026-10",
+// Both PDFs are built from `resume/cv-{en,es}.html` by `pnpm cv:build`.
+const resume: Localized<Resume> = {
+  en: {
+    href: "/steven-mendez-cv-en.pdf",
+    hreflang: "en",
+    fileName: "Steven-Mendez-CV-EN.pdf",
+    updated: "2026-10",
+  },
+  es: {
+    href: "/steven-mendez-cv-es.pdf",
+    hreflang: "es",
+    fileName: "Steven-Mendez-CV-ES.pdf",
+    updated: "2026-10",
+  },
 }
 
 export const profile: Profile = {
@@ -61,6 +71,6 @@ export const profile: Profile = {
   timezone: "UTC−6",
   timeZoneId: "America/Managua",
   codingSince: 2015,
-  resume: { en: resumeEn, es: resumeEn },
+  resume,
   workMode: { en: "Remote", es: "Remoto" },
 }

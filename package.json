@@ -11,6 +11,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "cv:build": "sh resume/build.sh",
     "astro": "astro",
     "check": "astro check",
     "lint": "eslint .",

@@ -121,8 +121,7 @@ export const ui = {
     "nav.skip": "Saltar al contenido",
     "nav.index": "Índice",
     "nav.resume": "CV",
-    // The CV is only in English for now (PENDIENTE DE STEVEN).
-    "nav.resume.file": "(PDF, en inglés)",
+    "nav.resume.file": "(PDF)",
     "hero.role": "Ingeniero Full Stack",
     "hero.scroll": "Bajar",
     "hero.localTime": "Hora local",
@@ -178,7 +177,7 @@ export const ui = {
     "contact.title": "Cómo contactarme",
     "contact.email": "Correo",
     "contact.cv": "CV",
-    "contact.cv.value": "PDF en inglés",
+    "contact.cv.value": "PDF",
     "contact.cv.updated": "Actualizado {date}",
     "contact.copy": "Copiar",
     "contact.copied": "Copiado",

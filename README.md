@@ -18,15 +18,16 @@ Reconstrucción desde cero sobre **Astro 7 + Tailwind CSS 4**, gestionada con
 
 ## Scripts
 
-| Comando           | Acción                                                      |
-| ----------------- | ----------------------------------------------------------- |
-| `pnpm dev`        | Servidor de desarrollo en `localhost:4321`                  |
-| `pnpm build`      | Build estático en `./dist/`                                 |
-| `pnpm preview`    | Sirve el build localmente                                   |
-| `pnpm check`      | Diagnóstico de tipos en `.astro` y `.ts`                    |
-| `pnpm lint`       | ESLint (`lint:fix` para autocorregir)                       |
-| `pnpm format`     | Prettier en todo el proyecto (`format:check` solo verifica) |
-| `pnpm lighthouse` | Build + Lighthouse CI (3 corridas, móvil) contra `./dist/`  |
+| Comando           | Acción                                                                           |
+| ----------------- | -------------------------------------------------------------------------------- |
+| `pnpm dev`        | Servidor de desarrollo en `localhost:4321`                                       |
+| `pnpm build`      | Build estático en `./dist/`                                                      |
+| `pnpm preview`    | Sirve el build localmente                                                        |
+| `pnpm check`      | Diagnóstico de tipos en `.astro` y `.ts`                                         |
+| `pnpm lint`       | ESLint (`lint:fix` para autocorregir)                                            |
+| `pnpm format`     | Prettier en todo el proyecto (`format:check` solo verifica)                      |
+| `pnpm lighthouse` | Build + Lighthouse CI (3 corridas, móvil) contra `./dist/`                       |
+| `pnpm cv:build`   | Genera `public/steven-mendez-cv-{en,es}.pdf` desde `resume/` con Chrome headless |
 
 ## Hooks de git
 

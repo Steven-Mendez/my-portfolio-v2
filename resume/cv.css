@@ -1,0 +1,146 @@
+/*
+ * Shared styles for resume/cv-en.html and resume/cv-es.html.
+ * Metrics copied from the original PDF: A4, 0.5in margins, Arial 10pt on a
+ * 12pt line, 9pt dates and contact lines. Everything must fit ONE page;
+ * `pnpm cv:build` fails if a PDF spills onto a second page.
+ *
+ * ATS: one column, real text, standard headings, no tables. The only
+ * side-by-side element is the date at the right of an entry title; it is a
+ * flex row, so extracted text keeps "title ... date" on one line.
+ */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 36pt;
+  font:
+    10pt/12pt Arial,
+    Helvetica,
+    sans-serif;
+  color: #000;
+  background: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+p,
+ul,
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+/* Header */
+.name {
+  font-size: 21.5pt;
+  line-height: 25pt;
+  font-weight: bold;
+}
+
+.headline {
+  margin-top: 2pt;
+}
+
+.contact {
+  margin-top: 6pt;
+  font-size: 9pt;
+  line-height: 14pt;
+}
+
+.contact .sep {
+  margin: 0 3pt;
+}
+
+.summary {
+  margin-top: 7pt;
+}
+
+/* Sections */
+h2 {
+  margin: 7pt 0 4pt;
+  padding-bottom: 2pt;
+  border-bottom: 0.75pt solid #999;
+  font-size: 10.25pt;
+  line-height: 12pt;
+  text-transform: uppercase;
+}
+
+/* Entries */
+.entry + .entry {
+  margin-top: 6pt;
+}
+
+/* A client engagement that belongs to the entry above it. */
+.entry.nested {
+  margin-left: 14pt;
+}
+
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12pt;
+}
+
+.entry-head .left {
+  flex: 1 1 auto;
+}
+
+.entry-head .right {
+  flex: 0 0 auto;
+  font-size: 9pt;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.entry-title {
+  font-weight: bold;
+}
+
+.entry-role {
+  font-weight: normal;
+}
+
+.entry-note {
+  font-size: 9pt;
+  color: #555;
+}
+
+ul {
+  padding-left: 11pt;
+}
+
+ul ::marker {
+  font-size: 9pt;
+}
+
+/*
+ * Hyphenated terms that must not break at the hyphen: text extractors (and
+ * ATS parsers) drop a hyphen at the end of a line, so "computer-use" split
+ * there comes out as "computeruse". build.sh fails on any such line.
+ */
+.nowrap {
+  white-space: nowrap;
+}
+
+/* Skills / additional information rows */
+.rows p b {
+  font-weight: bold;
+}

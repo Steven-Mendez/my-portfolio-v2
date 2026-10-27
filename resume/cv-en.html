@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Steven Mendez – Resume</title>
+    <meta name="author" content="Steven Mendez" />
+    <link rel="stylesheet" href="cv.css" />
+  </head>
+  <body>
+    <header>
+      <h1 class="name">Steven Mendez</h1>
+      <p class="headline">
+        Full Stack + AI Engineer | Python, FastAPI, React/TypeScript, AWS | LLM
+        &amp; RAG in production
+      </p>
+      <p class="contact">
+        <a href="mailto:stevenampaiz@gmail.com">stevenampaiz@gmail.com</a
+        ><span class="sep">|</span
+        ><a href="https://linkedin.com/in/steven-mendez-dev"
+          >linkedin.com/in/steven-mendez-dev</a
+        ><span class="sep">|</span
+        ><a href="https://github.com/Steven-Mendez">github.com/Steven-Mendez</a
+        ><span class="sep">|</span
+        ><a href="https://stevenampaiz.com">stevenampaiz.com</a>
+      </p>
+    </header>
+
+    <section>
+      <h2>Professional Summary</h2>
+      <p>
+        Full stack and AI engineer with 3+ years building production web
+        applications, backend APIs, and LLM/RAG features, remotely for US
+        companies since 2025. Python/FastAPI and React/TypeScript on AWS;
+        PostgreSQL and SQL Server performance, marketplace data pipelines, and
+        LLM evaluation. Independent contractor on US hours from Managua,
+        Nicaragua (UTC-6); fluent English; no US visa sponsorship required.
+      </p>
+    </section>
+
+    <section>
+      <h2>Work Experience</h2>
+
+      <article class="entry">
+        <div class="entry-head">
+          <div class="left">
+            <p class="entry-title">
+              Full Stack Engineer
+              <span class="entry-role">| WERN (Contract)</span>
+            </p>
+          </div>
+          <div class="right">Jan 2025 - Present</div>
+        </div>
+        <p class="entry-note">
+          Remote · Development agency; client projects end to end, among them
+          Dupely (below); now on WERN's internal products.
+        </p>
+        <ul>
+          <li>
+            Took features from first endpoint to production across client
+            codebases by building Python REST APIs (FastAPI, Django, Flask) and
+            the React/Angular interfaces on top of them.
+          </li>
+          <li>
+            Ran client workloads on AWS (Lambda, ECS, S3, RDS, SQS, CloudWatch)
+            with the infrastructure defined in Docker and Terraform and CI
+            pipelines handling deployment.
+          </li>
+          <li>
+            Added LLM and RAG features to client products with vector retrieval
+            on pgvector and Qdrant.
+          </li>
+        </ul>
+      </article>
+
+      <article class="entry nested">
+        <div class="entry-head">
+          <div class="left">
+            <p class="entry-title">
+              Back End Developer
+              <span class="entry-role">| Dupely (WERN client)</span>
+            </p>
+          </div>
+          <div class="right">Dec 2025 - Apr 2026</div>
+        </div>
+        <p class="entry-note">
+          Remote · Shopping-assistant startup (browser extension and mobile app)
+          that flags price inflation and better-value alternatives.
+        </p>
+        <ul>
+          <li>
+            Built the backend the beta launched on: FastAPI services serving
+            product and pricing data in real time.
+          </li>
+          <li>
+            Built the product, pricing-history, and attribute ingestion
+            pipelines for Amazon, Walmart, and eBay: official APIs where
+            available, in-house scraping and providers such as Bright Data and
+            Oxylabs elsewhere.
+          </li>
+          <li>
+            Contributed to the PostgreSQL schema, migrations, and product-lookup
+            query performance; proposed a Redis cache-aside design for product
+            data.
+          </li>
+        </ul>
+      </article>
+
+      <article class="entry">
+        <div class="entry-head">
+          <div class="left">
+            <p class="entry-title">
+              Full Stack &amp; AI Engineer
+              <span class="entry-role"
+                >| US EdTech Company (Independent Consultant, NDA)</span
+              >
+            </p>
+          </div>
+          <div class="right">Mar 2025 - Dec 2025</div>
+        </div>
+        <p class="entry-note">
+          Remote · Direct contract held alongside WERN with their authorization.
+        </p>
+        <ul>
+          <li>
+            Built an LLM benchmark and evaluation harness that runs models
+            through 20-50 <span class="nowrap">computer-use</span> tasks and
+            scores their output.
+          </li>
+          <li>
+            Delivered Generative AI features and LMS integrations on LLMs and
+            RAG, retrieving learning content with pgvector, from the user
+            interface to the services behind it.
+          </li>
+          <li>
+            Shipped full-stack features into the client's production codebase on
+            two-week sprints inside their engineering team.
+          </li>
+        </ul>
+      </article>
+
+      <article class="entry">
+        <div class="entry-head">
+          <div class="left">
+            <p class="entry-title">
+              Full Stack Developer &amp; Systems Analyst
+              <span class="entry-role"
+                >| Universidad Nacional de Ingeniería (Full-time)</span
+              >
+            </p>
+          </div>
+          <div class="right">Feb 2023 - Dec 2024<br />Managua, Nicaragua</div>
+        </div>
+        <p class="entry-note">
+          On site · Responsible for the university's budget and fixed-asset
+          systems; also built its warehouse and helpdesk systems.
+        </p>
+        <ul>
+          <li>
+            Maintained and extended two legacy ASP.NET / SQL Server systems,
+            budget (Web Forms) and fixed assets (MVC); cut the budget system's
+            heaviest report from 6 minutes to 7-15 seconds by rewriting and
+            indexing queries.
+          </li>
+          <li>
+            Built the warehouse and helpdesk systems end to end: .NET backend,
+            React front end, integrations.
+          </li>
+          <li>
+            Restored CI/CD after the on-premise servers were renewed, rotating
+            credentials and repointing deployments.
+          </li>
+          <li>Mentored 8 interns on backend fundamentals and Git.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>Featured Projects</h2>
+      <article class="entry">
+        <p class="entry-title">
+          Interview Agent
+          <span class="entry-role"
+            >|
+            <a href="https://github.com/Steven-Mendez/interview-agent"
+              >github.com/Steven-Mendez/interview-agent</a
+            >
+            |
+            <a href="https://interview-agent-lime-seven.vercel.app"
+              >interview-agent-lime-seven.vercel.app</a
+            ></span
+          >
+        </p>
+        <ul>
+          <li>
+            Voice interview practice app: plans the interview from a CV and job
+            description, runs it live, and grades every answer with evidence
+            from the transcript.
+          </li>
+          <li>
+            Three LangGraph agents (planner, LiveKit interviewer, evaluator)
+            over a FastAPI backend with PostgreSQL persistence for plans,
+            transcripts, and evaluations; React front end; OpenAI models.
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="rows">
+      <h2>Technical Skills</h2>
+      <p><b>Languages:</b> Python, TypeScript/JavaScript, C#, SQL</p>
+      <p>
+        <b>Backend &amp; Data:</b> FastAPI, Django, Flask, .NET, PostgreSQL, SQL
+        Server, Redis, REST APIs, ETL pipelines
+      </p>
+      <p><b>Frontend:</b> React, Angular, Next.js, Astro</p>
+      <p>
+        <b>Cloud &amp; Tools:</b> AWS (Lambda, ECS, S3, RDS, SQS, CloudWatch),
+        Docker, Terraform, CI/CD, Git
+      </p>
+      <p>
+        <b>AI:</b> LLM/RAG, LLM evaluation, LangChain, LangGraph, OpenAI,
+        pgvector, Qdrant, LiveKit, Claude Code, Codex
+      </p>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <article class="entry">
+        <div class="entry-head">
+          <div class="left">
+            <p class="entry-title">Universidad Nacional de Ingeniería</p>
+            <p>
+              B.Eng. in Computer Engineering, five-year program (equivalent to a
+              U.S. B.S.)
+            </p>
+          </div>
+          <div class="right">Mar 2019 - Dec 2023</div>
+        </div>
+      </article>
+    </section>
+  </body>
+</html>

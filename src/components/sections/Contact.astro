@@ -48,7 +48,7 @@ const rows: Row[] = [
     text: t("contact.cv.value"),
     href: resume.href,
     kind: "download",
-    attrs: { download: "Steven-Mendez-CV.pdf", hreflang: resume.hreflang },
+    attrs: { download: resume.fileName, hreflang: resume.hreflang },
     aside: fill(t("contact.cv.updated"), {
       date: formatMonth(resume.updated, lang),
     }),
