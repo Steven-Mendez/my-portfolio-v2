@@ -10,9 +10,9 @@ export type Lang = keyof typeof languages
 
 export const ui = {
   en: {
-    "meta.title": "Steven Mendez — Full Stack Engineer",
+    "meta.title": "Steven Mendez — Full Stack Software Engineer, Nicaragua",
     "meta.description":
-      "Steven Mendez is a full stack engineer in Managua, Nicaragua, building backends, the web apps on top and the data and LLM features in between.",
+      "Steven Mendez, full stack software engineer in Managua, Nicaragua: Python and FastAPI backends, React front ends, AWS, and LLM and RAG features in production.",
     "nav.language": "Language",
     "nav.sections": "Sections",
     // Section titles (`*.title`) must not repeat the nav label: the kicker
@@ -105,9 +105,9 @@ export const ui = {
     "footer.soundtrack.gloss": "you deserve what you dream",
   },
   es: {
-    "meta.title": "Steven Mendez — Ingeniero Full Stack",
+    "meta.title": "Steven Mendez — Ingeniero de Software Full Stack, Nicaragua",
     "meta.description":
-      "Steven Mendez es ingeniero full stack en Managua, Nicaragua: construye backends, las apps web encima y las funcionalidades de datos y LLMs entre medio.",
+      "Steven Mendez, ingeniero de software full stack en Managua, Nicaragua: backends en Python y FastAPI, front ends en React, AWS y funcionalidades con LLMs y RAG en producción.",
     "nav.language": "Idioma",
     "nav.sections": "Secciones",
     "nav.home": "Inicio",

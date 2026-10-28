@@ -2,6 +2,7 @@
 import { defineConfig, fontProviders } from "astro/config"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
+import { profile } from "./src/data/profile.ts"
 
 /** Locales served by the site. `en` lives at `/`, `es` at `/es/`. */
 const defaultLocale = "en"
@@ -17,12 +18,21 @@ export default defineConfig({
     locales,
     routing: { prefixDefaultLocale: false },
   },
+  // Every page URL ends in "/"; Vercel (`trailingSlash` in vercel.json)
+  // redirects the bare form so each page has one canonical address.
+  trailingSlash: "always",
   integrations: [
     sitemap({
       // Emits <xhtml:link rel="alternate" hreflang> pairs for / and /es/.
       i18n: {
         defaultLocale,
         locales: { en: "en", es: "es" },
+      },
+      // <lastmod> from the content's own date (the CV's "YYYY-MM"), not the
+      // build's, so Google isn't told every deploy changed every page.
+      serialize(item) {
+        item.lastmod = `${profile.resume.en.updated}-01`
+        return item
       },
     }),
   ],

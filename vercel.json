@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": true,
+  "cleanUrls": true,
   "redirects": [
     {
       "source": "/projects/:slug",
@@ -8,6 +10,11 @@
     },
     {
       "source": "/resume",
+      "destination": "/steven-mendez-cv-en.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/resume.pdf",
       "destination": "/steven-mendez-cv-en.pdf",
       "permanent": true
     }
@@ -24,8 +31,14 @@
           "key": "Strict-Transport-Security",
           "value": "max-age=63072000; includeSubDomains; preload"
         },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"

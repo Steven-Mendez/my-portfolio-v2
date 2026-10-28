@@ -34,7 +34,11 @@ function person(site: URL, lang: Lang): JsonLd {
       addressLocality: profile.city,
       addressCountry: profile.countryCode,
     },
-    sameAs: [profile.socials.github, profile.socials.linkedin],
+    sameAs: [
+      profile.socials.github,
+      profile.socials.linkedin,
+      profile.socials.credly,
+    ],
   }
 }
 
@@ -85,6 +89,7 @@ export function writeupJsonLd(
         mainEntityOfPage: pageUrl.href,
         image: new URL(`/og/${writeup.slug}-${lang}.jpg`, site).href,
         inLanguage: lang,
+        datePublished: writeup.published,
         // `updated` is "YYYY-MM"; schema.org wants a full ISO date.
         dateModified: `${writeup.updated}-01`,
         author: { "@id": ids(site).person },

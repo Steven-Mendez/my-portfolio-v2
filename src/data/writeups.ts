@@ -61,6 +61,8 @@ export interface Writeup {
   description: Localized<string>
   /** What Steven did on it, for the spec row. */
   role: Localized<string>
+  /** ISO date ("YYYY-MM-DD") the page first went live; `datePublished` in its JSON-LD. */
+  published: string
   /** "YYYY-MM" of the last revision of the text. */
   updated: string
   chapters: readonly Chapter[]
@@ -81,6 +83,7 @@ export const writeups: readonly Writeup[] = [
       en: "Solo project, end to end",
       es: "Proyecto personal, de punta a punta",
     },
+    published: "2026-10-27",
     updated: "2026-10",
     chapters: [
       {
@@ -384,6 +387,7 @@ export const writeups: readonly Writeup[] = [
       es: "La inspiración visual que este portfolio toma de Bocanada de Gustavo Cerati, y por qué está hecho con Astro, Tailwind CSS y GSAP.",
     },
     role: { en: "Design and code", es: "Diseño y código" },
+    published: "2026-10-27",
     updated: "2026-10",
     chapters: [
       {

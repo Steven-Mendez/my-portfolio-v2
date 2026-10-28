@@ -22,7 +22,7 @@ export interface Profile {
   lastName: string
   /** Public contact address (from `../v2/lib/data.ts` `contactEmail`). */
   email: string
-  socials: { github: string; linkedin: string }
+  socials: { github: string; linkedin: string; credly: string }
   location: string
   /** Short form for tight spots (hero corner): "Managua (NI)". */
   city: string
@@ -63,6 +63,7 @@ export const profile: Profile = {
   socials: {
     github: "https://github.com/Steven-Mendez",
     linkedin: "https://linkedin.com/in/steven-mendez-dev",
+    credly: "https://www.credly.com/users/steven-alexander-mendez-paiz",
   },
   location: "Managua, Nicaragua",
   city: "Managua",
