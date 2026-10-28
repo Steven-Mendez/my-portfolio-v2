@@ -214,6 +214,23 @@ export const writeups: readonly Writeup[] = [
             },
           },
           {
+            type: "list",
+            items: {
+              en: [
+                "**Sees** the orders nearby.",
+                "**Takes** one or several.",
+                "**Follows** the route on the map.",
+                "**Delivers** with a photo at the door.",
+              ],
+              es: [
+                "**Ve** los pedidos cercanos.",
+                "**Toma** uno o varios.",
+                "**Sigue** la ruta en el mapa.",
+                "**Entrega** con una foto en la puerta.",
+              ],
+            },
+          },
+          {
             type: "p",
             text: {
               en: "Picking up, delivering and reporting a problem work without internet. The app saves the action on the phone and sends it on its own when the signal returns.",

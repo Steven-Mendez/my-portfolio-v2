@@ -95,11 +95,11 @@ for (const chapter of writeup.chapters)
 // A run of two or more landscape plates (screenshots or wide clips) reads
 // as one carousel; a phone recording or a lone plate stands on its own.
 type PlateBlock = Extract<Block, { type: "figure" | "clip" }>
-type ParagraphBlock = Extract<Block, { type: "p" }>
+type AsideBlock = Extract<Block, { type: "p" | "list" }>
 type Item =
   | Block
   | { type: "carousel"; slides: PlateBlock[] }
-  | { type: "aside"; plate: PlateBlock; paragraphs: ParagraphBlock[] }
+  | { type: "aside"; plate: PlateBlock; text: AsideBlock[] }
 const isSlide = (block: Block): block is PlateBlock =>
   block.type === "figure" ||
   (block.type === "clip" && block.width >= block.height)
@@ -122,12 +122,11 @@ function group(blocks: readonly Block[]): Item[] {
     flush()
     if (isPortrait(block)) {
       // A phone is tall and narrow: the text that follows reads beside it.
-      const paragraphs: ParagraphBlock[] = []
-      while (paragraphs.length < 2 && blocks[i + 1]?.type === "p")
-        paragraphs.push(blocks[++i] as ParagraphBlock)
-      items.push(
-        paragraphs.length ? { type: "aside", plate: block, paragraphs } : block
-      )
+      const text: AsideBlock[] = []
+      const next = () => blocks[i + 1]?.type
+      while (text.length < 3 && (next() === "p" || next() === "list"))
+        text.push(blocks[++i] as AsideBlock)
+      items.push(text.length ? { type: "aside", plate: block, text } : block)
       continue
     }
     items.push(block)
@@ -336,17 +335,35 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
                         bare
                       />
                       <div class="chapter-aside-text">
-                        {block.paragraphs.map((paragraph) => (
-                          <p class="chapter-p type-body">
-                            {emphasis(paragraph.text[lang]).map((part) =>
-                              part.strong ? (
-                                <strong>{part.text}</strong>
-                              ) : (
-                                part.text
-                              )
-                            )}
-                          </p>
-                        ))}
+                        {block.text.map((item) =>
+                          item.type === "list" ? (
+                            <ul class="tick-list chapter-list">
+                              {item.items[lang].map((line) => (
+                                <li>
+                                  <span>
+                                    {emphasis(line).map((part) =>
+                                      part.strong ? (
+                                        <strong>{part.text}</strong>
+                                      ) : (
+                                        part.text
+                                      )
+                                    )}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p class="chapter-p type-body">
+                              {emphasis(item.text[lang]).map((part) =>
+                                part.strong ? (
+                                  <strong>{part.text}</strong>
+                                ) : (
+                                  part.text
+                                )
+                              )}
+                            </p>
+                          )
+                        )}
                       </div>
                     </div>
                   )
@@ -871,7 +888,7 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
   @media (width >= 40rem) {
     .chapter-aside {
       grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
-      align-items: start;
+      align-items: center;
     }
 
     .chapter-aside :global(.plate--portrait) {
