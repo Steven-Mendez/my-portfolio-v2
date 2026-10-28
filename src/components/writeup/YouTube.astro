@@ -1,0 +1,177 @@
+---
+/**
+ * A YouTube video that costs nothing until it is played: the page shows
+ * its own poster with a play control, and only a click loads the player
+ * (youtube-nocookie, so nothing is sent to Google before that). Without
+ * JavaScript the control is a plain link to the video. `duration` is the
+ * "m:ss" shown after the label.
+ */
+import { Picture } from "astro:assets"
+import type { ImageMetadata } from "astro"
+
+interface Props {
+  id: string
+  poster: ImageMetadata
+  /** Describes the poster and titles the player. */
+  alt: string
+  /** The control's text, e.g. "Play the video". */
+  label: string
+  duration?: string
+  sizes: string
+  class?: string
+}
+
+const {
+  id,
+  poster,
+  alt,
+  label,
+  duration,
+  sizes,
+  class: className,
+} = Astro.props
+---
+
+<div class:list={["yt", className]} data-youtube={id} data-title={alt}>
+  <Picture
+    src={poster}
+    alt={alt}
+    formats={["avif", "webp"]}
+    fallbackFormat="jpg"
+    widths={[720, 1080, 1440]}
+    sizes={sizes}
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    class="yt-poster"
+  />
+  <a
+    class="yt-play"
+    href={`https://youtu.be/${id}`}
+    target="_blank"
+    rel="noopener"
+    data-youtube-play
+  >
+    <span class="yt-control">
+      <span class="yt-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+          <path d="M8 5.5v13l11-6.5z"></path>
+        </svg>
+      </span>
+      <span class="meta yt-label">
+        {label}
+        {duration && (
+          <>
+            <span aria-hidden="true"> · </span>
+            <span class="tabular-nums">{duration}</span>
+          </>
+        )}
+      </span>
+    </span>
+  </a>
+</div>
+
+<script>
+  // A click swaps the poster for the player, already playing.
+  for (const box of document.querySelectorAll<HTMLElement>("[data-youtube]")) {
+    box.querySelector("[data-youtube-play]")?.addEventListener("click", (e) => {
+      e.preventDefault()
+      const iframe = document.createElement("iframe")
+      iframe.src = `https://www.youtube-nocookie.com/embed/${box.dataset.youtube}?autoplay=1&rel=0`
+      iframe.title = box.dataset.title ?? ""
+      iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"
+      iframe.className = "yt-player"
+      box.replaceChildren(iframe)
+    })
+  }
+</script>
+
+<style>
+  .yt {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    background-color: var(--color-ink);
+  }
+
+  .yt :global(.yt-poster),
+  .yt :global(.yt-player) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .yt :global(.yt-poster) {
+    object-fit: cover;
+  }
+
+  /*
+   * The control covers the whole poster; its pieces sit in the bottom-left
+   * corner, clear of whatever the poster says in its middle.
+   */
+  .yt-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 1.25rem;
+    color: var(--color-ice);
+    text-decoration: none;
+    background: linear-gradient(
+      to top,
+      color-mix(in oklab, var(--color-ink) 55%, transparent),
+      transparent 50%
+    );
+    transition: background-color var(--duration-micro) ease;
+  }
+
+  .yt-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .yt-mark {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 1px solid color-mix(in oklab, var(--color-ice) 60%, transparent);
+    border-radius: 50%;
+    background-color: color-mix(in oklab, var(--color-ink) 45%, transparent);
+    backdrop-filter: blur(6px);
+    transition:
+      transform var(--duration-interaction) var(--ease-out-soft),
+      background-color var(--duration-micro) ease;
+  }
+
+  .yt-mark svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 0.15rem;
+  }
+
+  .yt-label {
+    color: var(--color-ice);
+    text-shadow: 0 1px 8px var(--color-ink);
+  }
+
+  .yt-play:hover .yt-mark,
+  .yt-play:focus-visible .yt-mark {
+    transform: scale(1.06);
+    background-color: color-mix(in oklab, var(--color-ink) 70%, transparent);
+  }
+
+  .yt-play:focus-visible {
+    outline: 1px solid var(--color-ice);
+    outline-offset: -4px;
+  }
+</style>

@@ -1,23 +1,30 @@
 ---
 /**
- * A project's write-up, laid out like a blog post. On ink, a centred
- * masthead: kicker (Work, track number, reading time), the project's name
- * as the h1, the lead, and under a hairline the spec row (year, role,
- * stack, links). Then, on paper, one centred 42rem reading column: each
+ * A project's write-up, laid out like a blog post. On ink, the opening is
+ * a cover spread: on the left the kicker (Work, track number, reading
+ * time), the project's name as the h1 and the lead; on the right, wider,
+ * the cover: the project's video (played in place) or one screen of it,
+ * set as a plate with rounded corners; under both, one ruled
+ * line of facts (year, role, stack, links) in four cells.
+ * Then, on paper, one centred 42rem reading column: each
  * chapter's number and heading sit in the column above its blocks.
- * Screenshots are plates that step out to 60rem; on lg a run of plates
- * sits in pairs. Plates are numbered in reading order across the page.
+ * Screenshots and clips are plates; a run of two or more is one carousel
+ * and a phone recording reads beside its caption. Plates are numbered in
+ * reading order across the page.
  * The last row, back on ink, points to the neighbouring write-up and back
  * to the list.
  *
  * Motion hooks are the shared ones: data-reveal on blocks, `items` on
  * lists, `rows` + data-build on the spec sheets, data-draw on the rule.
  */
-import { Picture } from "astro:assets"
+import { getImage, Picture } from "astro:assets"
 import BracketLink from "@/components/hero/BracketLink.astro"
 import Diamond from "@/components/hero/Diamond.astro"
 import StackLine from "@/components/sections/StackLine.astro"
 import ArchitectureMap from "./ArchitectureMap.astro"
+import Carousel from "./Carousel.astro"
+import Plate from "./Plate.astro"
+import YouTube from "./YouTube.astro"
 import { projects } from "@/data/projects"
 import {
   readingMinutes,
@@ -48,20 +55,87 @@ const two = (n: number) => String(n).padStart(2, "0")
 const note = fill(t("writeup.readingTime"), {
   min: readingMinutes(writeup, lang),
 })
+
+// The cover: the write-up's own, or else its first screenshot.
+const firstFigure = writeup.chapters
+  .flatMap((chapter) => chapter.blocks)
+  .find((block) => block.type === "figure")
+const cover: NonNullable<Writeup["cover"]> | undefined =
+  writeup.cover ??
+  (firstFigure && { image: firstFigure.image, alt: firstFigure.alt })
+if (!cover) throw new Error(`No cover for write-up: ${writeup.slug}`)
+// Seven of twelve columns on lg (the page measure is 100rem), full width below.
+const coverSizes = "(min-width: 64rem) min(56rem, 56vw), calc(100vw - 2rem)"
+// A screenshot cover opens in the lightbox at its own size, like the plates.
+const coverFull = cover.youtube
+  ? undefined
+  : await getImage({
+      src: cover.image,
+      format: "webp",
+      width: Math.min(cover.image.width, 2400),
+    })
 const updated = fill(t("writeup.updated"), {
   date: formatMonth(writeup.updated, lang),
 })
 
+// A screenshot borrowed as the cover is not shown again in the body.
+const body = (blocks: readonly Block[]) =>
+  writeup.cover ? blocks : blocks.filter((block) => block !== firstFigure)
+
 // Figures are numbered across the page in reading order.
 const figures = new Map<Block, number>()
 for (const chapter of writeup.chapters)
-  for (const block of chapter.blocks)
+  for (const block of body(chapter.blocks))
     if (
       block.type === "figure" ||
       block.type === "clip" ||
       block.type === "diagram"
     )
       figures.set(block, figures.size + 1)
+
+// A run of two or more landscape plates (screenshots or wide clips) reads
+// as one carousel; a phone recording or a lone plate stands on its own.
+type PlateBlock = Extract<Block, { type: "figure" | "clip" }>
+type ParagraphBlock = Extract<Block, { type: "p" }>
+type Item =
+  | Block
+  | { type: "carousel"; slides: PlateBlock[] }
+  | { type: "aside"; plate: PlateBlock; paragraphs: ParagraphBlock[] }
+const isSlide = (block: Block): block is PlateBlock =>
+  block.type === "figure" ||
+  (block.type === "clip" && block.width >= block.height)
+const isPortrait = (block: Block): block is PlateBlock =>
+  block.type === "clip" && block.height > block.width
+function group(blocks: readonly Block[]): Item[] {
+  const items: Item[] = []
+  let run: PlateBlock[] = []
+  const flush = () => {
+    if (run.length > 1) items.push({ type: "carousel", slides: run })
+    else items.push(...run)
+    run = []
+  }
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i]!
+    if (isSlide(block)) {
+      run.push(block)
+      continue
+    }
+    flush()
+    if (isPortrait(block)) {
+      // A phone is tall and narrow: the text that follows reads beside it.
+      const paragraphs: ParagraphBlock[] = []
+      while (paragraphs.length < 2 && blocks[i + 1]?.type === "p")
+        paragraphs.push(blocks[++i] as ParagraphBlock)
+      items.push(
+        paragraphs.length ? { type: "aside", plate: block, paragraphs } : block
+      )
+      continue
+    }
+    items.push(block)
+  }
+  flush()
+  return items
+}
 
 // Neighbours in the order of the Work list.
 const order = projects
@@ -84,23 +158,77 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
   <header class="writeup-open px-gutter pt-36 pb-section sm:px-6 lg:px-12 lg:pt-40">
     <div class="dots-layer" aria-hidden="true"></div>
     <div class="shell writeup-masthead">
-      {/* An article's masthead: what it is and how long, the title, the lead. */}
-      <p class="meta writeup-kicker" data-reveal>
-        <Diamond size={9} />
-        <span>
-          {t("nav.work")} {index}
-        </span>
-        <span aria-hidden="true">·</span>
-        <span>{note}</span>
-      </p>
-      <h1 id="writeup-title" class="writeup-title type-display" data-reveal>
-        {project.title}
-      </h1>
-      <p class="writeup-lead type-lead" data-reveal>
-        {writeup.lead[lang]}
-      </p>
+      <div class="writeup-copy">
+        {/* What it is and how long, the title, the lead. */}
+        <p class="meta writeup-kicker" data-reveal>
+          <Diamond size={9} />
+          <span>
+            {t("nav.work")} {index}
+          </span>
+          <span aria-hidden="true">·</span>
+          <span>{note}</span>
+        </p>
+        <h1 id="writeup-title" class="writeup-title type-display" data-reveal>
+          {project.title}
+        </h1>
+        <p class="writeup-lead type-lead" data-reveal>
+          {writeup.lead[lang]}
+        </p>
+      </div>
 
-      {/* The spec row: the facts of the project, in the hero's cells. */}
+      {/* The cover: the project's video, or one screen of it, as a plate. */}
+      <div class="writeup-cover" data-reveal>
+        {cover.youtube ? (
+          <YouTube
+            id={cover.youtube}
+            poster={cover.image}
+            alt={cover.alt[lang]}
+            label={t("writeup.play")}
+            duration={cover.duration}
+            sizes={coverSizes}
+          />
+        ) : (
+          <Picture
+            src={cover.image}
+            alt={cover.alt[lang]}
+            formats={["avif", "webp"]}
+            fallbackFormat="jpg"
+            widths={[720, 1080, 1440]}
+            sizes={coverSizes}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            class="writeup-cover-img"
+          />
+        )}
+        {coverFull && (
+          <button
+            type="button"
+            class="cover-zoom"
+            aria-label={t("writeup.zoom")}
+            data-zoom="image"
+            data-zoom-src={coverFull.src}
+            data-zoom-alt={cover.alt[lang]}
+            data-zoom-caption={cover.alt[lang]}
+          >
+            <svg
+              class="cover-zoom-icon"
+              viewBox="0 0 12 12"
+              width="12"
+              height="12"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linecap="square"
+              aria-hidden="true"
+            >
+              <path d="M7.5 1.5h3v3M10.5 1.5 7 5M4.5 10.5h-3v-3M1.5 10.5 5 7"></path>
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* The facts of the project, on one ruled line. */}
       <dl class="writeup-spec" data-reveal="items">
         <div class="spec-cell">
           <dt class="meta">{t("writeup.year")}</dt>
@@ -199,7 +327,41 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
             </header>
 
             <div class="chapter-body">
-              {chapter.blocks.map((block, b) => {
+              {group(body(chapter.blocks)).map((block, b) => {
+                if (block.type === "aside")
+                  return (
+                    <div class="chapter-aside" data-reveal>
+                      <Plate
+                        lang={lang}
+                        block={block.plate}
+                        number={figures.get(block.plate) ?? 0}
+                        bare
+                      />
+                      <div class="chapter-aside-text">
+                        {block.paragraphs.map((paragraph) => (
+                          <p class="chapter-p type-body">
+                            {emphasis(paragraph.text[lang]).map((part) =>
+                              part.strong ? (
+                                <strong>{part.text}</strong>
+                              ) : (
+                                part.text
+                              )
+                            )}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                if (block.type === "carousel")
+                  return (
+                    <Carousel
+                      lang={lang}
+                      slides={block.slides.map((slide) => ({
+                        block: slide,
+                        number: figures.get(slide) ?? 0,
+                      }))}
+                    />
+                  )
                 if (block.type === "p")
                   return (
                     <p
@@ -233,60 +395,17 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
                       ))}
                     </ul>
                   )
-                if (block.type === "figure")
+                if (block.type === "figure" || block.type === "clip")
                   return (
-                    <figure class="plate" data-reveal>
-                      <Picture
-                        src={block.image}
-                        alt={block.alt[lang]}
-                        formats={["avif", "webp"]}
-                        fallbackFormat="jpg"
-                        widths={[720, 1080, 1440]}
-                        sizes="(min-width: 64rem) 42rem, calc(100vw - 2rem)"
-                        loading="lazy"
-                        decoding="async"
-                        class="plate-img"
-                      />
-                      <figcaption class="plate-caption">
-                        <span class="meta tabular-nums">
-                          {t("writeup.figure")} {two(figures.get(block) ?? 0)}
-                        </span>
-                        <span class="meta-name">{block.caption[lang]}</span>
-                      </figcaption>
-                    </figure>
-                  )
-                if (block.type === "clip")
-                  return (
-                    <figure class="plate" data-reveal>
-                      <video
-                        class:list={[
-                          "plate-img plate-clip",
-                          block.height > block.width && "plate-portrait",
-                        ]}
-                        width={block.width}
-                        height={block.height}
-                        poster={`${block.src}.webp`}
-                        aria-label={block.alt[lang]}
-                        muted
-                        loop
-                        playsinline
-                        preload="none"
-                        data-clip
-                      >
-                        <source src={`${block.src}.webm`} type="video/webm" />
-                        <source src={`${block.src}.mp4`} type="video/mp4" />
-                      </video>
-                      <figcaption class="plate-caption">
-                        <span class="meta tabular-nums">
-                          {t("writeup.figure")} {two(figures.get(block) ?? 0)}
-                        </span>
-                        <span class="meta-name">{block.caption[lang]}</span>
-                      </figcaption>
-                    </figure>
+                    <Plate
+                      lang={lang}
+                      block={block}
+                      number={figures.get(block) ?? 0}
+                    />
                   )
                 if (block.type === "diagram")
                   return (
-                    <figure class="plate plate-wide" data-reveal>
+                    <figure class="plate-wide" data-reveal>
                       <ArchitectureMap lang={lang} block={block} />
                       <figcaption class="plate-caption">
                         <span class="meta tabular-nums">
@@ -348,6 +467,21 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
       </ul>
     </div>
   </nav>
+  {/* One lightbox for the page: a plate's button fills it and opens it. */}
+  <dialog class="lightbox" aria-label={t("writeup.zoom")} data-lightbox>
+    <button
+      type="button"
+      class="lightbox-close meta"
+      data-lightbox-close
+      aria-label={t("writeup.close")}
+    >
+      <span aria-hidden="true">[</span>
+      <span>{t("writeup.close")}</span>
+      <span aria-hidden="true">]</span>
+    </button>
+    <div class="lightbox-stage" data-lightbox-stage></div>
+    <p class="meta-name lightbox-caption" data-lightbox-caption></p>
+  </dialog>
 </article>
 
 <script>
@@ -397,8 +531,64 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     for (const v of clips) io.observe(v)
   }
 
+  // A plate's button opens it larger: the image at full size, or the clip
+  // with controls. Escape, the close button or a click outside closes it.
+  function initLightbox() {
+    const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox]")
+    if (!dialog) return
+    const stage = dialog.querySelector<HTMLElement>("[data-lightbox-stage]")!
+    const caption = dialog.querySelector<HTMLElement>(
+      "[data-lightbox-caption]"
+    )!
+    document.addEventListener("click", (e) => {
+      const button = (e.target as Element).closest<HTMLElement>("[data-zoom]")
+      if (!button) return
+      const {
+        zoom,
+        zoomSrc = "",
+        zoomAlt = "",
+        zoomCaption = "",
+      } = button.dataset
+      if (zoom === "image") {
+        const img = document.createElement("img")
+        img.src = zoomSrc
+        img.alt = zoomAlt
+        stage.replaceChildren(img)
+      } else {
+        const video = document.createElement("video")
+        video.muted = true
+        video.loop = true
+        video.playsInline = true
+        video.controls = true
+        video.autoplay = true
+        video.setAttribute("aria-label", zoomAlt)
+        video.poster = `${zoomSrc}.webp`
+        for (const [ext, type] of [
+          ["webm", "video/webm"],
+          ["mp4", "video/mp4"],
+        ] as const) {
+          const source = document.createElement("source")
+          source.src = `${zoomSrc}.${ext}`
+          source.type = type
+          video.append(source)
+        }
+        stage.replaceChildren(video)
+      }
+      caption.textContent = zoomCaption
+      dialog.showModal()
+    })
+    dialog
+      .querySelector("[data-lightbox-close]")
+      ?.addEventListener("click", () => dialog.close())
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog || e.target === stage) dialog.close()
+    })
+    dialog.addEventListener("close", () => stage.replaceChildren())
+  }
+
   initToc()
   initClips()
+  initLightbox()
 </script>
 
 <style>
@@ -409,47 +599,103 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     background-color: var(--color-ink);
   }
 
-  /* ── Masthead: centred, like an article's opening ── */
+  /*
+   * ── Opening: a cover spread ──
+   * Copy on the left, the cover on the right, the facts on one line under
+   * both. Below lg everything stacks: copy, cover, facts.
+   */
   .writeup-masthead {
     display: grid;
-    justify-items: center;
-    text-align: center;
+    gap: var(--spacing-row-lg) 1.5rem;
+  }
+
+  .writeup-copy {
+    display: grid;
+    align-content: start;
   }
 
   .writeup-kicker {
     display: inline-flex;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
     gap: 0.4rem 0.75rem;
     color: var(--title-color);
   }
 
   .writeup-title {
-    max-width: 52rem;
     margin-top: var(--spacing-head-sm);
     color: var(--title-color);
-    text-wrap: balance;
   }
 
   .writeup-lead {
-    max-width: 38rem;
+    max-width: 34rem;
     margin-top: var(--spacing-inner);
     color: var(--text-muted);
-    text-wrap: balance;
+    text-wrap: pretty;
   }
 
-  /* ── Spec row ── */
+  .writeup-cover :global(.writeup-cover-img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+  }
+
+  .writeup-cover {
+    position: relative;
+  }
+
+  /* A screenshot cover is a button too; its mark shows on hover and focus. */
+  .cover-zoom {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 0.75rem;
+    border: 0;
+    border-radius: 0.75rem;
+    background: transparent;
+    color: var(--color-ice);
+    cursor: zoom-in;
+  }
+
+  .cover-zoom-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0.6rem;
+    border-radius: 50%;
+    background-color: color-mix(in oklab, var(--color-ink) 70%, transparent);
+    opacity: 0;
+    transition: opacity var(--duration-micro) ease;
+  }
+
+  .cover-zoom:hover .cover-zoom-icon,
+  .cover-zoom:focus-visible .cover-zoom-icon {
+    opacity: 1;
+  }
+
+  .cover-zoom:focus-visible {
+    outline: 1px solid var(--color-ice);
+    outline-offset: 3px;
+  }
+
+  @media (hover: none) {
+    .cover-zoom-icon {
+      opacity: 0.85;
+    }
+  }
+
+  /* ── The facts, on one ruled line ── */
   .writeup-spec {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--spacing-row) 1.5rem;
-    width: 100%;
-    max-width: 60rem;
-    margin-top: var(--spacing-row-lg);
     padding-top: var(--spacing-inner);
     border-top: 1px solid var(--rule);
-    text-align: left;
   }
 
   .spec-cell {
@@ -471,7 +717,21 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
   }
 
   @media (width >= 64rem) {
+    .writeup-masthead {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: center;
+    }
+
+    .writeup-copy {
+      grid-column: 1 / 6;
+    }
+
+    .writeup-cover {
+      grid-column: 6 / 13;
+    }
+
     .writeup-spec {
+      grid-column: 1 / -1;
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
@@ -511,10 +771,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     max-width: 42rem;
   }
 
-  .chapter-body > .plate {
-    max-width: none;
-  }
-
   .chapter-lead {
     color: var(--title-color);
   }
@@ -529,25 +785,11 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     color: var(--title-color);
   }
 
-  /* ── Plates ── */
-  .plate {
+  /* ── The map's plate (screenshots and clips style themselves) ── */
+  .plate-wide {
     display: grid;
     gap: 0.75rem;
-    align-content: start;
     margin-block: 1rem;
-  }
-
-  .plate :global(.plate-img) {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 1px solid var(--rule);
-  }
-
-  /* A phone recording keeps a phone's width instead of filling the measure. */
-  .plate :global(.plate-portrait) {
-    max-width: 22rem;
-    margin-inline: auto;
   }
 
   .plate-caption {
@@ -560,6 +802,96 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
 
   .plate-caption .meta {
     color: var(--title-color);
+  }
+
+  /*
+   * ── A phone beside its text ──
+   * Below sm the phone stands centred over its paragraphs; from sm it takes
+   * a phone's width on the left and the paragraphs read beside it.
+   */
+  .chapter-aside {
+    display: grid;
+    gap: var(--spacing-inner) 2rem;
+    margin-block: 1rem;
+  }
+
+  .chapter-aside-text {
+    display: grid;
+    gap: var(--spacing-inner);
+    align-content: start;
+  }
+
+  @media (width >= 40rem) {
+    .chapter-aside {
+      grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .chapter-aside :global(.plate--portrait) {
+      max-width: none;
+    }
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: color-mix(in oklab, var(--color-ink) 94%, transparent);
+    color: var(--color-ice);
+  }
+
+  .lightbox[open] {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .lightbox::backdrop {
+    background: transparent;
+  }
+
+  .lightbox-close {
+    justify-self: end;
+    display: inline-flex;
+    gap: 0.6em;
+    min-height: 2.75rem;
+    align-items: center;
+    margin: 0.75rem var(--spacing-gutter) 0;
+    padding: 0 0.25rem;
+    border: 0;
+    background: transparent;
+    color: var(--color-ice);
+    cursor: pointer;
+  }
+
+  .lightbox-stage {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    padding: 0.5rem var(--spacing-gutter);
+    cursor: zoom-out;
+  }
+
+  .lightbox-stage :global(img),
+  .lightbox-stage :global(video) {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 0.75rem;
+    cursor: default;
+  }
+
+  .lightbox-caption {
+    max-width: 48rem;
+    justify-self: center;
+    padding: 0.75rem var(--spacing-gutter) 1.25rem;
+    color: var(--color-ice-muted);
+    text-align: center;
   }
 
   /* ── Spec sheets ── */
@@ -595,22 +927,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
   @media (width >= 64rem) {
     .chapter + .chapter {
       margin-top: var(--spacing-section);
-    }
-
-    .chapter-body {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: 1.5rem;
-    }
-
-    .chapter-body > .plate:has(+ .plate),
-    .chapter-body > .plate + .plate {
-      grid-column: auto;
-    }
-
-    /* The map reads across the whole measure, whatever sits beside it. */
-    .chapter-body > .plate-wide,
-    .chapter-body > .plate-wide + .plate {
-      grid-column: 1 / -1;
     }
   }
 
@@ -673,10 +989,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
 
   .chapter {
     scroll-margin-top: calc(var(--header-h, 3.75rem) + 2rem);
-  }
-
-  .plate-clip {
-    background: var(--color-ink);
   }
 
   /* ── Closing nav ── */

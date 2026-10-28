@@ -25,12 +25,10 @@ import iaSettings from "@/assets/work/interview-agent/settings.jpg"
 import pfHero from "@/assets/work/portfolio/hero.jpg"
 import pfExperience from "@/assets/work/portfolio/experience.jpg"
 import pfWork from "@/assets/work/portfolio/work.jpg"
-import bdDeliver from "@/assets/work/bidali/deliver.jpg"
 import bdOrderDestination from "@/assets/work/bidali/order-destination.jpg"
 import bdOrderDetail from "@/assets/work/bidali/order-detail.jpg"
-import bdPool from "@/assets/work/bidali/pool.jpg"
-import bdRoutePlan from "@/assets/work/bidali/route-plan.jpg"
 import bdTracking from "@/assets/work/bidali/tracking.jpg"
+import bdVideo from "@/assets/work/bidali/video.jpg"
 
 /** One box of an architecture map: a product name and what it does here. */
 export interface DiagramBox {
@@ -94,6 +92,17 @@ export interface Writeup {
   lead: Localized<string>
   /** Meta description of the page. */
   description: Localized<string>
+  /**
+   * The opening's cover: one screen of the project, or, with `youtube`,
+   * the poster of that video, played in place (`duration` as "m:ss").
+   * Without one, the first figure.
+   */
+  cover?: {
+    image: ImageMetadata
+    alt: Localized<string>
+    youtube?: string
+    duration?: string
+  }
   /** What Steven did on it, for the spec row. */
   role: Localized<string>
   /** ISO date ("YYYY-MM-DD") the page first went live; `datePublished` in its JSON-LD. */
@@ -109,16 +118,25 @@ export const writeups: readonly Writeup[] = [
     // decisions, with screens and a map, and never the code.
     slug: "bidali",
     lead: {
-      en: "Bidali is a last-mile delivery platform for Nicaragua, an internal product of WERN, the agency I work at. A business creates an order and publishes it; the couriers nearby see it in a pool, take it, plan their route and deliver with a photo as proof; and the customer follows the delivery from the browser with a code and their phone number, with no app and no account. The code is under NDA, so this page tells it in words, screens and one map.",
-      es: "Bidali es una plataforma de logística de última milla para Nicaragua, un producto interno de WERN, la agencia donde trabajo. Un negocio crea un pedido y lo publica; los repartidores cercanos lo ven en un pool, lo toman, arman su ruta y entregan con una foto como constancia; y el cliente sigue la entrega desde el navegador con un código y su teléfono, sin app ni cuenta. El código está bajo NDA, así que esta página lo cuenta con palabras, pantallas y un mapa.",
+      en: "A last-mile delivery platform for Nicaragua, an internal product of WERN, the agency I work at. Businesses publish orders, the couriers nearby take them and deliver with a photo as proof, and the customer follows the delivery from the browser with a code and a phone number.",
+      es: "Una plataforma de logística de última milla para Nicaragua, producto interno de WERN, la agencia donde trabajo. Los negocios publican pedidos, los repartidores cercanos los toman y entregan con una foto como constancia, y el cliente sigue la entrega desde el navegador con un código y su teléfono.",
     },
     description: {
       en: "How Bidali, WERN's internal delivery platform, is built: a Rust and Axum API over PostGIS, one SvelteKit app for the web, iOS and Android through Tauri, and Google Cloud declared in Terraform.",
       es: "Cómo está hecho Bidali, la plataforma de entregas interna de WERN: una API en Rust y Axum sobre PostGIS, una sola app en SvelteKit para la web, iOS y Android a través de Tauri, y Google Cloud declarado en Terraform.",
     },
     role: {
-      en: "Internal WERN project · full stack",
-      es: "Proyecto interno de WERN · full stack",
+      en: "Full-stack engineer at WERN",
+      es: "Ingeniero full stack en WERN",
+    },
+    cover: {
+      image: bdVideo,
+      youtube: "Mk-9ScKfzTc",
+      duration: "5:18",
+      alt: {
+        en: "Bidali's video, an early build on the iPhone simulator: business, courier and customer, the whole journey of an order in Managua",
+        es: "El video de Bidali, una versión temprana en el simulador de iPhone: negocio, repartidor y cliente, el recorrido completo de un pedido en Managua",
+      },
     },
     published: "2026-10-27",
     updated: "2026-10",
@@ -186,8 +204,8 @@ export const writeups: readonly Writeup[] = [
           {
             type: "p",
             text: {
-              en: "There is a video of an early build in the links above: three businesses publish an order each on the iPhone simulator, one courier takes the three, runs the route and delivers them, and halfway through the customer tracks their order from a browser.",
-              es: "En los enlaces de arriba hay un video de una versión temprana: tres negocios publican un pedido cada uno en el simulador de iPhone, un repartidor toma los tres, recorre la ruta y los entrega, y a mitad del camino el cliente rastrea su pedido desde el navegador.",
+              en: "The video at the top of the page is an early build: three businesses publish an order each on the iPhone simulator, one courier takes the three, runs the route and delivers them, and halfway through the customer tracks their order from a browser. The code is under NDA, so this page tells the rest in words, screens and one map.",
+              es: "El video de arriba es una versión temprana: tres negocios publican un pedido cada uno en el simulador de iPhone, un repartidor toma los tres, recorre la ruta y los entrega, y a mitad del camino el cliente rastrea su pedido desde el navegador. El código está bajo NDA, así que esta página cuenta el resto con palabras, pantallas y un mapa.",
             },
           },
         ],
@@ -206,44 +224,6 @@ export const writeups: readonly Writeup[] = [
             },
           },
           {
-            type: "p",
-            text: {
-              en: "**The pool.** A published order appears to the couriers whose last fresh position is within the platform's radius of the pickup point, a PostGIS query over the courier's reported location. Couriers the business has marked as trusted see it first, for a short head start; then everyone with room in their quota. Taking is atomic: two couriers cannot end up with the same order, and the quota is checked in the same transaction.",
-              es: "**El pool.** Un pedido publicado les aparece a los repartidores cuya última posición fresca cae dentro del radio de la plataforma alrededor del punto de retiro, una consulta PostGIS sobre la ubicación que reportan. Los repartidores que el negocio marcó como de confianza lo ven primero, con una ventaja corta; después, todos los que tengan cupo. Tomar es atómico: dos repartidores no pueden quedarse con el mismo pedido, y el cupo se comprueba en la misma transacción.",
-            },
-          },
-          {
-            type: "figure",
-            image: bdPool,
-            alt: {
-              en: "A frame of the video: the courier's home screen on an iPhone with two nearby orders, each with its pickup and delivery points and a Take order button, next to the title “Take the nearby orders”",
-              es: "Un cuadro del video: el inicio del repartidor en un iPhone con dos pedidos cercanos, cada uno con su punto de retiro y de entrega y un botón de Tomar pedido, junto al título «Tomar los pedidos cercanos»",
-            },
-            caption: {
-              en: "The courier's home: the orders within reach, each with where to pick up, where to deliver and what it pays.",
-              es: "El inicio del repartidor: los pedidos al alcance, cada uno con dónde recoger, dónde entregar y cuánto paga.",
-            },
-          },
-          {
-            type: "figure",
-            image: bdRoutePlan,
-            alt: {
-              en: "A frame of the video: the route preparation screen with six stops numbered on a map of Managua and the recommended order below, next to the title “Prepare the route”",
-              es: "Un cuadro del video: la pantalla de preparar la ruta con seis paradas numeradas sobre un mapa de Managua y el orden recomendado debajo, junto al título «Preparar la ruta»",
-            },
-            caption: {
-              en: "Three orders, six stops. The recommended order comes from Mapbox; the courier can drag it into another one.",
-              es: "Tres pedidos, seis paradas. El orden recomendado sale de Mapbox; el repartidor puede arrastrarlo a otro.",
-            },
-          },
-          {
-            type: "p",
-            text: {
-              en: "**The route.** With one or more orders taken, the courier asks for a recommended order of stops, built with Mapbox's Optimization API, and can reorder it by hand, with the rule that a delivery can never be placed before its pickup. The route itself comes from the Directions API and is redrawn when the courier strays more than a block and a half from it. “Open in” hands the next stop to Waze, Google Maps or Apple Maps. None of what Mapbox returns is stored, because its terms forbid it, so the API applies floors and coalesces requests instead of caching.",
-              es: "**La ruta.** Con uno o más pedidos tomados, el repartidor pide un orden recomendado de paradas, armado con la API de Optimization de Mapbox, y puede reordenarlo a mano, con la regla de que una entrega nunca puede quedar antes de su recogida. La ruta en sí sale de la API de Directions y se retraza cuando el repartidor se aleja más de cuadra y media. «Abrir en» le pasa la próxima parada a Waze, Google Maps o Apple Maps. Nada de lo que devuelve Mapbox se guarda, porque sus términos lo prohíben, así que la API pone pisos y agrupa peticiones en vez de cachear.",
-            },
-          },
-          {
             type: "clip",
             src: "/work/bidali/courier-app",
             width: 392,
@@ -258,15 +238,17 @@ export const writeups: readonly Writeup[] = [
             },
           },
           {
-            type: "figure",
-            image: bdDeliver,
-            alt: {
-              en: "A frame of the video: the route map with the courier at a delivery stop, the customer's name and address, the amount to collect and a Deliver button, next to the title “Deliver to Ana Gutiérrez”",
-              es: "Un cuadro del video: el mapa de la ruta con el repartidor en una parada de entrega, el nombre y la dirección del cliente, el monto a cobrar y un botón de Entregar, junto al título «Entregar a Ana Gutiérrez»",
+            type: "p",
+            text: {
+              en: "**The pool.** A published order appears to the couriers whose last fresh position is within the platform's radius of the pickup point, a PostGIS query over the courier's reported location. Couriers the business has marked as trusted see it first, for a short head start; then everyone with room in their quota. Taking is atomic: two couriers cannot end up with the same order, and the quota is checked in the same transaction.",
+              es: "**El pool.** Un pedido publicado les aparece a los repartidores cuya última posición fresca cae dentro del radio de la plataforma alrededor del punto de retiro, una consulta PostGIS sobre la ubicación que reportan. Los repartidores que el negocio marcó como de confianza lo ven primero, con una ventaja corta; después, todos los que tengan cupo. Tomar es atómico: dos repartidores no pueden quedarse con el mismo pedido, y el cupo se comprueba en la misma transacción.",
             },
-            caption: {
-              en: "A delivery stop: who, where, how much to collect. Delivering requires a photo; it is the business's proof.",
-              es: "Una parada de entrega: quién, dónde, cuánto cobrar. Entregar exige una foto; es la constancia del negocio.",
+          },
+          {
+            type: "p",
+            text: {
+              en: "**The route.** With one or more orders taken, the courier asks for a recommended order of stops, built with Mapbox's Optimization API, and can reorder it by hand, with the rule that a delivery can never be placed before its pickup. The route itself comes from the Directions API and is redrawn when the courier strays more than a block and a half from it. “Open in” hands the next stop to Waze, Google Maps or Apple Maps. None of what Mapbox returns is stored, because its terms forbid it, so the API applies floors and coalesces requests instead of caching.",
+              es: "**La ruta.** Con uno o más pedidos tomados, el repartidor pide un orden recomendado de paradas, armado con la API de Optimization de Mapbox, y puede reordenarlo a mano, con la regla de que una entrega nunca puede quedar antes de su recogida. La ruta en sí sale de la API de Directions y se retraza cuando el repartidor se aleja más de cuadra y media. «Abrir en» le pasa la próxima parada a Waze, Google Maps o Apple Maps. Nada de lo que devuelve Mapbox se guarda, porque sus términos lo prohíben, así que la API pone pisos y agrupa peticiones en vez de cachear.",
             },
           },
           {
@@ -669,8 +651,8 @@ export const writeups: readonly Writeup[] = [
       es: "Cómo construí Interview Agent: una app de entrevistas por voz con tres agentes sobre LiveKit, LangGraph, FastAPI y React, y las decisiones detrás.",
     },
     role: {
-      en: "Solo project, end to end",
-      es: "Proyecto personal, de punta a punta",
+      en: "Full-stack engineer",
+      es: "Ingeniero full stack",
     },
     published: "2026-10-27",
     updated: "2026-10",
@@ -975,7 +957,7 @@ export const writeups: readonly Writeup[] = [
       en: "The visual inspiration this portfolio takes from Gustavo Cerati's Bocanada, and why it is built on Astro, Tailwind CSS and GSAP.",
       es: "La inspiración visual que este portfolio toma de Bocanada de Gustavo Cerati, y por qué está hecho con Astro, Tailwind CSS y GSAP.",
     },
-    role: { en: "Design and code", es: "Diseño y código" },
+    role: { en: "Designer and developer", es: "Diseñador y desarrollador" },
     published: "2026-10-27",
     updated: "2026-10",
     chapters: [

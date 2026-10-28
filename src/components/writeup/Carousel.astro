@@ -1,0 +1,185 @@
+---
+/**
+ * A run of plates as one carousel: each plate at the column's full width,
+ * one at a time, instead of two small ones side by side. The track is a
+ * native scroll-snap strip, so it swipes and scrolls without JavaScript;
+ * the script adds the previous and next buttons and the "01 / 03" counter.
+ */
+import Arrow from "@/components/hero/Arrow.astro"
+import type { Block } from "@/data/writeups"
+import type { Lang } from "@/i18n/ui"
+import { useTranslations } from "@/i18n/utils"
+import Plate from "./Plate.astro"
+
+type PlateBlock = Extract<Block, { type: "figure" | "clip" }>
+
+interface Props {
+  lang: Lang
+  slides: readonly { block: PlateBlock; number: number }[]
+}
+
+const { lang, slides } = Astro.props
+const t = useTranslations(lang)
+const two = (n: number) => String(n).padStart(2, "0")
+---
+
+<div
+  class="carousel"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label={t("writeup.gallery")}
+  data-reveal
+  data-carousel
+>
+  <ul class="carousel-track" data-carousel-track>
+    {slides.map((slide, i) => (
+      <li
+        class="carousel-slide"
+        aria-roledescription="slide"
+        aria-label={`${two(i + 1)} / ${two(slides.length)}`}
+      >
+        <Plate lang={lang} block={slide.block} number={slide.number} bare />
+      </li>
+    ))}
+  </ul>
+
+  <div class="carousel-controls" hidden data-carousel-controls>
+    <p class="meta tabular-nums carousel-count" aria-live="polite">
+      <span data-carousel-current>01</span> / {two(slides.length)}
+    </p>
+    <div class="carousel-buttons">
+      <button
+        type="button"
+        class="carousel-button carousel-prev"
+        aria-label={t("writeup.previousSlide")}
+        data-carousel-prev
+      >
+        <Arrow dir="email" />
+      </button>
+      <button
+        type="button"
+        class="carousel-button"
+        aria-label={t("writeup.nextSlide")}
+        data-carousel-next
+      >
+        <Arrow dir="email" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>(
+    "[data-carousel]"
+  )) {
+    const track = root.querySelector<HTMLElement>("[data-carousel-track]")!
+    const controls = root.querySelector<HTMLElement>(
+      "[data-carousel-controls]"
+    )!
+    const current = root.querySelector<HTMLElement>("[data-carousel-current]")!
+    const prev = root.querySelector<HTMLButtonElement>("[data-carousel-prev]")!
+    const next = root.querySelector<HTMLButtonElement>("[data-carousel-next]")!
+    const count = track.children.length
+    const at = () => Math.round(track.scrollLeft / track.clientWidth)
+    const go = (i: number) =>
+      track.scrollTo({
+        left: Math.max(0, Math.min(count - 1, i)) * track.clientWidth,
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      })
+    const update = () => {
+      const i = at()
+      current.textContent = String(i + 1).padStart(2, "0")
+      prev.disabled = i <= 0
+      next.disabled = i >= count - 1
+    }
+    prev.addEventListener("click", () => go(at() - 1))
+    next.addEventListener("click", () => go(at() + 1))
+    track.addEventListener("scroll", update, { passive: true })
+    controls.hidden = false
+    update()
+  }
+</script>
+
+<style>
+  .carousel {
+    display: grid;
+    gap: var(--spacing-inner);
+    margin-block: 1rem;
+  }
+
+  .carousel-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    gap: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-slide {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-width: 0;
+  }
+
+  .carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: var(--spacing-inner);
+    border-top: 1px solid var(--rule);
+  }
+
+  .carousel-controls[hidden] {
+    display: none;
+  }
+
+  .carousel-count {
+    color: var(--title-color);
+  }
+
+  .carousel-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .carousel-button {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    color: var(--title-color);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      border-color var(--duration-micro) ease,
+      opacity var(--duration-micro) ease;
+  }
+
+  .carousel-button:hover:not(:disabled) {
+    border-color: var(--title-color);
+  }
+
+  .carousel-button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .carousel-prev :global(.arrow) {
+    transform: scaleX(-1);
+  }
+</style>
