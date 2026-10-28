@@ -1,6 +1,6 @@
 /**
- * Selected personal projects, newest first. Years are the repositories'
- * creation dates on GitHub. Interview Agent's copy comes from
+ * Selected projects, newest first. Years are the repositories' creation
+ * dates on GitHub (Bidali: its first migration). Interview Agent's copy comes from
  * `../v2/lib/data.ts` and `../v2/lib/case-studies.ts`.
  */
 import type { Localized } from "./localized"
@@ -17,9 +17,46 @@ export interface Project {
   stack: readonly string[]
   repoUrl?: string
   liveUrl?: string
+  /** A recorded walkthrough, for work that is not public or not live yet. */
+  videoUrl?: string
 }
 
 export const projects: readonly Project[] = [
+  {
+    // Under NDA: no repository link; `videoUrl` is an early build on the
+    // iPhone simulator. No `liveUrl` until it is deployed.
+    slug: "bidali",
+    title: "Bidali",
+    year: "2026",
+    summary: {
+      en: "Last-mile delivery for Nicaragua, an internal WERN product. Businesses publish orders, nearby couriers take them from a pool and run the route, and the customer follows the delivery from the browser with a code and a phone number.",
+      es: "Logística de última milla para Nicaragua, un producto interno de WERN. Los negocios publican pedidos, los repartidores cercanos los toman de un pool y recorren la ruta, y el cliente sigue la entrega desde el navegador con un código y su teléfono.",
+    },
+    built: {
+      en: [
+        "Rust and Axum API over PostgreSQL with PostGIS: a nine-state order machine, a proximity pool, offline batches and an append-only audit log.",
+        "One SvelteKit app for the web and, through Tauri, for iOS and Android, with native plugins for background location and push.",
+        "Google Cloud declared in Terraform, with Firebase for sign-in, Mapbox for routes and Bunny for photos and documents.",
+      ],
+      es: [
+        "API en Rust y Axum sobre PostgreSQL con PostGIS: una máquina de nueve estados para el pedido, un pool por cercanía, lotes sin conexión y una bitácora de solo escritura.",
+        "Una sola app en SvelteKit para la web y, a través de Tauri, para iOS y Android, con plugins nativos de ubicación en segundo plano y push.",
+        "Google Cloud declarado en Terraform, con Firebase para el acceso, Mapbox para las rutas y Bunny para fotos y documentos.",
+      ],
+    },
+    stack: [
+      "Rust",
+      "Axum",
+      "PostGIS",
+      "SvelteKit",
+      "Tauri",
+      "Firebase",
+      "Mapbox",
+      "Google Cloud",
+      "Terraform",
+    ],
+    videoUrl: "https://youtu.be/Mk-9ScKfzTc",
+  },
   {
     slug: "interview-agent",
     title: "Interview Agent",

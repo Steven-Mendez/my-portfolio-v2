@@ -65,6 +65,7 @@ export const ui = {
     "work.title": "Selected work",
     "work.code": "Code",
     "work.live": "Live",
+    "work.video": "Video",
     // Spec-sheet labels beside each project.
     "work.stack": "Built with",
     "work.links": "Links",
@@ -156,6 +157,7 @@ export const ui = {
     "work.title": "Trabajo seleccionado",
     "work.code": "Código",
     "work.live": "Ver",
+    "work.video": "Video",
     "work.stack": "Hecho con",
     "work.links": "Enlaces",
     "work.read": "Leer más",

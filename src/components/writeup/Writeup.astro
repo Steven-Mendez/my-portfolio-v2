@@ -17,6 +17,7 @@ import { Picture } from "astro:assets"
 import BracketLink from "@/components/hero/BracketLink.astro"
 import Diamond from "@/components/hero/Diamond.astro"
 import StackLine from "@/components/sections/StackLine.astro"
+import ArchitectureMap from "./ArchitectureMap.astro"
 import { projects } from "@/data/projects"
 import {
   readingMinutes,
@@ -55,7 +56,11 @@ const updated = fill(t("writeup.updated"), {
 const figures = new Map<Block, number>()
 for (const chapter of writeup.chapters)
   for (const block of chapter.blocks)
-    if (block.type === "figure" || block.type === "clip")
+    if (
+      block.type === "figure" ||
+      block.type === "clip" ||
+      block.type === "diagram"
+    )
       figures.set(block, figures.size + 1)
 
 // Neighbours in the order of the Work list.
@@ -111,7 +116,7 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
             <StackLine names={project.stack} />
           </dd>
         </div>
-        {(project.repoUrl || project.liveUrl) && (
+        {(project.repoUrl || project.liveUrl || project.videoUrl) && (
           <div class="spec-cell">
             <dt class="meta">{t("work.links")}</dt>
             <dd class="spec-links">
@@ -133,6 +138,16 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
                   newTabLabel={t("nav.newTab")}
                 >
                   {t("work.live")}
+                </BracketLink>
+              )}
+              {project.videoUrl && (
+                <BracketLink
+                  href={project.videoUrl}
+                  external
+                  me={false}
+                  newTabLabel={t("nav.newTab")}
+                >
+                  {t("work.video")}
                 </BracketLink>
               )}
             </dd>
@@ -244,7 +259,10 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
                   return (
                     <figure class="plate" data-reveal>
                       <video
-                        class="plate-img plate-clip"
+                        class:list={[
+                          "plate-img plate-clip",
+                          block.height > block.width && "plate-portrait",
+                        ]}
                         width={block.width}
                         height={block.height}
                         poster={`${block.src}.webp`}
@@ -258,6 +276,18 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
                         <source src={`${block.src}.webm`} type="video/webm" />
                         <source src={`${block.src}.mp4`} type="video/mp4" />
                       </video>
+                      <figcaption class="plate-caption">
+                        <span class="meta tabular-nums">
+                          {t("writeup.figure")} {two(figures.get(block) ?? 0)}
+                        </span>
+                        <span class="meta-name">{block.caption[lang]}</span>
+                      </figcaption>
+                    </figure>
+                  )
+                if (block.type === "diagram")
+                  return (
+                    <figure class="plate plate-wide" data-reveal>
+                      <ArchitectureMap lang={lang} block={block} />
                       <figcaption class="plate-caption">
                         <span class="meta tabular-nums">
                           {t("writeup.figure")} {two(figures.get(block) ?? 0)}
@@ -514,6 +544,12 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     border: 1px solid var(--rule);
   }
 
+  /* A phone recording keeps a phone's width instead of filling the measure. */
+  .plate :global(.plate-portrait) {
+    max-width: 22rem;
+    margin-inline: auto;
+  }
+
   .plate-caption {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -569,6 +605,12 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     .chapter-body > .plate:has(+ .plate),
     .chapter-body > .plate + .plate {
       grid-column: auto;
+    }
+
+    /* The map reads across the whole measure, whatever sits beside it. */
+    .chapter-body > .plate-wide,
+    .chapter-body > .plate-wide + .plate {
+      grid-column: 1 / -1;
     }
   }
 

@@ -85,7 +85,8 @@ const t = useTranslations(lang)
             </p>
             {(getWriteup(project.slug) ||
               project.repoUrl ||
-              project.liveUrl) && (
+              project.liveUrl ||
+              project.videoUrl) && (
               <ul
                 class="track-links"
                 aria-label={`${t("work.links")}: ${project.title}`}
@@ -124,6 +125,19 @@ const t = useTranslations(lang)
                       newTabLabel={t("nav.newTab")}
                     >
                       {t("work.live")}
+                      <span class="sr-only"> · {project.title}</span>
+                    </BracketLink>
+                  </li>
+                )}
+                {project.videoUrl && (
+                  <li>
+                    <BracketLink
+                      href={project.videoUrl}
+                      external
+                      me={false}
+                      newTabLabel={t("nav.newTab")}
+                    >
+                      {t("work.video")}
                       <span class="sr-only"> · {project.title}</span>
                     </BracketLink>
                   </li>

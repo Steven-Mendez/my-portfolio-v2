@@ -10,9 +10,11 @@
  * Blocks: `p` (a paragraph; `**bold**` is allowed), `list` (ticked facts),
  * `figure` (a screenshot with its caption), `clip` (a short silent loop
  * recorded from the app, served from `public/` as WebM and MP4 with a
- * poster; figures and clips share one numbering per page in reading
- * order) and `sheet` (ruled rows of name → why, the stack as a spec sheet).
- * The first `p` of a chapter is set as its lead.
+ * poster), `diagram` (an architecture map drawn from data: tiers of boxes
+ * with a labelled connector between them; figures, clips and diagrams
+ * share one numbering per page in reading order) and `sheet` (ruled rows
+ * of name → why, the stack as a spec sheet). The first `p` of a chapter is
+ * set as its lead.
  */
 import type { ImageMetadata } from "astro"
 import type { Lang } from "@/i18n/ui"
@@ -23,6 +25,38 @@ import iaSettings from "@/assets/work/interview-agent/settings.jpg"
 import pfHero from "@/assets/work/portfolio/hero.jpg"
 import pfExperience from "@/assets/work/portfolio/experience.jpg"
 import pfWork from "@/assets/work/portfolio/work.jpg"
+import bdDeliver from "@/assets/work/bidali/deliver.jpg"
+import bdOrderDestination from "@/assets/work/bidali/order-destination.jpg"
+import bdOrderDetail from "@/assets/work/bidali/order-detail.jpg"
+import bdPool from "@/assets/work/bidali/pool.jpg"
+import bdRoutePlan from "@/assets/work/bidali/route-plan.jpg"
+import bdTracking from "@/assets/work/bidali/tracking.jpg"
+
+/** One box of an architecture map: a product name and what it does here. */
+export interface DiagramBox {
+  name: string
+  note: Localized<string>
+}
+
+/**
+ * One tier of the map, top to bottom the way a request travels. `chain`
+ * is a row of boxes that hand off to one another, drawn before the tier's
+ * loose boxes and inside its own container.
+ */
+export interface DiagramTier {
+  label: Localized<string>
+  chain?: { label: Localized<string>; boxes: readonly DiagramBox[] }
+  boxes: readonly DiagramBox[]
+}
+
+export interface DiagramBlock {
+  type: "diagram"
+  tiers: readonly DiagramTier[]
+  /** What crosses between consecutive tiers: one label per gap. */
+  links: Localized<readonly string[]>
+  alt: Localized<string>
+  caption: Localized<string>
+}
 
 export type Block =
   | { type: "p"; text: Localized<string> }
@@ -42,6 +76,7 @@ export type Block =
       alt: Localized<string>
       caption: Localized<string>
     }
+  | DiagramBlock
   | {
       type: "sheet"
       rows: readonly { name: string; why: Localized<string> }[]
@@ -69,6 +104,560 @@ export interface Writeup {
 }
 
 export const writeups: readonly Writeup[] = [
+  {
+    // Under NDA: the page describes the product, the architecture and the
+    // decisions, with screens and a map, and never the code.
+    slug: "bidali",
+    lead: {
+      en: "Bidali is a last-mile delivery platform for Nicaragua, an internal product of WERN, the agency I work at. A business creates an order and publishes it; the couriers nearby see it in a pool, take it, plan their route and deliver with a photo as proof; and the customer follows the delivery from the browser with a code and their phone number, with no app and no account. The code is under NDA, so this page tells it in words, screens and one map.",
+      es: "Bidali es una plataforma de logística de última milla para Nicaragua, un producto interno de WERN, la agencia donde trabajo. Un negocio crea un pedido y lo publica; los repartidores cercanos lo ven en un pool, lo toman, arman su ruta y entregan con una foto como constancia; y el cliente sigue la entrega desde el navegador con un código y su teléfono, sin app ni cuenta. El código está bajo NDA, así que esta página lo cuenta con palabras, pantallas y un mapa.",
+    },
+    description: {
+      en: "How Bidali, WERN's internal delivery platform, is built: a Rust and Axum API over PostGIS, one SvelteKit app for the web, iOS and Android through Tauri, and Google Cloud declared in Terraform.",
+      es: "Cómo está hecho Bidali, la plataforma de entregas interna de WERN: una API en Rust y Axum sobre PostGIS, una sola app en SvelteKit para la web, iOS y Android a través de Tauri, y Google Cloud declarado en Terraform.",
+    },
+    role: {
+      en: "Internal WERN project · full stack",
+      es: "Proyecto interno de WERN · full stack",
+    },
+    published: "2026-10-27",
+    updated: "2026-10",
+    chapters: [
+      {
+        heading: { en: "What it is", es: "Qué es" },
+        blocks: [
+          {
+            type: "p",
+            text: {
+              en: "In Managua a small business that delivers, a bakery or a corner shop, usually runs on phone calls and chat messages: someone with a motorbike, a customer waiting without knowing when, and nobody with a record of what went where. Bidali gives the three of them one place.",
+              es: "En Managua, un negocio pequeño que reparte, una panadería o una pulpería, suele funcionar a base de llamadas y mensajes: alguien con una moto, un cliente que espera sin saber cuándo, y nadie con un registro de qué fue a dónde. Bidali les da a los tres un solo lugar.",
+            },
+          },
+          {
+            type: "list",
+            items: {
+              en: [
+                "**The business** creates orders in five steps: customer, destination on the map, products, how it gets paid and a summary. Shipping is quoted by distance before the order exists. It then confirms, prepares and publishes, and watches each order move on a timeline with its charges and part payments.",
+                "**The courier** signs up with a vehicle and documents, sees the orders published near their last position, takes as many as their quota allows, plans the route and records every pickup and delivery, with a photo at the door.",
+                "**The customer** opens a link, types the code the business gave them and the phone number they gave the business, and sees a three-step status, the courier on the map while the order is on its way and an arrival estimate when they are the next stop.",
+                "**The platform** has an admin side: an inbox of problem reports, orders that could not be delivered, business suspensions and support cases with notes and a global search.",
+              ],
+              es: [
+                "**El negocio** crea pedidos en cinco pasos: cliente, destino en el mapa, productos, cómo se cobra y un resumen. El envío se cotiza por distancia antes de que el pedido exista. Luego confirma, prepara y publica, y ve cada pedido avanzar en una línea de tiempo con sus cobros y abonos.",
+                "**El repartidor** se registra con un vehículo y documentos, ve los pedidos publicados cerca de su última posición, toma hasta donde le alcance el cupo, arma la ruta y registra cada recogida y cada entrega, con una foto en la puerta.",
+                "**El cliente** abre un enlace, escribe el código que le dio el negocio y el teléfono que le dio al negocio, y ve el estado en tres pasos, al repartidor en el mapa mientras el pedido va en camino y una estimación de llegada cuando es la próxima parada.",
+                "**La plataforma** tiene un lado de administración: una bandeja de reportes, los pedidos que no se pudieron entregar, suspensiones de negocios y casos de soporte con notas y una búsqueda global.",
+              ],
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "Prices are in córdobas, with dollars converted at the Central Bank's daily rate, and the maps of Managua ship inside the app so they work without a signal. Spanish is the first language and English the second, with every string of the interface in both.",
+              es: "Los precios van en córdobas, con dólares convertidos a la tasa diaria del Banco Central, y los mapas de Managua viajan dentro de la app para que funcionen sin señal. El español es el primer idioma y el inglés el segundo, con cada texto de la interfaz en los dos.",
+            },
+          },
+          {
+            type: "figure",
+            image: bdOrderDestination,
+            alt: {
+              en: "The business web app, step two of a new order: a map of Managua with a pin on the destination, a field for directions to the door and a Next button",
+              es: "La app web del negocio, paso dos de un pedido nuevo: un mapa de Managua con un pin en el destino, un campo para la referencia de llegada y un botón de Siguiente",
+            },
+            caption: {
+              en: "A new order, step two: the destination is a pin on the map plus a line of directions, the way addresses work in Nicaragua.",
+              es: "Un pedido nuevo, paso dos: el destino es un pin en el mapa más una referencia, que es como funcionan las direcciones en Nicaragua.",
+            },
+          },
+          {
+            type: "clip",
+            src: "/work/bidali/business-order",
+            width: 1512,
+            height: 806,
+            alt: {
+              en: "Screen recording of the business web app: choosing the destination on the map, adding two products, the order summary, confirming and sliding to publish, then the order's detail with its charges and timeline",
+              es: "Grabación de pantalla de la app web del negocio: elegir el destino en el mapa, agregar dos productos, el resumen del pedido, confirmar y deslizar para publicar, y después el detalle del pedido con sus cobros y su línea de tiempo",
+            },
+            caption: {
+              en: "From the map to a published order, in the business web app. Publishing and cancelling are slide-to-confirm, so a thumb cannot do either by accident.",
+              es: "Del mapa a un pedido publicado, en la app web del negocio. Publicar y cancelar se confirman deslizando, para que un pulgar no haga ninguna de las dos por accidente.",
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "There is a video of an early build in the links above: three businesses publish an order each on the iPhone simulator, one courier takes the three, runs the route and delivers them, and halfway through the customer tracks their order from a browser.",
+              es: "En los enlaces de arriba hay un video de una versión temprana: tres negocios publican un pedido cada uno en el simulador de iPhone, un repartidor toma los tres, recorre la ruta y los entrega, y a mitad del camino el cliente rastrea su pedido desde el navegador.",
+            },
+          },
+        ],
+      },
+      {
+        heading: {
+          en: "A delivery, end to end",
+          es: "Un pedido de punta a punta",
+        },
+        blocks: [
+          {
+            type: "p",
+            text: {
+              en: "An order is a state machine with nine states and fifteen allowed moves, written once as a pure function and tested against all eighty-one pairs. A draft is never a destination again, delivered and cancelled are final, and exactly one place in the API can write “published” and one can write “failed”. Every move leaves an event in an append-only log that both the business and the admin can read.",
+              es: "Un pedido es una máquina de estados con nueve estados y quince movimientos permitidos, escrita una sola vez como función pura y probada contra los ochenta y un pares posibles. Un borrador nunca vuelve a ser destino, entregado y cancelado son finales, y exactamente un lugar de la API puede escribir «publicado» y uno «fallido». Cada movimiento deja un evento en una bitácora de solo escritura que leen el negocio y la administración.",
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "**The pool.** A published order appears to the couriers whose last fresh position is within the platform's radius of the pickup point, a PostGIS query over the courier's reported location. Couriers the business has marked as trusted see it first, for a short head start; then everyone with room in their quota. Taking is atomic: two couriers cannot end up with the same order, and the quota is checked in the same transaction.",
+              es: "**El pool.** Un pedido publicado les aparece a los repartidores cuya última posición fresca cae dentro del radio de la plataforma alrededor del punto de retiro, una consulta PostGIS sobre la ubicación que reportan. Los repartidores que el negocio marcó como de confianza lo ven primero, con una ventaja corta; después, todos los que tengan cupo. Tomar es atómico: dos repartidores no pueden quedarse con el mismo pedido, y el cupo se comprueba en la misma transacción.",
+            },
+          },
+          {
+            type: "figure",
+            image: bdPool,
+            alt: {
+              en: "A frame of the video: the courier's home screen on an iPhone with two nearby orders, each with its pickup and delivery points and a Take order button, next to the title “Take the nearby orders”",
+              es: "Un cuadro del video: el inicio del repartidor en un iPhone con dos pedidos cercanos, cada uno con su punto de retiro y de entrega y un botón de Tomar pedido, junto al título «Tomar los pedidos cercanos»",
+            },
+            caption: {
+              en: "The courier's home: the orders within reach, each with where to pick up, where to deliver and what it pays.",
+              es: "El inicio del repartidor: los pedidos al alcance, cada uno con dónde recoger, dónde entregar y cuánto paga.",
+            },
+          },
+          {
+            type: "figure",
+            image: bdRoutePlan,
+            alt: {
+              en: "A frame of the video: the route preparation screen with six stops numbered on a map of Managua and the recommended order below, next to the title “Prepare the route”",
+              es: "Un cuadro del video: la pantalla de preparar la ruta con seis paradas numeradas sobre un mapa de Managua y el orden recomendado debajo, junto al título «Preparar la ruta»",
+            },
+            caption: {
+              en: "Three orders, six stops. The recommended order comes from Mapbox; the courier can drag it into another one.",
+              es: "Tres pedidos, seis paradas. El orden recomendado sale de Mapbox; el repartidor puede arrastrarlo a otro.",
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "**The route.** With one or more orders taken, the courier asks for a recommended order of stops, built with Mapbox's Optimization API, and can reorder it by hand, with the rule that a delivery can never be placed before its pickup. The route itself comes from the Directions API and is redrawn when the courier strays more than a block and a half from it. “Open in” hands the next stop to Waze, Google Maps or Apple Maps. None of what Mapbox returns is stored, because its terms forbid it, so the API applies floors and coalesces requests instead of caching.",
+              es: "**La ruta.** Con uno o más pedidos tomados, el repartidor pide un orden recomendado de paradas, armado con la API de Optimization de Mapbox, y puede reordenarlo a mano, con la regla de que una entrega nunca puede quedar antes de su recogida. La ruta en sí sale de la API de Directions y se retraza cuando el repartidor se aleja más de cuadra y media. «Abrir en» le pasa la próxima parada a Waze, Google Maps o Apple Maps. Nada de lo que devuelve Mapbox se guarda, porque sus términos lo prohíben, así que la API pone pisos y agrupa peticiones en vez de cachear.",
+            },
+          },
+          {
+            type: "clip",
+            src: "/work/bidali/courier-app",
+            width: 392,
+            height: 806,
+            alt: {
+              en: "Screen recording of the courier app on a phone: switching to the courier profile, the nearby orders, taking one, the ready-to-go card, the route map with the next stop, and the delivery sheet asking for a photo",
+              es: "Grabación de pantalla de la app del repartidor en un teléfono: cambiar al perfil de repartidor, los pedidos cercanos, tomar uno, la tarjeta de listo para salir, el mapa de la ruta con la próxima parada y la hoja de entrega pidiendo una foto",
+            },
+            caption: {
+              en: "The courier app, from the pool to the door. Same account, same app as the business: a pill at the top switches profiles.",
+              es: "La app del repartidor, del pool a la puerta. Misma cuenta y misma app que el negocio: una píldora arriba cambia de perfil.",
+            },
+          },
+          {
+            type: "figure",
+            image: bdDeliver,
+            alt: {
+              en: "A frame of the video: the route map with the courier at a delivery stop, the customer's name and address, the amount to collect and a Deliver button, next to the title “Deliver to Ana Gutiérrez”",
+              es: "Un cuadro del video: el mapa de la ruta con el repartidor en una parada de entrega, el nombre y la dirección del cliente, el monto a cobrar y un botón de Entregar, junto al título «Entregar a Ana Gutiérrez»",
+            },
+            caption: {
+              en: "A delivery stop: who, where, how much to collect. Delivering requires a photo; it is the business's proof.",
+              es: "Una parada de entrega: quién, dónde, cuánto cobrar. Entregar exige una foto; es la constancia del negocio.",
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "**The customer.** Tracking needs no account: the order's code in the URL and the last eight digits of the phone number in a header. Anything that does not match gets the same opaque 404, and the endpoint has its own rate limit per code. The courier's position is shown only while the order is in transit and only while it is fresh, and the route to the door only when this customer is the next stop. The page polls every fifteen seconds and offers one button, “my order is not moving”, which files a report the admin sees.",
+              es: "**El cliente.** Rastrear no necesita cuenta: el código del pedido en la URL y los últimos ocho dígitos del teléfono en un header. Cualquier cosa que no calce recibe el mismo 404 opaco, y el endpoint tiene su propio límite de intentos por código. La posición del repartidor se muestra solo mientras el pedido va en camino y solo mientras es fresca, y la ruta hasta la puerta solo cuando este cliente es la próxima parada. La página consulta cada quince segundos y ofrece un solo botón, «mi pedido no avanza», que deja un reporte que ve la administración.",
+            },
+          },
+          {
+            type: "figure",
+            image: bdTracking,
+            alt: {
+              en: "The public tracking page: a card with “Your order is on its way”, the three-step status, the courier's name with a Call button and a report button, over a map of Managua with the courier's position",
+              es: "La página pública de rastreo: una tarjeta con «Tu pedido va en camino», el estado en tres pasos, el nombre del repartidor con un botón de Llamar y un botón de reportar, sobre un mapa de Managua con la posición del repartidor",
+            },
+            caption: {
+              en: "Tracking, from the browser: status, courier, a call button and the map, with nothing personal in the link.",
+              es: "Rastreo desde el navegador: estado, repartidor, un botón para llamar y el mapa, sin nada personal en el enlace.",
+            },
+          },
+          {
+            type: "figure",
+            image: bdOrderDetail,
+            alt: {
+              en: "The business web app, an order's detail: the total, what has been paid and what is still owed, a part-payments section and a timeline of confirmed, preparing and published, with a toast saying the order is published and couriers nearby can see it",
+              es: "La app web del negocio, el detalle de un pedido: el total, lo pagado y lo que falta cobrar, una sección de abonos y una línea de tiempo con confirmado, en preparación y publicado, con un aviso de que el pedido está publicado y los repartidores cercanos lo ven",
+            },
+            caption: {
+              en: "Back at the business: the order's money and its timeline. Part payments are an append-only ledger, so a total never drops below what was paid.",
+              es: "De vuelta en el negocio: el dinero del pedido y su línea de tiempo. Los abonos son un libro de solo escritura, así que un total nunca baja de lo pagado.",
+            },
+          },
+        ],
+      },
+      {
+        heading: {
+          en: "Built to lose signal",
+          es: "Hecho para perder señal",
+        },
+        blocks: [
+          {
+            type: "p",
+            text: {
+              en: "A courier loses coverage exactly where the work is. So the three things that happen on the street, “picked up”, “delivered” and “report a problem”, work without a network: the app records the action on the phone at the moment of the gesture and sends it by itself when the signal returns.",
+              es: "Un repartidor pierde la señal justo donde está el trabajo. Así que las tres cosas que pasan en la calle, «ya lo recogí», «entregar» y «reportar un problema», funcionan sin red: la app anota la acción en el teléfono en el momento del gesto y la manda sola cuando vuelve la señal.",
+            },
+          },
+          {
+            type: "list",
+            items: {
+              en: [
+                "**Each action is sealed when it happens.** It gets an identifier and a timestamp at the tap, before any request, and every retry sends the same two. The API treats the batch as idempotent per user and action, applies the actions in order, and when two devices disagree the later change wins and the conflict is written to the audit log rather than hidden.",
+                "**The photo goes first.** It is shrunk on the phone to a few hundred kilobytes before anything else, stored with the queued delivery, and uploaded before the delivery itself is sent. Its upload timeout grows with its size, so a slow connection gets a fair chance instead of a fixed cutoff.",
+                "**The map never goes blank.** When there is a key and a signal, the maps are Mapbox GL with its 3D buildings; when there is not, MapLibre draws the same screen from a tile file of Managua that ships inside the app, styled from the same design tokens.",
+                "**A push is a shortcut, never the truth.** Each change of state writes its notifications into an outbox in the same transaction, so a reverted change never sends one. The apps keep polling, just four times more spaced when they have permission for push.",
+              ],
+              es: [
+                "**Cada acción se sella cuando ocurre.** Recibe un identificador y una hora en el toque, antes de cualquier petición, y cada reintento manda los mismos dos. La API trata el lote como idempotente por usuario y acción, aplica las acciones en orden, y cuando dos dispositivos no coinciden gana el cambio posterior y el conflicto queda en la bitácora en vez de esconderse.",
+                "**La foto va primero.** Se achica en el teléfono a unos cientos de kilobytes antes que nada, se guarda junto a la entrega en cola y sube antes de que se mande la entrega. Su tiempo de espera crece con su tamaño, así que una conexión lenta tiene una oportunidad justa en vez de un corte fijo.",
+                "**El mapa nunca se queda en blanco.** Con llave y señal, los mapas son Mapbox GL con sus edificios en 3D; sin ellas, MapLibre dibuja la misma pantalla desde un archivo de teselas de Managua que viaja dentro de la app, pintado con los mismos tokens de diseño.",
+                "**Un push es un atajo, nunca la verdad.** Cada cambio de estado escribe sus avisos en una bandeja de salida en la misma transacción, así que un cambio revertido nunca manda uno. Las apps siguen consultando, solo que cuatro veces más espaciado cuando tienen permiso de push.",
+              ],
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "On iOS and Android the position keeps reporting with the app in the background, through a Swift plugin and an Android foreground service, each written for this project and reporting under a token that is only valid for the current trip.",
+              es: "En iOS y Android la posición sigue reportándose con la app en segundo plano, a través de un plugin en Swift y un servicio en primer plano de Android, escritos para este proyecto y reportando con un token que solo vale para el recorrido en curso.",
+            },
+          },
+          {
+            type: "clip",
+            src: "/work/bidali/tracking",
+            width: 1512,
+            height: 806,
+            alt: {
+              en: "Screen recording of the public tracking page: typing the order code and the phone number, then the order's status over the map with the courier's position",
+              es: "Grabación de pantalla de la página pública de rastreo: escribir el código del pedido y el teléfono, y después el estado del pedido sobre el mapa con la posición del repartidor",
+            },
+            caption: {
+              en: "The customer's side: a code and a phone number, then the map.",
+              es: "El lado del cliente: un código y un teléfono, y después el mapa.",
+            },
+          },
+        ],
+      },
+      {
+        heading: { en: "Architecture", es: "Arquitectura" },
+        blocks: [
+          {
+            type: "p",
+            text: {
+              en: "One API, one front end, three platforms. The front end is a single SvelteKit app compiled as a static SPA: in the browser it is served from Firebase Hosting, and on iOS and Android the same build ships inside a Tauri shell with native plugins for what the web cannot do. Everything that runs on a server is in Google Cloud, declared in Terraform.",
+              es: "Una API, un front end, tres plataformas. El front end es una sola app en SvelteKit compilada como SPA estática: en el navegador se sirve desde Firebase Hosting, y en iOS y Android el mismo build viaja dentro de un cascarón de Tauri con plugins nativos para lo que la web no puede hacer. Todo lo que corre en un servidor está en Google Cloud, declarado en Terraform.",
+            },
+          },
+          {
+            type: "diagram",
+            tiers: [
+              {
+                label: {
+                  en: "Clients · one SvelteKit codebase",
+                  es: "Clientes · un solo código SvelteKit",
+                },
+                boxes: [
+                  {
+                    name: "Web · Firebase Hosting",
+                    note: {
+                      en: "Static SPA for businesses, couriers, admin, public tracking and the legal pages.",
+                      es: "SPA estática para negocios, repartidores, administración, rastreo público y páginas legales.",
+                    },
+                  },
+                  {
+                    name: "iOS · Tauri",
+                    note: {
+                      en: "Same build in a native shell; Swift plugins for background location and push.",
+                      es: "El mismo build en un cascarón nativo; plugins en Swift para ubicación en segundo plano y push.",
+                    },
+                  },
+                  {
+                    name: "Android · Tauri",
+                    note: {
+                      en: "Same build; a foreground service for location and Firebase Messaging.",
+                      es: "El mismo build; un servicio en primer plano para la ubicación y Firebase Messaging.",
+                    },
+                  },
+                ],
+              },
+              {
+                label: {
+                  en: "Google Cloud · all of it in Terraform",
+                  es: "Google Cloud · todo en Terraform",
+                },
+                chain: {
+                  label: {
+                    en: "Compute Engine VM · Docker Compose",
+                    es: "VM de Compute Engine · Docker Compose",
+                  },
+                  boxes: [
+                    {
+                      name: "Caddy",
+                      note: {
+                        en: "TLS and the only ports open to the internet.",
+                        es: "TLS y los únicos puertos abiertos a internet.",
+                      },
+                    },
+                    {
+                      name: "API · Rust · Axum",
+                      note: {
+                        en: "The modular monolith and its background jobs: push outbox, exchange rate, batches.",
+                        es: "El monolito modular y sus tareas de fondo: bandeja de push, tasa de cambio, lotes.",
+                      },
+                    },
+                    {
+                      name: "PostgreSQL · PostGIS",
+                      note: {
+                        en: "On a persistent disk that outlives the VM; the pool's geography lives here.",
+                        es: "En un disco persistente que sobrevive a la VM; la geografía del pool vive aquí.",
+                      },
+                    },
+                  ],
+                },
+                boxes: [
+                  {
+                    name: "Firebase Auth · Cloud Messaging",
+                    note: {
+                      en: "Sign-in with Google and email; the API verifies the ID tokens itself. Push to the three platforms.",
+                      es: "Acceso con Google y correo; la API verifica los ID tokens por su cuenta. Push a las tres plataformas.",
+                    },
+                  },
+                  {
+                    name: "Cloud Storage",
+                    note: {
+                      en: "A daily logical backup of the database, written by a timer the VM cannot read back or delete.",
+                      es: "Una copia lógica diaria de la base, escrita por un temporizador que la VM no puede leer ni borrar.",
+                    },
+                  },
+                  {
+                    name: "Artifact Registry · IAP",
+                    note: {
+                      en: "The API image, pinned by digest; SSH only through Identity-Aware Proxy.",
+                      es: "La imagen de la API, fijada por digest; SSH solo a través de Identity-Aware Proxy.",
+                    },
+                  },
+                ],
+              },
+              {
+                label: {
+                  en: "Outside Google Cloud",
+                  es: "Fuera de Google Cloud",
+                },
+                boxes: [
+                  {
+                    name: "Mapbox",
+                    note: {
+                      en: "Directions and Optimization for the courier's route; nothing it returns is stored.",
+                      es: "Directions y Optimization para la ruta del repartidor; nada de lo que devuelve se guarda.",
+                    },
+                  },
+                  {
+                    name: "Bunny Storage · CDN",
+                    note: {
+                      en: "Delivery photos and courier documents, bytes checked against their declared type.",
+                      es: "Fotos de entrega y documentos del repartidor, con los bytes verificados contra su tipo declarado.",
+                    },
+                  },
+                  {
+                    name: "Banco Central de Nicaragua",
+                    note: {
+                      en: "The daily córdoba-dollar rate, refreshed in the background from its SOAP service.",
+                      es: "La tasa diaria córdoba-dólar, refrescada en segundo plano desde su servicio SOAP.",
+                    },
+                  },
+                ],
+              },
+            ],
+            links: {
+              en: [
+                "HTTPS · JSON, with a Firebase ID token on every request",
+                "Called by the API, never by the apps",
+              ],
+              es: [
+                "HTTPS · JSON, con un ID token de Firebase en cada petición",
+                "Lo llama la API, nunca las apps",
+              ],
+            },
+            alt: {
+              en: "Architecture map of Bidali: three clients built from one SvelteKit codebase (web on Firebase Hosting, iOS and Android through Tauri) call over HTTPS a Compute Engine VM in Google Cloud running Caddy, the Rust and Axum API and PostgreSQL with PostGIS, beside Firebase Auth and Cloud Messaging, Cloud Storage for backups and Artifact Registry; the API alone calls Mapbox, Bunny Storage and the Central Bank of Nicaragua",
+              es: "Mapa de arquitectura de Bidali: tres clientes hechos de un solo código SvelteKit (web en Firebase Hosting, iOS y Android a través de Tauri) llaman por HTTPS a una VM de Compute Engine en Google Cloud que corre Caddy, la API en Rust y Axum y PostgreSQL con PostGIS, junto a Firebase Auth y Cloud Messaging, Cloud Storage para copias y Artifact Registry; solo la API llama a Mapbox, Bunny Storage y el Banco Central de Nicaragua",
+            },
+            caption: {
+              en: "The map. Top to bottom is the way a request travels; the apps only ever talk to Firebase and to the API.",
+              es: "El mapa. De arriba abajo es el camino de una petición; las apps solo hablan con Firebase y con la API.",
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "**The API is a modular monolith in Rust**, cut by business capability rather than by technical layer: orders, couriers, incidents, memberships, sync, audit, admin and so on, each slice owning its routes, its types, its logic and its SQL, over a kernel that knows how to verify a token or talk to PostGIS but never what an owner may do. Every route is registered together with its OpenAPI documentation, so an endpoint cannot be missing from the spec without the build noticing.",
+              es: "**La API es un monolito modular en Rust**, cortado por capacidad de negocio y no por capa técnica: pedidos, repartidores, incidentes, membresías, sincronización, bitácora, administración y demás, cada rebanada dueña de sus rutas, sus tipos, su lógica y su SQL, sobre un kernel que sabe verificar un token o hablar con PostGIS pero nunca qué puede hacer un dueño. Cada ruta se registra junto con su documentación OpenAPI, así que un endpoint no puede faltar en el spec sin que el build lo note.",
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "**Identity is Firebase's, authorisation is the API's.** The apps sign in with Firebase and send its ID token; the API verifies the signature against Google's keys, creates the user on first sight and then decides everything else itself. Which business a request is about comes from the path, never from the token, and five typed guards resolve who is calling: a bare token, a user, a member of this business, a courier, a platform admin. Each returns the same opaque answer to anyone who does not qualify.",
+              es: "**La identidad es de Firebase; la autorización, de la API.** Las apps entran con Firebase y mandan su ID token; la API verifica la firma contra las llaves de Google, crea al usuario la primera vez que lo ve y de ahí en adelante decide todo lo demás por su cuenta. De qué negocio trata una petición sale del path, nunca del token, y cinco guardas tipadas resuelven quién llama: un token suelto, un usuario, un miembro de este negocio, un repartidor, un administrador de la plataforma. Cada una devuelve la misma respuesta opaca a quien no califica.",
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "**The cloud is sized for a pilot and written to grow.** One small VM in Google Cloud runs three containers behind Caddy, with the database on its own persistent disk, a daily dump to Cloud Storage and a deploy script that refuses to update without a fresh backup. Only HTTPS is open; administration goes through Identity-Aware Proxy. The Terraform has its own tests against a mock provider, so the firewall, the deletion protections and the cost defaults are checked before any real account is touched. When the load justifies it, the database moves to Cloud SQL without the API noticing.",
+              es: "**La nube está dimensionada para un piloto y escrita para crecer.** Una VM pequeña en Google Cloud corre tres contenedores detrás de Caddy, con la base en su propio disco persistente, un volcado diario a Cloud Storage y un script de despliegue que se niega a actualizar sin una copia fresca. Solo HTTPS está abierto; la administración pasa por Identity-Aware Proxy. El Terraform tiene sus propias pruebas contra un proveedor simulado, así que el firewall, las protecciones contra borrado y los costos por defecto se comprueban antes de tocar una cuenta real. Cuando la carga lo justifique, la base pasa a Cloud SQL sin que la API se entere.",
+            },
+          },
+          {
+            type: "sheet",
+            rows: [
+              {
+                name: "Rust · Axum · SeaORM",
+                why: {
+                  en: "The API: around eighty routes, a typed state machine, migrations in the same workspace, rate limits per IP in three buckets and Swagger UI generated from the code.",
+                  es: "La API: unas ochenta rutas, una máquina de estados tipada, migraciones en el mismo workspace, límites por IP en tres cubetas y Swagger UI generado desde el código.",
+                },
+              },
+              {
+                name: "PostgreSQL · PostGIS",
+                why: {
+                  en: "Orders, trips, positions and the audit log. The pool is a radius query over the couriers' last fresh position; money is decimal, never float.",
+                  es: "Pedidos, recorridos, posiciones y la bitácora. El pool es una consulta por radio sobre la última posición fresca de los repartidores; el dinero es decimal, nunca float.",
+                },
+              },
+              {
+                name: "SvelteKit 5 · TanStack Query",
+                why: {
+                  en: "One static SPA with runes for local state and TanStack Query for the server's; forms validated with Zod on both sides and shadcn-svelte primitives for the UI.",
+                  es: "Una sola SPA estática con runes para el estado local y TanStack Query para el del servidor; formularios validados con Zod en ambos lados y primitivas de shadcn-svelte para la interfaz.",
+                },
+              },
+              {
+                name: "Tauri 2 · Swift · Kotlin",
+                why: {
+                  en: "The native shells for iOS and Android, with three plugins written for the project: background location, push messaging and turn-by-turn navigation hand-off.",
+                  es: "Los cascarones nativos de iOS y Android, con tres plugins escritos para el proyecto: ubicación en segundo plano, mensajería push y entrega de la navegación paso a paso.",
+                },
+              },
+              {
+                name: "Firebase",
+                why: {
+                  en: "Auth for sign-in on the three platforms, Cloud Messaging for push and Hosting for the web build, with a content security policy that allows exactly the hashes SvelteKit emits.",
+                  es: "Auth para el acceso en las tres plataformas, Cloud Messaging para push y Hosting para el build web, con una política de seguridad de contenido que permite exactamente los hashes que emite SvelteKit.",
+                },
+              },
+              {
+                name: "Mapbox · MapLibre · Protomaps",
+                why: {
+                  en: "Mapbox for routes and the online map, MapLibre over an embedded Protomaps tile file of Managua for the offline one, both painted from the same tokens.",
+                  es: "Mapbox para las rutas y el mapa en línea, MapLibre sobre un archivo de teselas de Protomaps de Managua para el mapa sin conexión, los dos pintados desde los mismos tokens.",
+                },
+              },
+              {
+                name: "Dexie · IndexedDB",
+                why: {
+                  en: "The offline queue, one per account on the device, and the draft of an order the business was writing when the app closed.",
+                  es: "La cola sin conexión, una por cuenta en el dispositivo, y el borrador del pedido que el negocio estaba escribiendo cuando se cerró la app.",
+                },
+              },
+              {
+                name: "Google Cloud · Terraform · Docker",
+                why: {
+                  en: "Compute Engine, Cloud Storage, Artifact Registry and Firebase Hosting as code, in four Terraform roots with their own tests; Compose for the VM and for the local stack.",
+                  es: "Compute Engine, Cloud Storage, Artifact Registry y Firebase Hosting como código, en cuatro raíces de Terraform con sus propias pruebas; Compose para la VM y para el stack local.",
+                },
+              },
+              {
+                name: "Bunny Storage",
+                why: {
+                  en: "Object storage and CDN for photos and documents, behind a storage trait with a local implementation for development.",
+                  es: "Almacenamiento de objetos y CDN para fotos y documentos, detrás de un trait de almacenamiento con una implementación local para desarrollo.",
+                },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        heading: {
+          en: "How it is kept honest",
+          es: "Cómo se mantiene honesto",
+        },
+        blocks: [
+          {
+            type: "p",
+            text: {
+              en: "A delivery platform fails in the details: a payment counted twice, an order taken by two couriers, a delivery recorded without a photo. So the tests are less about coverage than about promises.",
+              es: "Una plataforma de entregas falla en los detalles: un abono contado dos veces, un pedido tomado por dos repartidores, una entrega registrada sin foto. Así que las pruebas van menos de cobertura que de promesas.",
+            },
+          },
+          {
+            type: "list",
+            items: {
+              en: [
+                "**Every change starts as a spec.** Both repositories use OpenSpec: a change is a written proposal with requirements, decisions and the alternatives that lost, and the tasks are checked off against it before the pull request. The specs are the documentation that stays true.",
+                "**The API is tested at four layers.** Unit tests next to the code, integration tests against a real PostGIS in Docker, end-to-end tests over the real router on a socket, and architecture sweeps that read the source as text and fail the build if a rule is broken: one writer for each terminal state, no handler composing its own queries, every transition through the pure function.",
+                "**The front end is tested as a product.** Around a thousand unit and component tests, a few hundred Playwright flows with the backend and Firebase simulated, full-stack runs against the real API for the offline paths, mutation testing to check that the tests would notice, and a check that no string of the interface escapes the translation files.",
+                "**Nothing merges without the hooks.** Formatting, linting, type checks and the unit suites run locally on every commit, with the same jobs in CI.",
+              ],
+              es: [
+                "**Cada cambio empieza como un spec.** Los dos repositorios usan OpenSpec: un cambio es una propuesta escrita con requisitos, decisiones y las alternativas que perdieron, y las tareas se tachan contra ella antes del pull request. Los specs son la documentación que sigue siendo cierta.",
+                "**La API se prueba en cuatro capas.** Pruebas unitarias junto al código, de integración contra un PostGIS real en Docker, de punta a punta sobre el router real en un socket, y barridos de arquitectura que leen el código como texto y hacen fallar el build si se rompe una regla: un solo escritor por cada estado terminal, ningún handler armando sus propias consultas, toda transición por la función pura.",
+                "**El front end se prueba como producto.** Alrededor de mil pruebas unitarias y de componente, unos cientos de flujos en Playwright con el backend y Firebase simulados, corridas full-stack contra la API real para los caminos sin conexión, pruebas de mutación para comprobar que las pruebas se darían cuenta, y una comprobación de que ningún texto de la interfaz se escapa de los archivos de traducción.",
+                "**Nada entra sin los hooks.** Formato, lint, tipos y las suites unitarias corren en local en cada commit, con los mismos trabajos en CI.",
+              ],
+            },
+          },
+        ],
+      },
+      {
+        heading: { en: "What I took from it", es: "Lo que me llevo" },
+        blocks: [
+          {
+            type: "list",
+            items: {
+              en: [
+                "**Put the invariant in one place and guard it with a test that reads the code.** The order's state machine is a pure function, and a sweep over the source makes sure nobody writes around it. That is cheaper than a hexagonal architecture and catches the same mistakes.",
+                "**Offline is a requirement, not a feature.** Deciding at the start that a tap is sealed on the device, with its own identity and time, shaped the API's batches, the audit log and the photo pipeline. Bolting it on later would have meant redoing all three.",
+                "**A provider's terms are part of the design.** Mapbox does not allow its routes to be stored, so the API never caches them: it waits a minimum time between requests for the same trip and merges requests that arrive together into one call. Reading the terms before writing the code avoided building a cache that would have had to come out.",
+                "**One codebase for three platforms holds up if the native edge is thin.** Tauri gave the web app a phone body; what needed to be native, location in the background and push, became three small plugins instead of a second app.",
+              ],
+              es: [
+                "**Poner el invariante en un solo lugar y cuidarlo con una prueba que lee el código.** La máquina de estados del pedido es una función pura, y un barrido sobre el código fuente se asegura de que nadie escriba por fuera. Es más barato que una arquitectura hexagonal y atrapa los mismos errores.",
+                "**Sin conexión es un requisito, no una función.** Decidir desde el inicio que un toque se sella en el dispositivo, con su propia identidad y su hora, moldeó los lotes de la API, la bitácora y la tubería de fotos. Agregarlo después habría sido rehacer las tres.",
+                "**Los términos de un proveedor son parte del diseño.** Mapbox no permite guardar sus rutas, así que la API nunca las cachea: espera un tiempo mínimo entre peticiones del mismo recorrido y junta las que llegan a la vez en una sola llamada. Leer los términos antes de escribir el código evitó construir un caché que después habría que sacar.",
+                "**Un solo código para tres plataformas aguanta si el borde nativo es delgado.** Tauri le dio cuerpo de teléfono a la app web; lo que tenía que ser nativo, ubicación en segundo plano y push, se volvió tres plugins pequeños en vez de una segunda app.",
+              ],
+            },
+          },
+          {
+            type: "p",
+            text: {
+              en: "Bidali is on its way to launch: the Google Cloud infrastructure is written and tested, the web build is ready for Firebase Hosting, iOS runs the whole flow in the simulator and Android has a signed build.",
+              es: "Bidali va camino al lanzamiento: la infraestructura en Google Cloud está escrita y probada, el build web está listo para Firebase Hosting, iOS corre el flujo completo en el simulador y Android tiene un build firmado.",
+            },
+          },
+        ],
+      },
+    ],
+  },
   {
     slug: "interview-agent",
     lead: {
@@ -590,7 +1179,12 @@ export function readingMinutes(writeup: Writeup, lang: Lang): number {
       else if (block.type === "list") texts.push(...block.items[lang])
       else if (block.type === "figure" || block.type === "clip")
         texts.push(block.caption[lang])
-      else for (const row of block.rows) texts.push(row.name, row.why[lang])
+      else if (block.type === "diagram") {
+        texts.push(block.caption[lang], ...block.links[lang])
+        for (const tier of block.tiers)
+          for (const box of [...(tier.chain?.boxes ?? []), ...tier.boxes])
+            texts.push(box.name, box.note[lang])
+      } else for (const row of block.rows) texts.push(row.name, row.why[lang])
     }
   }
   const words = texts.join(" ").split(/\s+/).filter(Boolean).length
