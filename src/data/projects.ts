@@ -29,19 +29,19 @@ export const projects: readonly Project[] = [
     title: "Bidali",
     year: "2026",
     summary: {
-      en: "Last-mile delivery for Nicaragua, an internal WERN product. Businesses publish orders, nearby couriers take them from a pool and run the route, and the customer follows the delivery from the browser with a code and a phone number.",
-      es: "Logística de última milla para Nicaragua, un producto interno de WERN. Los negocios publican pedidos, los repartidores cercanos los toman de un pool y recorren la ruta, y el cliente sigue la entrega desde el navegador con un código y su teléfono.",
+      en: "Home deliveries for Nicaragua, an internal WERN product. Businesses publish orders, nearby couriers deliver them and the customer follows the order on a map.",
+      es: "Entregas a domicilio para Nicaragua, un producto interno de WERN. Los negocios publican pedidos, los repartidores cercanos los entregan y el cliente sigue su pedido en un mapa.",
     },
     built: {
       en: [
-        "Rust and Axum API over PostgreSQL with PostGIS: a nine-state order machine, a proximity pool, offline batches and an append-only audit log.",
-        "One SvelteKit app for the web and, through Tauri, for iOS and Android, with native plugins for background location and push.",
-        "Google Cloud declared in Terraform, with Firebase for sign-in, Mapbox for routes and Bunny for photos and documents.",
+        "Rust and Axum API over PostgreSQL with PostGIS, designed to keep working when the courier loses signal.",
+        "One SvelteKit app for the web and, through Tauri, for iOS and Android.",
+        "Google Cloud declared in Terraform, with Firebase for sign-in, Mapbox for maps and Bunny for photos.",
       ],
       es: [
-        "API en Rust y Axum sobre PostgreSQL con PostGIS: una máquina de nueve estados para el pedido, un pool por cercanía, lotes sin conexión y una bitácora de solo escritura.",
-        "Una sola app en SvelteKit para la web y, a través de Tauri, para iOS y Android, con plugins nativos de ubicación en segundo plano y push.",
-        "Google Cloud declarado en Terraform, con Firebase para el acceso, Mapbox para las rutas y Bunny para fotos y documentos.",
+        "API en Rust y Axum sobre PostgreSQL con PostGIS, pensada para seguir funcionando cuando el repartidor pierde la señal.",
+        "Una sola app en SvelteKit para la web y, a través de Tauri, para iOS y Android.",
+        "Google Cloud declarado en Terraform, con Firebase para el acceso, Mapbox para los mapas y Bunny para las fotos.",
       ],
     },
     stack: [
@@ -62,19 +62,19 @@ export const projects: readonly Project[] = [
     title: "Interview Agent",
     year: "2026",
     summary: {
-      en: "Voice interview practice. It plans the interview from your CV and the job description, runs it live and grades every answer with evidence from the transcript.",
-      es: "Práctica de entrevistas por voz. Prepara la entrevista a partir del CV y la oferta, la conduce en vivo y califica cada respuesta con evidencia de la transcripción.",
+      en: "Practise job interviews by voice. It prepares the interview from your CV and the job offer, talks with you live and grades each answer using what you said.",
+      es: "Practica entrevistas de trabajo por voz. Prepara la entrevista con tu CV y la oferta, conversa contigo en vivo y califica cada respuesta con lo que dijiste.",
     },
     built: {
       en: [
-        "Three LangGraph agents split the work: a planner, an interviewer that talks over LiveKit and an evaluator.",
-        "React front end and FastAPI backend, with plans, transcripts and evaluations stored in PostgreSQL.",
-        "An unfinished interview still gets feedback on each criterion, but no overall score or verdict.",
+        "Three AI agents share the work: one plans, one interviews you by voice and one grades.",
+        "React web app and FastAPI API, with the data in PostgreSQL.",
+        "An unfinished interview still gets feedback per topic, but no overall score.",
       ],
       es: [
-        "Tres agentes en LangGraph se reparten el trabajo: un planificador, un entrevistador que habla por LiveKit y un evaluador.",
-        "Front end en React y backend en FastAPI, con planes, transcripciones y evaluaciones guardados en PostgreSQL.",
-        "Una entrevista incompleta también recibe feedback por criterio, aunque sin nota global ni veredicto.",
+        "Tres agentes de IA se reparten el trabajo: uno planifica, otro te entrevista por voz y otro califica.",
+        "App web en React y API en FastAPI, con los datos en PostgreSQL.",
+        "Una entrevista incompleta igual recibe comentarios por tema, pero sin nota global.",
       ],
     },
     stack: ["React", "FastAPI", "LangGraph", "LiveKit", "OpenAI", "PostgreSQL"],
@@ -88,19 +88,19 @@ export const projects: readonly Project[] = [
     title: "Portfolio",
     year: "2026",
     summary: {
-      en: "This site: a static, bilingual portfolio laid out like an album booklet. It moves as you scroll and settles into a still page when motion isn't available.",
-      es: "Este mismo sitio: un portfolio estático y bilingüe pensado como el libreto de un disco. Se anima al hacer scroll y, si el movimiento no está disponible, queda como una página quieta.",
+      en: "This site: a bilingual portfolio designed like an album booklet. It animates as you scroll and stays still when motion is turned off.",
+      es: "Este mismo sitio: un portfolio bilingüe diseñado como el libreto de un disco. Se anima al hacer scroll y se queda quieto si el movimiento está desactivado.",
     },
     built: {
       en: [
-        "Static Astro build with English and Spanish routes and a view transition when you switch languages.",
-        "Every section shares one type scale and one vertical rhythm.",
-        "GSAP motion as progressive enhancement: with JavaScript off or reduced motion on, nothing moves.",
+        "Built with Astro, in English and Spanish.",
+        "Every section uses the same type sizes and spacing.",
+        "GSAP animations that switch off without JavaScript or with reduced motion.",
       ],
       es: [
-        "Build estático en Astro con rutas en inglés y español y una view transition al cambiar de idioma.",
-        "Todas las secciones comparten una sola escala tipográfica y un mismo ritmo vertical.",
-        "Movimiento con GSAP como mejora progresiva: sin JavaScript o con movimiento reducido, nada se mueve.",
+        "Hecho con Astro, en inglés y español.",
+        "Todas las secciones usan los mismos tamaños de letra y espacios.",
+        "Animaciones con GSAP que se apagan sin JavaScript o con movimiento reducido.",
       ],
     },
     stack: ["Astro", "TypeScript", "Tailwind CSS", "GSAP"],

@@ -21,7 +21,6 @@ import { getImage, Picture } from "astro:assets"
 import BracketLink from "@/components/hero/BracketLink.astro"
 import Diamond from "@/components/hero/Diamond.astro"
 import StackLine from "@/components/sections/StackLine.astro"
-import ArchitectureMap from "./ArchitectureMap.astro"
 import Carousel from "./Carousel.astro"
 import Plate from "./Plate.astro"
 import YouTube from "./YouTube.astro"
@@ -209,7 +208,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
             data-zoom="image"
             data-zoom-src={coverFull.src}
             data-zoom-alt={cover.alt[lang]}
-            data-zoom-caption={cover.alt[lang]}
           >
             <svg
               class="cover-zoom-icon"
@@ -285,7 +283,7 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     </div>
   </header>
 
-  <div class="writeup-body tone-paper px-gutter py-section sm:px-6 lg:px-12 lg:py-section-lg">
+  <div class="writeup-body tone-paper px-gutter py-joint sm:px-6 lg:px-12 lg:py-joint-lg">
     <div class="shell writeup-layout">
       {/* On lg, the chapters as a sticky index beside the reading column. */}
       <nav class="writeup-toc" aria-label={t("writeup.toc")}>
@@ -406,7 +404,33 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
                 if (block.type === "diagram")
                   return (
                     <figure class="plate-wide" data-reveal>
-                      <ArchitectureMap lang={lang} block={block} />
+                      <div class="diagram">
+                        <picture>
+                          <source
+                            media="(width >= 40rem)"
+                            srcset={`${block.src}-wide-${lang}.svg`}
+                            width={block.wide.width}
+                            height={block.wide.height}
+                          />
+                          <img
+                            class="diagram-img"
+                            src={`${block.src}-tall-${lang}.svg`}
+                            width={block.tall.width}
+                            height={block.tall.height}
+                            alt={block.alt[lang]}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </picture>
+                        <button
+                          type="button"
+                          class="diagram-zoom"
+                          aria-label={`${t("writeup.zoom")}: ${t("writeup.figure")} ${two(figures.get(block) ?? 0)}`}
+                          data-zoom="image"
+                          data-zoom-src={`${block.src}-wide-${lang}.svg`}
+                          data-zoom-alt={block.alt[lang]}
+                        />
+                      </div>
                       <figcaption class="plate-caption">
                         <span class="meta tabular-nums">
                           {t("writeup.figure")} {two(figures.get(block) ?? 0)}
@@ -480,7 +504,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
       <span aria-hidden="true">]</span>
     </button>
     <div class="lightbox-stage" data-lightbox-stage></div>
-    <p class="meta-name lightbox-caption" data-lightbox-caption></p>
   </dialog>
 </article>
 
@@ -537,18 +560,10 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox]")
     if (!dialog) return
     const stage = dialog.querySelector<HTMLElement>("[data-lightbox-stage]")!
-    const caption = dialog.querySelector<HTMLElement>(
-      "[data-lightbox-caption]"
-    )!
     document.addEventListener("click", (e) => {
       const button = (e.target as Element).closest<HTMLElement>("[data-zoom]")
       if (!button) return
-      const {
-        zoom,
-        zoomSrc = "",
-        zoomAlt = "",
-        zoomCaption = "",
-      } = button.dataset
+      const { zoom, zoomSrc = "", zoomAlt = "" } = button.dataset
       if (zoom === "image") {
         const img = document.createElement("img")
         img.src = zoomSrc
@@ -574,7 +589,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
         }
         stage.replaceChildren(video)
       }
-      caption.textContent = zoomCaption
       dialog.showModal()
     })
     dialog
@@ -743,7 +757,7 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
    * wider measure instead of one under another.
    */
   .chapter + .chapter {
-    margin-top: var(--spacing-row-lg);
+    margin-top: var(--spacing-row);
   }
 
   .chapter-head {
@@ -785,11 +799,44 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     color: var(--title-color);
   }
 
-  /* ── The map's plate (screenshots and clips style themselves) ── */
+  /* ── The diagram's plate (screenshots and clips style themselves) ── */
   .plate-wide {
     display: grid;
     gap: 0.75rem;
     margin-block: 1rem;
+  }
+
+  /* The Excalidraw export sits on the paper as drawn; a click opens it larger. */
+  .diagram {
+    position: relative;
+  }
+
+  .diagram-img {
+    display: block;
+    width: 100%;
+    max-width: 30rem;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  @media (width >= 40rem) {
+    .diagram-img {
+      max-width: none;
+    }
+  }
+
+  .diagram-zoom {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    border-radius: 0.75rem;
+    background: transparent;
+    cursor: zoom-in;
+  }
+
+  .diagram-zoom:focus-visible {
+    outline: 1px solid var(--title-color);
+    outline-offset: 3px;
   }
 
   .plate-caption {
@@ -847,7 +894,7 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
 
   .lightbox[open] {
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .lightbox::backdrop {
@@ -872,8 +919,15 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     display: grid;
     place-items: center;
     min-height: 0;
-    padding: 0.5rem var(--spacing-gutter);
+    padding: 0.5rem var(--spacing-gutter) 1.25rem;
     cursor: zoom-out;
+  }
+
+  /* A diagram is drawn for paper: it keeps its paper in the dark lightbox. */
+  .lightbox-stage :global(img[src$=".svg"]) {
+    width: min(100%, 72rem);
+    padding: 1rem;
+    background-color: var(--color-paper);
   }
 
   .lightbox-stage :global(img),
@@ -884,14 +938,6 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
     height: auto;
     border-radius: 0.75rem;
     cursor: default;
-  }
-
-  .lightbox-caption {
-    max-width: 48rem;
-    justify-self: center;
-    padding: 0.75rem var(--spacing-gutter) 1.25rem;
-    color: var(--color-ice-muted);
-    text-align: center;
   }
 
   /* ── Spec sheets ── */
@@ -926,7 +972,7 @@ const allWork = `${getLocalizedPath(lang).replace(/\/?$/, "/")}#work`
 
   @media (width >= 64rem) {
     .chapter + .chapter {
-      margin-top: var(--spacing-section);
+      margin-top: var(--spacing-row-lg);
     }
   }
 
