@@ -1,6 +1,7 @@
 ---
 import { Font } from "astro:assets"
 import { ClientRouter } from "astro:transitions"
+import Analytics from "@vercel/analytics/astro"
 import "../styles/global.css"
 import { defaultLang, type Lang } from "@/i18n/ui"
 import { getAlternateUrl, locales, useTranslations } from "@/i18n/utils"
@@ -125,6 +126,14 @@ const xDefault = getAlternateUrl(Astro.url, defaultLang)
     </a>
     <div class="scroll-rule" aria-hidden="true" data-progress></div>
     <slot />
+    {/*
+      Vercel Web Analytics, only in builds made on Vercel (it sets VERCEL=1).
+      The script is same-origin (/_vercel/insights/), so the CSP in vercel.json
+      needs no change; it records a pageview on load and after every
+      view-transition swap. Skipped locally so `astro dev` loads no remote
+      debug script and Lighthouse never hits a 404 on that route.
+    */}
+    {import.meta.env.VERCEL && <Analytics />}
     <script>
       import "@/scripts/motion"
       import "@/scripts/scroll"
