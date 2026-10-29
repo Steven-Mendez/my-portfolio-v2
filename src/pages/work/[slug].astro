@@ -26,7 +26,7 @@ const project = projects.find((p) => p.slug === writeup.slug)!
 
 <BaseLayout
   lang={lang}
-  title={`${project.title} — ${profile.fullName}`}
+  title={`${writeup.pageTitle[lang]} — ${profile.fullName}`}
   description={writeup.description[lang]}
   image={`/og/${writeup.slug}-${lang}.jpg`}
   type="article"

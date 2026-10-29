@@ -77,6 +77,8 @@ export interface Writeup {
   slug: string
   /** One paragraph under the project's name. */
   lead: Localized<string>
+  /** `<title>` of the page, before the author's name: the project and what it is. */
+  pageTitle: Localized<string>
   /** Meta description of the page. */
   description: Localized<string>
   /**
@@ -109,9 +111,13 @@ export const writeups: readonly Writeup[] = [
       en: "An app for home deliveries in Nicaragua, built as an internal product at WERN, the agency where I work. Businesses publish their orders, nearby couriers take and deliver them, and the customer follows the order from their phone.",
       es: "Una app de entregas a domicilio para Nicaragua, hecha como producto interno de WERN, la agencia donde trabajo. Los negocios publican sus pedidos, los repartidores cercanos los toman y los entregan, y el cliente sigue su pedido desde el teléfono.",
     },
+    pageTitle: {
+      en: "Bidali: Rust + SvelteKit Delivery App",
+      es: "Bidali: app de entregas en Rust y SvelteKit",
+    },
     description: {
-      en: "How Bidali, WERN's internal delivery app, is built: a Rust API, one SvelteKit app for the web, iOS and Android, and Google Cloud.",
-      es: "Cómo está hecho Bidali, la app de entregas interna de WERN: una API en Rust, una sola app en SvelteKit para la web, iOS y Android, y Google Cloud.",
+      en: "How I built Bidali, WERN's internal delivery platform: a Rust API, one SvelteKit codebase for the web, iOS and Android, and Google Cloud. Architecture and lessons.",
+      es: "Cómo construí Bidali, la plataforma de entregas interna de WERN: una API en Rust, una sola base SvelteKit para la web, iOS y Android, y Google Cloud. Arquitectura y lecciones.",
     },
     role: {
       en: "Full-stack engineer at WERN",
@@ -307,9 +313,13 @@ export const writeups: readonly Writeup[] = [
       en: "Interview Agent is a voice app for practising job interviews. It reads your CV and the job offer, interviews you out loud and then shows you how to improve each answer.",
       es: "Interview Agent es una app de voz para practicar entrevistas de trabajo. Lee tu CV y la oferta, te entrevista en voz alta y después te muestra cómo mejorar cada respuesta.",
     },
+    pageTitle: {
+      en: "Interview Agent: Voice AI Mock Interviews",
+      es: "Interview Agent: entrevistas de práctica por voz con IA",
+    },
     description: {
-      en: "How I built Interview Agent: a voice app with three AI agents, built on LiveKit, LangGraph, FastAPI and React.",
-      es: "Cómo construí Interview Agent: una app de voz con tres agentes de IA, hecha con LiveKit, LangGraph, FastAPI y React.",
+      en: "How I built Interview Agent, a voice mock-interview app with three AI agents on LiveKit, LangGraph, FastAPI and React. Architecture, prompts and trade-offs.",
+      es: "Cómo construí Interview Agent, una app de voz para practicar entrevistas con tres agentes de IA sobre LiveKit, LangGraph, FastAPI y React. Arquitectura, prompts y decisiones.",
     },
     role: {
       en: "Full-stack engineer",
@@ -607,9 +617,13 @@ export const writeups: readonly Writeup[] = [
       en: "The look of this portfolio is inspired by Bocanada, Gustavo Cerati's 1999 album: its colours, its red rhombuses and its dots. This page explains that idea, the rules that came from it and the tools behind the site.",
       es: "El aspecto de este portfolio está inspirado en Bocanada, el disco de Gustavo Cerati de 1999: sus colores, sus rombos rojos y sus puntos. Esta página explica esa idea, las reglas que salieron de ella y las herramientas detrás del sitio.",
     },
+    pageTitle: {
+      en: "Astro Portfolio Build, Bocanada-Inspired",
+      es: "Portfolio en Astro inspirado en Bocanada",
+    },
     description: {
-      en: "How this portfolio takes its look from Gustavo Cerati's Bocanada, and why it is built with Astro, Tailwind CSS and GSAP.",
-      es: "Cómo este portfolio toma su aspecto de Bocanada de Gustavo Cerati, y por qué está hecho con Astro, Tailwind CSS y GSAP.",
+      en: "How this portfolio is built with Astro, Tailwind CSS and GSAP, and why its look comes from Gustavo Cerati's Bocanada. Performance, SEO and design notes.",
+      es: "Cómo está hecho este portfolio con Astro, Tailwind CSS y GSAP, y por qué su aspecto viene de Bocanada de Gustavo Cerati. Notas de rendimiento, SEO y diseño.",
     },
     role: {
       en: "Designer and developer",

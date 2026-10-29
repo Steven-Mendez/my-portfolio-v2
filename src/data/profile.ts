@@ -20,6 +20,12 @@ export interface Profile {
   fullName: string
   firstName: string
   lastName: string
+  /**
+   * Other names he goes by online (the domain and email handle, the full
+   * name with both surnames): `alternateName` in the JSON-LD and the aka
+   * line in About, so a search for any of them resolves to this site.
+   */
+  alternateNames: readonly string[]
   /** Public contact address (from `../v2/lib/data.ts` `contactEmail`). */
   email: string
   socials: { github: string; linkedin: string; credly: string }
@@ -59,6 +65,11 @@ export const profile: Profile = {
   fullName: "Steven Mendez",
   firstName: "Steven",
   lastName: "Mendez",
+  alternateNames: [
+    "Steven Ampaiz",
+    "Steven Mendez Paiz",
+    "Steven Alexander Mendez Paiz",
+  ],
   email: "stevenampaiz@gmail.com",
   socials: {
     github: "https://github.com/Steven-Mendez",

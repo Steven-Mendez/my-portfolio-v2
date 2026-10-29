@@ -4,8 +4,28 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/projects/ai-interview-simulator/",
+      "destination": "/work/interview-agent/",
+      "permanent": true
+    },
+    {
+      "source": "/projects/ai-interview-simulator",
+      "destination": "/work/interview-agent/",
+      "permanent": true
+    },
+    {
+      "source": "/projects/:slug/",
+      "destination": "/work/:slug/",
+      "permanent": true
+    },
+    {
       "source": "/projects/:slug",
       "destination": "/work/:slug/",
+      "permanent": true
+    },
+    {
+      "source": "/resume/",
+      "destination": "/steven-mendez-cv-en.pdf",
       "permanent": true
     },
     {

@@ -10,9 +10,9 @@ export type Lang = keyof typeof languages
 
 export const ui = {
   en: {
-    "meta.title": "Steven Mendez — Full Stack Software Engineer, Nicaragua",
+    "meta.title": "Steven Mendez (Ampaiz) — Full Stack Engineer, Nicaragua",
     "meta.description":
-      "Steven Mendez, full stack software engineer in Managua, Nicaragua: Python and FastAPI backends, React front ends, AWS, and LLM and RAG features in production.",
+      "Steven Mendez, aka Steven Ampaiz: full stack engineer in Managua, Nicaragua. Python and FastAPI backends, React front ends, AWS, and LLM and RAG features in production.",
     "nav.language": "Language",
     "nav.sections": "Sections",
     // Section titles (`*.title`) must not repeat the nav label: the kicker
@@ -46,7 +46,7 @@ export const ui = {
     // profile and the earliest job's start date, so the count never goes stale.
     "about.title": "Who I am",
     "about.body.1":
-      "Hi, I'm Steven, a full stack engineer in Managua, Nicaragua. I started programming when I was {codingAge} and have been doing it professionally for {tenure}.",
+      "Hi, I'm Steven, a full stack engineer in Managua, Nicaragua. Online I go by Steven Ampaiz. I started programming when I was {codingAge} and have been doing it professionally for {tenure}.",
     "about.body.2":
       "Today I'm a full stack engineer at WERN, a development agency: Python APIs, React front ends, AWS infrastructure, and LLM and RAG features, first for its clients and now on its own products.",
     "about.body.3":
@@ -112,9 +112,9 @@ export const ui = {
     "footer.soundtrack.gloss": "you deserve what you dream",
   },
   es: {
-    "meta.title": "Steven Mendez — Ingeniero de Software Full Stack, Nicaragua",
+    "meta.title": "Steven Mendez (Ampaiz) — Ingeniero Full Stack, Nicaragua",
     "meta.description":
-      "Steven Mendez, ingeniero de software full stack en Managua, Nicaragua: backends en Python y FastAPI, front ends en React, AWS y funcionalidades con LLMs y RAG en producción.",
+      "Steven Mendez, también Steven Ampaiz: ingeniero full stack en Managua, Nicaragua. Backends en Python y FastAPI, front ends en React, AWS y funcionalidades con LLMs y RAG en producción.",
     "nav.language": "Idioma",
     "nav.sections": "Secciones",
     "nav.home": "Inicio",
@@ -144,7 +144,7 @@ export const ui = {
     // profile and the earliest job's start date, so the count never goes stale.
     "about.title": "Quién soy",
     "about.body.1":
-      "Hola, soy Steven, ingeniero full stack en Managua, Nicaragua. Empecé a programar a los {codingAge} y llevo {tenure} haciéndolo de forma profesional.",
+      "Hola, soy Steven, ingeniero full stack en Managua, Nicaragua. En internet me encuentras como Steven Ampaiz. Empecé a programar a los {codingAge} y llevo {tenure} haciéndolo de forma profesional.",
     "about.body.2":
       "Hoy trabajo como ingeniero full stack en WERN, una agencia de desarrollo: APIs en Python, interfaces en React, infraestructura en AWS y funcionalidades con LLMs y RAG, primero para sus clientes y hoy en sus productos internos.",
     "about.body.3":

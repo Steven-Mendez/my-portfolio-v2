@@ -5,7 +5,7 @@
  * graphs on different pages point at one Person and one WebSite.
  */
 import type { Lang } from "@/i18n/ui"
-import { useTranslations } from "@/i18n/utils"
+import { getLocalizedPath, useTranslations } from "@/i18n/utils"
 import { profile } from "./profile"
 import type { Project } from "./projects"
 import type { Writeup } from "./writeups"
@@ -25,6 +25,7 @@ function person(site: URL, lang: Lang): JsonLd {
     name: profile.fullName,
     givenName: profile.firstName,
     familyName: profile.lastName,
+    alternateName: [...profile.alternateNames],
     jobTitle: t("hero.role"),
     url: site.href,
     image: new URL(`/og/home-${lang}.jpg`, site).href,
@@ -52,6 +53,7 @@ export function homeJsonLd(site: URL, lang: Lang, pageUrl: URL): JsonLd {
         "@id": ids(site).website,
         url: site.href,
         name: profile.fullName,
+        alternateName: site.hostname.replace(/^www\./, ""),
         inLanguage: ["en", "es"],
         publisher: { "@id": ids(site).person },
       },
@@ -77,6 +79,11 @@ export function writeupJsonLd(
   project: Project,
   writeup: Writeup
 ): JsonLd {
+  const t = useTranslations(lang)
+  const home = new URL(getLocalizedPath(lang), site).href
+  // `updated` is "YYYY-MM"; schema.org wants a full ISO date, and a page
+  // cannot have been modified before it was published.
+  const revised = `${writeup.updated}-01`
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -90,10 +97,25 @@ export function writeupJsonLd(
         image: new URL(`/og/${writeup.slug}-${lang}.jpg`, site).href,
         inLanguage: lang,
         datePublished: writeup.published,
-        // `updated` is "YYYY-MM"; schema.org wants a full ISO date.
-        dateModified: `${writeup.updated}-01`,
+        dateModified: revised > writeup.published ? revised : writeup.published,
         author: { "@id": ids(site).person },
         isPartOf: { "@id": ids(site).website },
+      },
+      {
+        // The trail the page shows: the header's home link, the "all
+        // work" link at the end (the list is a section of the home), the h1.
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl.href}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t("nav.home"), item: home },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: t("nav.work"),
+            item: `${home}#work`,
+          },
+          { "@type": "ListItem", position: 3, name: project.title },
+        ],
       },
       person(site, lang),
     ],
